@@ -1,0 +1,8 @@
+# OS Files
+Thumbs.db
+.DS_Store
+
+# Temporary / extraction files
+figma_source/
+*.tmp
+*.log

@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillOra - One Platform. Every Career Possibility.</title>
+  <meta name="description" content="Discover courses, verified institutes and jobs across healthcare, hospitality, technology and professional skills.">
+  <!-- Google Fonts: Arimo (Exact Figma Font) & Caveat for handwritten script -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Announcement / Toast Bar (if needed) -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- MAIN WRAPPER (Exact 1600px Canvas Centered with Auto Layout) -->
+  <div class="site-canvas">
+
+    <!-- ========================================================================= -->
+    <!-- 1. HEADER / NAVIGATION                                                    -->
+    <!-- ========================================================================= -->
+    <header class="navbar" id="main-header">
+      <div class="nav-container">
+        
+        <!-- Brand Logo -->
+        <a href="#home" class="brand-logo" aria-label="SkillOra Home">
+          <div class="logo-mark">
+            <svg class="logo-symbol" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 26C11 19 19 13 29 11C23 16 19 22 17 29C15 28 10 27 8 26Z" fill="url(#grad_orange)"/>
+              <path d="M11 27C17 22 23 20 31 19C25 25 19 32 12 33C11 31 11 29 11 27Z" fill="url(#grad_cyan)"/>
+              <path d="M12 28C19 25 26 24 33 24C27 29 21 34 13 35C12 33 12 30 12 28Z" fill="url(#grad_blue)"/>
+              <defs>
+                <linearGradient id="grad_orange" x1="8" y1="11" x2="29" y2="29" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#FF922A"/>
+                  <stop offset="1" stop-color="#E84655"/>
+                </linearGradient>
+                <linearGradient id="grad_cyan" x1="11" y1="19" x2="31" y2="33" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#0497DD"/>
+                  <stop offset="1" stop-color="#009E83"/>
+                </linearGradient>
+                <linearGradient id="grad_blue" x1="12" y1="24" x2="33" y2="35" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#087BFF"/>
+                  <stop offset="1" stop-color="#0047AB"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="logo-text-group">
+            <span class="logo-title">Skill<span class="highlight-orange">Ora</span></span>
+            <span class="logo-tagline">Learn · Skill · Build Your Future</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Items with Dropdowns -->
+        <nav class="nav-menu" aria-label="Main Navigation">
+          
+          <!-- Explore Courses Dropdown -->
+          <div class="nav-item has-dropdown">
+            <button class="nav-link" aria-expanded="false">
+              <span>Explore Courses</span>
+              <svg class="chevron-icon" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="dropdown-menu">
+              <a href="#courses" data-category="Nursing" class="dropdown-item">
+                <span class="cat-dot dot-teal"></span>
+                <span>Nursing & Healthcare</span>
+              </a>
+              <a href="#courses" data-category="Hospitality" class="dropdown-item">
+                <span class="cat-dot dot-orange"></span>
+                <span>Hospitality & Hotel Mgmt</span>
+              </a>
+              <a href="#courses" data-category="IT & Coding" class="dropdown-item">
+                <span class="cat-dot dot-purple"></span>
+                <span>Coding & Technology</span>
+              </a>
+              <a href="#courses" data-category="Designing" class="dropdown-item">
+                <span class="cat-dot dot-magenta"></span>
+                <span>Designing & UI/UX</span>
+              </a>
+              <a href="#courses" data-category="Sales & Marketing" class="dropdown-item">
+                <span class="cat-dot dot-green"></span>
+                <span>Sales & Digital Marketing</span>
+              </a>
+              <a href="#courses" data-category="Language" class="dropdown-item">
+                <span class="cat-dot dot-blue"></span>
+                <span>Language & Grooming</span>
+              </a>
+              <a href="#courses" data-category="Material Science" class="dropdown-item">
+                <span class="cat-dot dot-darkgreen"></span>
+                <span>Material Science & Testing</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Find Jobs Dropdown -->
+          <div class="nav-item has-dropdown">
+            <button class="nav-link" aria-expanded="false">
+              <span>Find Jobs</span>
+              <svg class="chevron-icon" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="dropdown-menu">
+              <a href="#jobs" class="dropdown-item"><span>Staff & ICU Nurse Openings</span></a>
+              <a href="#jobs" class="dropdown-item"><span>Hotel Front Desk & Hospitality</span></a>
+              <a href="#jobs" class="dropdown-item"><span>Full Stack & Frontend Developer</span></a>
+              <a href="#jobs" class="dropdown-item"><span>UI/UX Designer & Creative</span></a>
+              <a href="#jobs" class="dropdown-item"><span>Verified Walk-in Interviews</span></a>
+            </div>
+          </div>
+
+          <!-- Colleges & Institutes Dropdown -->
+          <div class="nav-item has-dropdown">
+            <button class="nav-link" aria-expanded="false">
+              <span>Colleges & Institutes</span>
+              <svg class="chevron-icon" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="dropdown-menu">
+              <a href="javascript:void(0)" onclick="openStateModal()" class="dropdown-item"><span>Sunrise College of Nursing</span></a>
+              <a href="javascript:void(0)" onclick="openStateModal()" class="dropdown-item"><span>Global Hospitality Institute</span></a>
+              <a href="javascript:void(0)" onclick="openStateModal()" class="dropdown-item"><span>iTech Skills Academy</span></a>
+              <a href="javascript:void(0)" onclick="openStateModal()" class="dropdown-item"><span>Creative Design Institute</span></a>
+              <a href="javascript:void(0)" onclick="openVerifiedModal()" class="dropdown-item highlight-link"><span>Directory of Verified Institutes →</span></a>
+            </div>
+          </div>
+
+          <!-- Online Learning Dropdown -->
+          <div class="nav-item has-dropdown">
+            <button class="nav-link" aria-expanded="false">
+              <span>Online Learning</span>
+              <svg class="chevron-icon" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="dropdown-menu">
+              <a href="#courses" class="dropdown-item"><span>Live Certification Batches</span></a>
+              <a href="#courses" class="dropdown-item"><span>Self-Paced Video Modules</span></a>
+              <a href="#courses" class="dropdown-item"><span>Free Skill Masterclasses</span></a>
+              <a href="#courses" class="dropdown-item"><span>Skill Assessment & Tests</span></a>
+            </div>
+          </div>
+
+          <!-- Career Updates Dropdown -->
+          <div class="nav-item has-dropdown">
+            <button class="nav-link" aria-expanded="false">
+              <span>Career Updates</span>
+              <svg class="chevron-icon" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="dropdown-menu">
+              <a href="#updates" class="dropdown-item"><span>Admission Alerts 2026</span></a>
+              <a href="#updates" class="dropdown-item"><span>Government Job Notifications</span></a>
+              <a href="#updates" class="dropdown-item"><span>Healthcare Industry Hiring Trends</span></a>
+              <a href="#updates" class="dropdown-item"><span>Career Counseling Articles</span></a>
+            </div>
+          </div>
+
+        </nav>
+
+        <!-- Right Action Items -->
+        <div class="nav-actions">
+          <!-- Search Trigger Icon -->
+          <button class="icon-btn search-trigger-btn" id="header-search-btn" title="Search SkillOra" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="#087BFF" stroke-width="2.2"/>
+              <path d="M20 20L16 16" stroke="#087BFF" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          <!-- Login Button -->
+          <button class="btn btn-outline-login" id="login-btn">
+            Login
+          </button>
+
+          <!-- Join as Partner Button -->
+          <button class="btn btn-primary-join" id="join-partner-btn">
+            Join as Partner
+          </button>
+
+          <!-- Mobile Hamburger Toggle -->
+          <button class="mobile-toggle-btn" id="mobile-toggle" aria-label="Open mobile menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- 2. HERO SECTION                                                           -->
+    <!-- ========================================================================= -->
+    <section class="hero-section" id="home">
+      <div class="hero-container">
+        
+        <!-- Left Hero Copy & Interactive Search -->
+        <div class="hero-copy">
+          <div class="hero-eyebrow">
+            Your Skills, Your Career, Our Mission.
+          </div>
+          
+          <h1 class="hero-title">
+            <span class="hero-title-line1">One Platform.</span>
+            <span class="hero-title-line2">Every Career <span class="highlight-possibility">Possibility.</span></span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Discover courses, verified institutes and jobs across healthcare, hospitality, technology and professional skills.
+          </p>
+
+          <!-- Interactive Search Box -->
+          <div class="hero-search-wrapper">
+            <div class="hero-search-bar" id="hero-search-bar">
+              <span class="search-input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="11" cy="11" r="7" stroke="#728DA9" stroke-width="2"/>
+                  <path d="M20 20L16 16" stroke="#728DA9" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <input 
+                type="text" 
+                id="hero-search-input" 
+                class="hero-search-input" 
+                placeholder="Search courses, jobs, colleges or skills..." 
+                autocomplete="off"
+              >
+              <button class="clear-search-btn" id="clear-search-btn" style="display:none;" title="Clear search">✕</button>
+              <button class="hero-search-submit" id="hero-search-submit" aria-label="Execute search">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle cx="11" cy="11" r="7" stroke="#FFFFFF" stroke-width="2.5"/>
+                  <path d="M20 20L16 16" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Live Search Suggestions Autocomplete Dropdown -->
+            <div class="search-autocomplete-dropdown" id="search-autocomplete-dropdown"></div>
+          </div>
+
+          <!-- Hero Highlights / Metrics Row -->
+          <div class="hero-highlights">
+            
+            <div class="highlight-item" title="Over 500 accredited courses">
+              <span class="highlight-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 10L12 5L2 10L12 15L22 10Z" stroke="#173C62" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M6 12V17C6 17 8 19 12 19C16 19 18 17 18 17V12" stroke="#173C62" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M22 10V16" stroke="#173C62" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <div class="highlight-text">
+                <strong class="highlight-num">500+</strong>
+                <span class="highlight-label">Courses</span>
+              </div>
+            </div>
+
+            <div class="highlight-item" title="200+ Verified & Inspected Institutes">
+              <span class="highlight-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 21H21" stroke="#173C62" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M5 21V10L12 5L19 10V21" stroke="#173C62" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M9 21V14H15V21" stroke="#173C62" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <div class="highlight-text">
+                <strong class="highlight-num">200+</strong>
+                <span class="highlight-label">Verified Institutes</span>
+              </div>
+            </div>
+
+            <div class="highlight-item" title="1000+ Direct Employer Openings">
+              <span class="highlight-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="7" width="20" height="14" rx="2" stroke="#173C62" stroke-width="2"/>
+                  <path d="M16 7V5C16 3.89543 15.1046 3 14 3H10C8.89543 3 8 3.89543 8 5V7" stroke="#173C62" stroke-width="2"/>
+                  <path d="M12 12V14" stroke="#173C62" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <div class="highlight-text">
+                <strong class="highlight-num">1000+</strong>
+                <span class="highlight-label">Job Opportunities</span>
+              </div>
+            </div>
+
+            <div class="highlight-item" title="50+ Specialized Career Sectors">
+              <span class="highlight-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="3" width="7" height="7" rx="1" stroke="#173C62" stroke-width="2"/>
+                  <rect x="14" y="3" width="7" height="7" rx="1" stroke="#173C62" stroke-width="2"/>
+                  <rect x="14" y="14" width="7" height="7" rx="1" stroke="#173C62" stroke-width="2"/>
+                  <rect x="3" y="14" width="7" height="7" rx="1" stroke="#173C62" stroke-width="2"/>
+                </svg>
+              </span>
+              <div class="highlight-text">
+                <strong class="highlight-num">50+</strong>
+                <span class="highlight-label">Career Categories</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right Hero Visual with Realistic Photography & Badges -->
+        <div class="hero-artwork-container">
+          <div class="hero-artwork-inner">
+            <!-- Background Artwork Image (4 Diverse Students/Professionals) -->
+            <img 
+              src="assets/hero_banner.png" 
+              alt="SkillOra Indian students and professionals in healthcare, hospitality, IT and creative design" 
+              class="hero-artwork-img"
+              loading="eager"
+            >
+
+            <!-- Interactive Clickable Floating Badges -->
+            <div class="hero-floating-badges">
+              
+              <!-- Badge 1: Verified Institutes -->
+              <div class="floating-badge badge-verified" onclick="openVerifiedModal()" role="button" tabindex="0" title="Click to view institute accreditation details">
+                <span class="f-badge-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" fill="#087BFF"/>
+                    <path d="M9 12L11 14L15 9" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="f-badge-text">Verified Institutes</span>
+              </div>
+
+              <!-- Badge 2: Expert Support -->
+              <div class="floating-badge badge-support" onclick="openWhatsAppChat('Expert Support Request')" role="button" tabindex="0" title="Get live 24/7 counseling support">
+                <span class="f-badge-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 18V12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12V18" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M2 15C2 13.8954 2.89543 13 4 13H5C6.10457 13 7 13.8954 7 15V19C7 20.1046 6.10457 21 5 21H4C2.89543 21 2 20.1046 2 19V15Z" fill="#087BFF"/>
+                    <path d="M17 15C17 13.8954 17.8954 13 19 13H20C21.1046 13 22 13.8954 22 15V19C22 20.1046 21.1046 21 20 21H19C17.8954 21 17 20.1046 17 19V15Z" fill="#087BFF"/>
+                  </svg>
+                </span>
+                <span class="f-badge-text">Expert Support</span>
+              </div>
+
+              <!-- Badge 3: Flexible Learning -->
+              <div class="floating-badge badge-flexible" onclick="showToast('SkillOra offers both 100% Online self-paced & Offline campus batches!')" role="button" tabindex="0" title="Flexible Online & Offline delivery modes">
+                <span class="f-badge-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                    <path d="M21.5 2V6H17.5" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2.5 22V18H6.5" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M20 13C19.4 16.9 16 20 12 20C8.5 20 5.6 17.8 4.4 14.6" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M4 11C4.6 7.1 8 4 12 4C15.5 4 18.4 6.2 19.6 9.4" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                <span class="f-badge-text">Flexible Learning</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 3. HORIZONTAL CATEGORY CARDS CAROUSEL ROW (7 CARDS)                        -->
+    <!-- ========================================================================= -->
+    <section class="category-cards-section" aria-label="Browse Career Categories">
+      <div class="category-cards-scroll">
+        
+        <!-- 1. Nursing & Healthcare -->
+        <div class="cat-card" data-category="Nursing" role="button" tabindex="0">
+          <div class="cat-icon-circle cat-bg-teal">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+              <path d="M19 14C19 17.866 12 21 12 21C12 21 5 17.866 5 14C5 10 9 7.5 12 10.5C15 7.5 19 10 19 14Z" fill="#FFFFFF"/>
+              <path d="M9 13H11V11H13V13H15V15H13V17H11V15H9V13Z" fill="#009E83"/>
+            </svg>
+          </div>
+          <div class="cat-details">
+            <h3 class="cat-title">Nursing & Healthcare</h3>
+            <p class="cat-sub">GNM, B.Sc Nursing,<br>Post Basic B.Sc, ICU & more</p>
+          </div>
+          <span class="cat-arrow">→</span>
+        </div>
+
+        <!-- 2. Hospitality -->
+        <div class="cat-card" data-category="Hospitality" role="button" tabindex="0">
+          <div class="cat-icon-circle cat-bg-orange">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+              <path d="M12 4C12.5523 4 13 3.55228 13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3C11 3.55228 11.4477 4 12 4Z" fill="#FFFFFF"/>
+              <path d="M3 18H21C21 14.5 17.5 10 12 10C6.5 10 3 14.5 3 18Z" fill="#FFFFFF"/>
+              <path d="M2 19H22V21H2V19Z" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div class="cat-details">
+            <h3 class="cat-title">Hospitality</h3>
+            <p class="cat-sub">Hotel Management,<br>F&B, Front Office & more</p>
+          </div>
+          <span class="cat-arrow">→</span>
+        </div>
+
+        <!-- 3. Coding & IT -->
+        <div class="cat-card" data-category="IT & Coding" role="button" tabindex="0">
+          <div class="cat-icon-circle cat-bg-purple">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+              <path d="M8 7L3 12L8 17" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 7L21 12L16 17" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 4L10 20" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="cat-details">
+            <h3 class="cat-title">Coding & IT</h3>
+            <p class="cat-sub">Web Dev, Python, Java,<br>Data Science & more</p>
+          </div>
+          <span class="cat-arrow">→</span>
+        </div>
+
+        <!-- 4. Designing -->
+        <div class="cat-card" data-category="Designing" role="button" tabindex="0">
+          <div class="cat-icon-circle cat-bg-magenta">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L15 8L21 9L16.5 13.5L18 20L12 16.5L6 20L7.5 13.5L3 9L9 8L12 2Z" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div class="cat-details">
+            <h3 class="cat-title">Designing</h3>
+            <p class="cat-sub">Graphic Design, UI/UX,<br>Video Editing & more</p>
+          </div>
+          <span class="cat-arrow">→</span>
+        </div>
+
+        <!-- 5. Sales & Marketing -->
+        <div class="cat-card" data-category="Sales & Marketing" role="button" tabindex="0">
+          <div class="cat-icon-circle cat-bg-green">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+              <path d="M3 20H21" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M6 16V13" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M11 16V9" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M16 16V5" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M6 10L11 6L16 3L20 5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="cat-details">
+            <h3 class="cat-title">Sales & Marketing</h3>
+            <p class="cat-sub">Digital Marketing, Sales,<br>Customer Service & more</p>
+          </div>
+          <span class="cat-arrow">→</span>
+        </div>
+
+        <!-- 6. Language & Grooming -->
+        <div class="cat-card" data-category="Language" role="button" tabindex="0">
+          <div class="cat-icon-circle cat-bg-blue">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+              <path d="M21 11.5C21.0034 12.8199 20.6951 14.1219 20.1 15.3C19.3944 16.7118 18.3098 17.8992 16.9674 18.7293C15.6251 19.5594 14.0782 20.0001 12.5 20C11.1801 20.0035 9.87812 19.6951 8.7 19.1L3 21L4.9 15.3C4.30493 14.1219 3.99656 12.8199 4 11.5C3.99987 9.92179 4.44061 8.37488 5.27072 7.03258C6.10083 5.69028 7.28825 4.6056 8.7 3.90003C9.87812 3.30493 11.1801 2.99656 12.5 3H13C15.0843 3.11502 17.053 3.99479 18.5291 5.47089C20.0052 6.94699 20.885 8.91569 21 11V11.5Z" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div class="cat-details">
+            <h3 class="cat-title">Language & Grooming</h3>
+            <p class="cat-sub">English, PTE, German,<br>Personality Development</p>
+          </div>
+          <span class="cat-arrow">→</span>
+        </div>
+
+        <!-- 7. Material Science -->
+        <div class="cat-card" data-category="Material Science" role="button" tabindex="0">
+          <div class="cat-icon-circle cat-bg-darkgreen">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="3" fill="#FFFFFF"/>
+              <ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(30 12 12)" stroke="#FFFFFF" stroke-width="1.8"/>
+              <ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(-30 12 12)" stroke="#FFFFFF" stroke-width="1.8"/>
+            </svg>
+          </div>
+          <div class="cat-details">
+            <h3 class="cat-title">Material Science</h3>
+            <p class="cat-sub">Material Testing, Quality Control<br>& related courses</p>
+          </div>
+          <span class="cat-arrow">→</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 4. MAIN 3-COLUMN BODY LAYOUT                                              -->
+    <!-- ========================================================================= -->
+    <main class="main-content-layout">
+
+      <!-- ======================================================================= -->
+      <!-- COLUMN 1: LEFT FILTER SIDEBAR                                           -->
+      <!-- ======================================================================= -->
+      <aside class="filter-sidebar" id="sidebar-filters" aria-label="Course and Job Filters">
+        <div class="filter-card">
+          <h2 class="filter-header-title">Find Your Perfect Match</h2>
+          
+          <form id="filter-form" onsubmit="event.preventDefault(); applySidebarFilters();">
+            
+            <!-- State Select -->
+            <div class="filter-field">
+              <label for="filter-state" class="filter-label">State</label>
+              <div class="select-wrapper">
+                <select id="filter-state" class="filter-select" onchange="updateCityOptions()">
+                  <option value="">All States (Pan-India)</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Delhi">Delhi NCR</option>
+                  <option value="Karnataka">Karnataka</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Uttar Pradesh">Uttar Pradesh</option>
+                  <option value="Rajasthan">Rajasthan</option>
+                  <option value="Gujarat">Gujarat</option>
+                  <option value="West Bengal">West Bengal</option>
+                  <option value="Kerala">Kerala</option>
+                  <option value="Punjab">Punjab</option>
+                  <option value="Haryana">Haryana</option>
+                  <option value="Telangana">Telangana</option>
+                  <option value="Andhra Pradesh">Andhra Pradesh</option>
+                  <option value="Madhya Pradesh">Madhya Pradesh</option>
+                  <option value="Bihar">Bihar</option>
+                  <option value="Odisha">Odisha</option>
+                  <option value="Assam">Assam</option>
+                  <option value="Jharkhand">Jharkhand</option>
+                  <option value="Chhattisgarh">Chhattisgarh</option>
+                  <option value="Uttarakhand">Uttarakhand</option>
+                  <option value="Himachal Pradesh">Himachal Pradesh</option>
+                  <option value="Goa">Goa</option>
+                  <option value="Jammu and Kashmir">Jammu & Kashmir</option>
+                </select>
+                <span class="select-arrow">⌵</span>
+              </div>
+            </div>
+
+            <!-- City Select -->
+            <div class="filter-field">
+              <label for="filter-city" class="filter-label">City</label>
+              <div class="select-wrapper">
+                <select id="filter-city" class="filter-select">
+                  <option value="">Select City</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Pune">Pune</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Bengaluru">Bengaluru</option>
+                  <option value="Jaipur">Jaipur</option>
+                  <option value="Lucknow">Lucknow</option>
+                  <option value="Kolkata">Kolkata</option>
+                </select>
+                <span class="select-arrow">⌵</span>
+              </div>
+            </div>
+
+            <!-- Course Category Select -->
+            <div class="filter-field">
+              <label for="filter-category" class="filter-label">Course Category</label>
+              <div class="select-wrapper">
+                <select id="filter-category" class="filter-select">
+                  <option value="">Select Category</option>
+                  <option value="Nursing">Nursing & Healthcare</option>
+                  <option value="Hospitality">Hospitality & Hotel Mgmt</option>
+                  <option value="IT & Coding">Coding & IT</option>
+                  <option value="Designing">Graphic Design & UI/UX</option>
+                  <option value="Sales & Marketing">Sales & Marketing</option>
+                  <option value="Language">Language & Grooming</option>
+                  <option value="Material Science">Material Science</option>
+                </select>
+                <span class="select-arrow">⌵</span>
+              </div>
+            </div>
+
+            <!-- Qualification Select -->
+            <div class="filter-field">
+              <label for="filter-qualification" class="filter-label">Qualification</label>
+              <div class="select-wrapper">
+                <select id="filter-qualification" class="filter-select">
+                  <option value="">Select Qualification</option>
+                  <option value="10th">10th Standard Pass</option>
+                  <option value="12th">12th Standard Pass</option>
+                  <option value="Diploma">Diploma Holder</option>
+                  <option value="Graduate">Graduate (B.Sc / B.Com / B.A / B.Tech)</option>
+                  <option value="PostGraduate">Post Graduate</option>
+                </select>
+                <span class="select-arrow">⌵</span>
+              </div>
+            </div>
+
+            <!-- Fee Range Slider -->
+            <div class="filter-field fee-range-field">
+              <div class="fee-label-row">
+                <label for="filter-fee" class="filter-label">Fee Range</label>
+                <span class="fee-current-val" id="fee-current-val">Up to ₹2,00,000</span>
+              </div>
+              <input 
+                type="range" 
+                id="filter-fee" 
+                class="fee-slider" 
+                min="10000" 
+                max="200000" 
+                step="5000" 
+                value="200000"
+                oninput="updateFeeDisplay(this.value)"
+              >
+              <div class="fee-minmax-row">
+                <span>₹0</span>
+                <span>₹2,00,000+</span>
+              </div>
+            </div>
+
+            <!-- Delivery Mode Checkboxes -->
+            <div class="filter-field">
+              <label class="filter-label">Delivery Mode</label>
+              <div class="checkbox-row">
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="mode" value="Online" checked>
+                  <span class="checkmark"></span>
+                  <span class="cb-text">Online</span>
+                </label>
+
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="mode" value="Offline" checked>
+                  <span class="checkmark"></span>
+                  <span class="cb-text">Offline</span>
+                </label>
+
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="mode" value="Both">
+                  <span class="checkmark"></span>
+                  <span class="cb-text">Both</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="filter-actions-row">
+              <button type="submit" class="btn btn-apply-filters">
+                Apply Filters
+              </button>
+              <button type="button" class="btn-clear-filters" onclick="resetSidebarFilters()">
+                Clear All
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </aside>
+
+      <!-- ======================================================================= -->
+      <!-- COLUMN 2: MIDDLE COLUMN (EXPLORE COURSES + GROW WITH SKILLORA)          -->
+      <!-- ======================================================================= -->
+      <section class="courses-and-partnerships" id="courses">
+        
+        <!-- Explore Courses Card Container -->
+        <div class="explore-courses-card">
+          
+          <div class="section-title-row">
+            <h2 class="section-heading">Explore Courses</h2>
+            <a href="javascript:void(0)" class="view-all-link" onclick="filterByCategory('All')">
+              View All Courses →
+            </a>
+          </div>
+
+          <!-- Category Pill Filter Tabs -->
+          <div class="course-pills-row" role="tablist">
+            <button class="pill-btn active" role="tab" aria-selected="true" data-cat="All" onclick="filterByCategory('All')">All</button>
+            <button class="pill-btn" role="tab" aria-selected="false" data-cat="Nursing" onclick="filterByCategory('Nursing')">Nursing</button>
+            <button class="pill-btn" role="tab" aria-selected="false" data-cat="Hospitality" onclick="filterByCategory('Hospitality')">Hospitality</button>
+            <button class="pill-btn" role="tab" aria-selected="false" data-cat="IT & Coding" onclick="filterByCategory('IT & Coding')">IT & Coding</button>
+            <button class="pill-btn" role="tab" aria-selected="false" data-cat="Designing" onclick="filterByCategory('Designing')">Designing</button>
+            <button class="pill-btn" role="tab" aria-selected="false" data-cat="Language" onclick="filterByCategory('Language')">Language</button>
+            <button class="pill-btn" role="tab" aria-selected="false" data-cat="Sales & Marketing" onclick="filterByCategory('Sales & Marketing')">Sales & Marketing</button>
+            <button class="pill-btn" role="tab" aria-selected="false" data-cat="Material Science" onclick="filterByCategory('Material Science')">Material Science →</button>
+          </div>
+
+          <!-- Course Carousel Area with Left and Right Chevrons -->
+          <div class="courses-carousel-wrapper">
+            
+            <button class="carousel-nav-btn prev-btn" id="courses-prev-btn" onclick="slideCourses(-1)" aria-label="Previous Courses">
+              ‹
+            </button>
+
+            <div class="courses-grid" id="courses-grid">
+              
+              <!-- COURSE 1: GNM Nursing -->
+              <article class="course-card" data-category="Nursing" data-fee="45000" data-mode="Both" data-duration="3 Years">
+                <div class="course-img-wrap">
+                  <img src="assets/course_nurse.png" alt="GNM Nursing Course at Sunrise College" class="course-thumb">
+                  <span class="verified-inst-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Verified Institute</span>
+                  </span>
+                </div>
+                <div class="course-body">
+                  <h3 class="course-title">GNM – General Nursing & Midwifery</h3>
+                  <div class="course-meta-item">
+                    <span class="meta-icon icon-teal">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#5FBAAE" stroke-width="2"/><path d="M16 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M8 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M3 10H21" stroke="#5FBAAE" stroke-width="2"/></svg>
+                    </span>
+                    <span class="meta-text">Duration: 3 Years</span>
+                  </div>
+                  <div class="course-meta-item">
+                    <span class="meta-icon icon-gold">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="#EBBE61" stroke-width="2"/><path d="M16 13C16 14.1 16.9 15 18 15H22V11H18C16.9 11 16 11.9 16 13Z" stroke="#EBBE61" stroke-width="2"/></svg>
+                    </span>
+                    <span class="meta-text">Fee starts at: <strong>₹ 45,000</strong></span>
+                  </div>
+                  <div class="course-mode-row">
+                    <span class="mode-tag"><span class="mode-bullet">🏢</span> Offline</span>
+                    <span class="mode-tag"><span class="mode-bullet">🌐</span> Online</span>
+                  </div>
+                  <div class="course-provider">Sunrise College of Nursing</div>
+                  <button class="btn btn-view-course" onclick="openCourseModal(1)">
+                    <span>View Course</span>
+                    <span class="btn-arrow">→</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- COURSE 2: Hotel Management -->
+              <article class="course-card" data-category="Hospitality" data-fee="35000" data-mode="Both" data-duration="1 Year">
+                <div class="course-img-wrap">
+                  <img src="assets/course_hotel.png" alt="Hotel Management Diploma Course" class="course-thumb">
+                  <span class="verified-inst-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Verified Institute</span>
+                  </span>
+                </div>
+                <div class="course-body">
+                  <h3 class="course-title">Hotel Management (Diploma)</h3>
+                  <div class="course-meta-item">
+                    <span class="meta-icon icon-teal">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#5FBAAE" stroke-width="2"/><path d="M16 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M8 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M3 10H21" stroke="#5FBAAE" stroke-width="2"/></svg>
+                    </span>
+                    <span class="meta-text">Duration: 1 Year</span>
+                  </div>
+                  <div class="course-meta-item">
+                    <span class="meta-icon icon-gold">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="#EBBE61" stroke-width="2"/><path d="M16 13C16 14.1 16.9 15 18 15H22V11H18C16.9 11 16 11.9 16 13Z" stroke="#EBBE61" stroke-width="2"/></svg>
+                    </span>
+                    <span class="meta-text">Fee starts at: <strong>₹ 35,000</strong></span>
+                  </div>
+                  <div class="course-mode-row">
+                    <span class="mode-tag"><span class="mode-bullet">🏢</span> Offline</span>
+                    <span class="mode-tag"><span class="mode-bullet">🌐</span> Online</span>
+                  </div>
+                  <div class="course-provider">Global Hospitality Institute</div>
+                  <button class="btn btn-view-course" onclick="openCourseModal(2)">
+                    <span>View Course</span>
+                    <span class="btn-arrow">→</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- COURSE 3: Full Stack Web Development -->
+              <article class="course-card" data-category="IT & Coding" data-fee="25000" data-mode="Online" data-duration="6 Months">
+                <div class="course-img-wrap">
+                  <img src="assets/course_dev.png" alt="Full Stack Web Development Program" class="course-thumb">
+                  <span class="verified-inst-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Verified Institute</span>
+                  </span>
+                </div>
+                <div class="course-body">
+                  <h3 class="course-title">Full Stack Web Development</h3>
+                  <div class="course-meta-item">
+                    <span class="meta-icon icon-teal">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#5FBAAE" stroke-width="2"/><path d="M16 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M8 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M3 10H21" stroke="#5FBAAE" stroke-width="2"/></svg>
+                    </span>
+                    <span class="meta-text">Duration: 6 Months</span>
+                  </div>
+                  <div class="course-meta-item">
+                    <span class="meta-icon icon-gold">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="#EBBE61" stroke-width="2"/><path d="M16 13C16 14.1 16.9 15 18 15H22V11H18C16.9 11 16 11.9 16 13Z" stroke="#EBBE61" stroke-width="2"/></svg>
+                    </span>
+                    <span class="meta-text">Fee starts at: <strong>₹ 25,000</strong></span>
+                  </div>
+                  <div class="course-mode-row">
+                    <span class="mode-tag"><span class="mode-bullet">🌐</span> Online</span>
+                  </div>
+                  <div class="course-provider">iTech Skills Academy</div>
+                  <button class="btn btn-view-course" onclick="openCourseModal(3)">
+                    <span>View Course</span>
+                    <span class="btn-arrow">→</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- COURSE 4: Graphic Design & UI/UX -->
+              <article class="course-card" data-category="Designing" data-fee="18000" data-mode="Online" data-duration="3 Months">
+                <div class="course-img-wrap">
+                  <img src="assets/course_design.png" alt="Graphic Design and UI UX Certification" class="course-thumb">
+                  <span class="verified-inst-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Verified Institute</span>
+                  </span>
+                </div>
+                <div class="course-body">
+                  <h3 class="course-title">Graphic Design & UI/UX</h3>
+                  <div class="course-meta-item">
+                    <span class="meta-icon icon-teal">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#5FBAAE" stroke-width="2"/><path d="M16 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M8 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M3 10H21" stroke="#5FBAAE" stroke-width="2"/></svg>
+                    </span>
+                    <span class="meta-text">Duration: 3 Months</span>
+                  </div>
+                  <div class="course-meta-item">
+                    <span class="meta-icon icon-gold">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="#EBBE61" stroke-width="2"/><path d="M16 13C16 14.1 16.9 15 18 15H22V11H18C16.9 11 16 11.9 16 13Z" stroke="#EBBE61" stroke-width="2"/></svg>
+                    </span>
+                    <span class="meta-text">Fee starts at: <strong>₹ 18,000</strong></span>
+                  </div>
+                  <div class="course-mode-row">
+                    <span class="mode-tag"><span class="mode-bullet">🌐</span> Online</span>
+                  </div>
+                  <div class="course-provider">Creative Design Institute</div>
+                  <button class="btn btn-view-course" onclick="openCourseModal(4)">
+                    <span>View Course</span>
+                    <span class="btn-arrow">→</span>
+                  </button>
+                </div>
+              </article>
+
+            </div>
+
+            <button class="carousel-nav-btn next-btn" id="courses-next-btn" onclick="slideCourses(1)" aria-label="Next Courses">
+              ›
+            </button>
+
+          </div>
+
+          <!-- Catalog Pagination & Real-time Count -->
+          <div class="catalog-pagination-row" id="catalog-pagination-row">
+            <span class="catalog-count-badge" id="catalog-count-badge">Showing 8 of 854 Verified Colleges</span>
+            <div class="catalog-nav-controls">
+              <button class="btn btn-page-prev" id="page-prev-btn" onclick="changeCatalogPage(-1)" disabled>‹ Prev</button>
+              <span class="page-indicator" id="page-indicator">Page 1 of 107</span>
+              <button class="btn btn-page-next" id="page-next-btn" onclick="changeCatalogPage(1)">Next ›</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Grow with SkillOra Partnership Container -->
+        <div class="grow-with-skillora-card">
+          <div class="grow-header-row">
+            <div class="grow-intro">
+              <h3 class="grow-title">Grow with SkillOra</h3>
+              <p class="grow-sub">Partner with us and reach thousands of aspirants, learners and job seekers.</p>
+            </div>
+            <button class="btn btn-become-partner-hero" onclick="openPartnerModal('general')">
+              Become a Partner →
+            </button>
+          </div>
+
+          <!-- 3 Partner Cards -->
+          <div class="partner-cards-grid">
+            
+            <!-- Partner 1 -->
+            <div class="partner-card">
+              <div class="partner-icon-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 10L12 5L2 10L12 15L22 10Z" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M6 12V17C6 17 8 19 12 19C16 19 18 17 18 17V12" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="partner-card-body">
+                <h4 class="partner-card-title">College / Institute Partner</h4>
+                <p class="partner-card-desc">List your courses, manage admissions and connect with students.</p>
+              </div>
+              <button class="btn-partner-link" onclick="openPartnerModal('institute')">
+                Become a Partner →
+              </button>
+            </div>
+
+            <!-- Partner 2 -->
+            <div class="partner-card">
+              <div class="partner-icon-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 21H21" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M5 21V5C5 3.89543 5.89543 3 7 3H17C18.1046 3 19 3.89543 19 5V21" stroke="#087BFF" stroke-width="2"/>
+                  <path d="M9 7H10" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M14 7H15" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M9 11H10" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M14 11H15" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M9 15H10" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M14 15H15" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="partner-card-body">
+                <h4 class="partner-card-title">Hospital / Hotel Employer</h4>
+                <p class="partner-card-desc">Post jobs, find the right talent and build your team.</p>
+              </div>
+              <button class="btn-partner-link" onclick="openPartnerModal('employer')">
+                Become a Partner →
+              </button>
+            </div>
+
+            <!-- Partner 3 -->
+            <div class="partner-card">
+              <div class="partner-icon-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 21V19C20 16.7909 18.2091 15 16 15H8C5.79086 15 4 16.7909 4 19V21" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
+                  <circle cx="12" cy="7" r="4" stroke="#087BFF" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="partner-card-body">
+                <h4 class="partner-card-title">Trainer / Course Creator</h4>
+                <p class="partner-card-desc">Create and sell your online/offline courses and grow your brand.</p>
+              </div>
+              <button class="btn-partner-link" onclick="openPartnerModal('trainer')">
+                Become a Partner →
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================================= -->
+      <!-- COLUMN 3: RIGHT COLUMN (LATEST VERIFIED JOBS + TRUST CARDS)             -->
+      <!-- ======================================================================= -->
+      <section class="jobs-and-trust-column" id="jobs">
+        
+        <!-- Latest Verified Jobs Card -->
+        <div class="verified-jobs-card">
+          <div class="section-title-row">
+            <h2 class="section-heading">Latest Verified Jobs</h2>
+            <a href="javascript:void(0)" class="view-all-link" onclick="showToast('Displaying all 1000+ verified job listings!')">
+              View All Jobs →
+            </a>
+          </div>
+
+          <!-- Job Listings Stack (4 Jobs) -->
+          <div class="job-items-stack" id="job-items-stack">
+            
+            <!-- Job 1 -->
+            <article class="job-item">
+              <div class="job-logo-col">
+                <div class="job-logo-box bg-blue-light">
+                  <img src="assets/job_logo_1.png" alt="City Hospital" class="job-logo-img">
+                </div>
+                <div class="job-verified-tag">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Verified</span>
+                </div>
+              </div>
+              <div class="job-info-col">
+                <h3 class="job-title">Staff Nurse (GNM/B.Sc)</h3>
+                <div class="job-company">City Hospital & Research Centre</div>
+                <div class="job-location">📍 Lucknow, Uttar Pradesh</div>
+                <div class="job-salary-row">
+                  <span class="job-salary">💰 ₹ 18,000 - 28,000/month</span>
+                  <span class="job-type-badge">💼 Full Time</span>
+                </div>
+              </div>
+              <div class="job-action-col">
+                <button class="btn btn-apply-job" onclick="openJobModal(1)">
+                  Apply Now
+                </button>
+              </div>
+            </article>
+
+            <!-- Job 2 -->
+            <article class="job-item">
+              <div class="job-logo-col">
+                <div class="job-logo-box bg-red-light">
+                  <img src="assets/job_logo_2.png" alt="Metro Hospital" class="job-logo-img">
+                </div>
+                <div class="job-verified-tag">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Verified</span>
+                </div>
+              </div>
+              <div class="job-info-col">
+                <h3 class="job-title">ICU Nurse</h3>
+                <div class="job-company">Metro Multispecialty Hospital</div>
+                <div class="job-location">📍 Delhi, Delhi</div>
+                <div class="job-salary-row">
+                  <span class="job-salary">💰 ₹ 25,000 - 40,000/month</span>
+                  <span class="job-type-badge">💼 Full Time</span>
+                </div>
+              </div>
+              <div class="job-action-col">
+                <button class="btn btn-apply-job" onclick="openJobModal(2)">
+                  Apply Now
+                </button>
+              </div>
+            </article>
+
+            <!-- Job 3 -->
+            <article class="job-item">
+              <div class="job-logo-col">
+                <div class="job-logo-box bg-gold-light">
+                  <img src="assets/job_logo_3.png" alt="Grand Vista Hotel" class="job-logo-img">
+                </div>
+                <div class="job-verified-tag">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Verified</span>
+                </div>
+              </div>
+              <div class="job-info-col">
+                <h3 class="job-title">Front Office Executive</h3>
+                <div class="job-company">Grand Vista Hotel</div>
+                <div class="job-location">📍 Jaipur, Rajasthan</div>
+                <div class="job-salary-row">
+                  <span class="job-salary">💰 ₹ 16,000 - 22,000/month</span>
+                  <span class="job-type-badge">💼 Full Time</span>
+                </div>
+              </div>
+              <div class="job-action-col">
+                <button class="btn btn-apply-job" onclick="openJobModal(3)">
+                  Apply Now
+                </button>
+              </div>
+            </article>
+
+            <!-- Job 4 -->
+            <article class="job-item">
+              <div class="job-logo-col">
+                <div class="job-logo-box bg-purple-light">
+                  <img src="assets/job_logo_4.png" alt="The Royal Hotel" class="job-logo-img">
+                </div>
+                <div class="job-verified-tag">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Verified</span>
+                </div>
+              </div>
+              <div class="job-info-col">
+                <h3 class="job-title">F&B Service Staff</h3>
+                <div class="job-company">The Royal Hotel</div>
+                <div class="job-location">📍 Bengaluru, Karnataka</div>
+                <div class="job-salary-row">
+                  <span class="job-salary">💰 ₹ 12,000 - 18,000/month</span>
+                  <span class="job-type-badge">💼 Full Time</span>
+                </div>
+              </div>
+              <div class="job-action-col">
+                <button class="btn btn-apply-job" onclick="openJobModal(4)">
+                  Apply Now
+                </button>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+        <!-- 2 Side-by-Side Trust Highlight Cards -->
+        <div class="trust-highlights-row">
+          
+          <!-- Trust Card 1: State-wise Course Availability -->
+          <div class="trust-card state-trust-card" onclick="openStateModal()" role="button" tabindex="0">
+            <div class="trust-icon-wrap">
+              <img src="assets/india_map.png" alt="India Map" class="trust-india-map">
+            </div>
+            <div class="trust-text-wrap">
+              <h4 class="trust-title text-blue">State-wise Course Availability</h4>
+              <p class="trust-desc">Courses available across multiple states in India</p>
+              <a href="javascript:void(0)" class="trust-link">View State List →</a>
+            </div>
+          </div>
+
+          <!-- Trust Card 2: Recognized & Verified Institutes -->
+          <div class="trust-card cert-trust-card" onclick="openVerifiedModal()" role="button" tabindex="0">
+            <div class="trust-icon-wrap">
+              <div class="shield-badge-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" fill="#087BFF"/>
+                  <path d="M9 12L11 14L15 9" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trust-text-wrap">
+              <h4 class="trust-title text-navy">Recognized & Verified Institutes</h4>
+              <p class="trust-desc">All Institutes and courses are verified for quality and authenticity.</p>
+              <a href="javascript:void(0)" class="trust-link">Learn More →</a>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- 5. BOTTOM TICKER & WHATSAPP SUPPORT BAR                                   -->
+    <!-- ========================================================================= -->
+    <section class="bottom-support-bar" id="updates">
+      
+      <!-- Left: Latest Updates Ticker -->
+      <div class="updates-ticker-card">
+        <div class="ticker-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 20H5C3.89543 20 3 19.1046 3 18V6C3 4.89543 3.89543 4 5 4H19C20.1046 4 21 4.89543 21 6V18C21 19.1046 20.1046 20 19 20Z" stroke="#087BFF" stroke-width="2"/><path d="M7 8H17" stroke="#087BFF" stroke-width="2"/><path d="M7 12H17" stroke="#087BFF" stroke-width="2"/><path d="M7 16H13" stroke="#087BFF" stroke-width="2"/></svg>
+          <span>Latest Updates</span>
+        </div>
+        <div class="ticker-content" id="ticker-content">
+          <span class="ticker-item">• New Nursing Batch Admissions Open in Maharashtra</span>
+          <span class="ticker-item">• Top 10 In-Demand Jobs in Healthcare Sector</span>
+          <span class="ticker-item">• Hotel Management Course Now Available in Online Mode</span>
+          <a href="javascript:void(0)" class="ticker-item-link" onclick="showToast('Displaying Latest Government & Healthcare Job Notifications')">• Latest Government Job Notifications →</a>
+        </div>
+      </div>
+
+      <!-- Right: WhatsApp Help Widget -->
+      <div class="whatsapp-help-card" onclick="openWhatsAppChat()" role="button" tabindex="0">
+        <div class="wa-icon-circle">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.38 17.07L2 22L7.09 20.67C8.54 21.51 10.22 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" fill="#0FA66D"/>
+            <path d="M16.9 14.5C16.6 15.3 15.4 15.9 14.6 16C14 16.1 13.2 16.1 11.2 15.3C8.7 14.2 7.1 11.6 7 11.4C6.9 11.2 6.1 10.1 6.1 9C6.1 7.9 6.7 7.3 6.9 7.1C7.1 6.9 7.4 6.8 7.7 6.8C7.9 6.8 8.1 6.8 8.3 6.8C8.5 6.8 8.7 6.7 9 7.4C9.3 8.1 10 9.7 10.1 9.9C10.2 10.1 10.2 10.3 10.1 10.5C10 10.7 9.9 10.8 9.7 11C9.5 11.2 9.3 11.4 9.1 11.6C8.9 11.8 8.7 12 8.9 12.3C9.1 12.6 10 14 11.3 15.1C13 16.5 14.4 16.9 14.7 17.1C15 17.2 15.3 17.2 15.5 17C15.7 16.8 16.4 15.9 16.6 15.5C16.8 15.1 17 15.2 17.3 15.3C17.6 15.4 19.3 16.2 19.6 16.4C19.9 16.6 20.1 16.7 20.2 16.9C20.3 17.2 20.3 17.8 16.9 14.5Z" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="wa-text-group">
+          <div class="wa-heading">Need Help? Chat with us on WhatsApp</div>
+          <div class="wa-sub">Get instant support for courses, jobs and admissions.</div>
+        </div>
+        <button class="btn btn-chat-now" aria-label="Chat with WhatsApp support">
+          Chat Now →
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 6. FOOTER                                                                 -->
+    <!-- ========================================================================= -->
+    <footer class="site-footer" id="footer">
+      <div class="footer-container">
+        
+        <!-- Left: SkillOra Footer Logo Artwork -->
+        <a href="#home" class="footer-brand" aria-label="SkillOra Home">
+          <img src="assets/footer_logo.png" alt="SkillOra - Learn · Skill · Build Your Future" class="footer-logo-img">
+        </a>
+
+        <!-- Center: Quick Nav Links -->
+        <nav class="footer-nav" aria-label="Footer Links">
+          <a href="javascript:void(0)" onclick="openInfoModal('about')">About Us</a>
+          <span class="footer-sep">|</span>
+          <a href="javascript:void(0)" onclick="openInfoModal('contact')">Contact Us</a>
+          <span class="footer-sep">|</span>
+          <a href="javascript:void(0)" onclick="openPartnerModal('general')">Partner Registration</a>
+          <span class="footer-sep">|</span>
+          <a href="javascript:void(0)" onclick="openInfoModal('terms')">Terms & Conditions</a>
+          <span class="footer-sep">|</span>
+          <a href="javascript:void(0)" onclick="openInfoModal('privacy')">Privacy Policy</a>
+          <span class="footer-sep">|</span>
+          <a href="javascript:void(0)" onclick="openInfoModal('support')">Student Support</a>
+        </nav>
+
+        <!-- Right: Social Links & Platform Badge -->
+        <div class="footer-right-group">
+          <div class="footer-social-row">
+            <span class="social-label">Follow Us</span>
+            <div class="social-icons">
+              <a href="https://facebook.com" target="_blank" rel="noopener" class="social-icon-btn" title="Facebook" aria-label="Facebook">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M18 2H15C12.7909 2 11 3.79086 11 6V9H8V13H11V22H15V13H18L19 9H15V6C15 5.44772 15.4477 5 16 5H18V2Z" fill="#A5BBD2"/></svg>
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener" class="social-icon-btn" title="Instagram" aria-label="Instagram">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="#A5BBD2" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="#A5BBD2" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.5" fill="#A5BBD2"/></svg>
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-icon-btn" title="LinkedIn" aria-label="LinkedIn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="#A5BBD2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="9" width="4" height="12" stroke="#A5BBD2" stroke-width="2"/><circle cx="4" cy="4" r="2" fill="#A5BBD2"/></svg>
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="social-icon-btn" title="YouTube" aria-label="YouTube">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22.54 6.42C22.42 5.97 22.18 5.56 21.84 5.23C21.5 4.9 21.08 4.68 20.63 4.58C18.96 4.14 12 4.14 12 4.14C12 4.14 5.04 4.14 3.37 4.58C2.92 4.69 2.5 4.91 2.16 5.24C1.82 5.57 1.58 5.98 1.46 6.43C1.03 8.12 1.03 11.64 1.03 11.64C1.03 11.64 1.03 15.16 1.46 16.85C1.58 17.3 1.82 17.71 2.16 18.04C2.5 18.37 2.92 18.59 3.37 18.7C5.04 19.14 12 19.14 12 19.14C12 19.14 18.96 19.14 20.63 18.7C21.08 18.59 21.5 18.37 21.84 18.04C22.18 17.71 22.42 17.3 22.54 16.85C22.97 15.16 22.97 11.64 22.97 11.64C22.97 11.64 22.97 8.12 22.54 6.42Z" stroke="#A5BBD2" stroke-width="2"/><polygon points="9.75,15.02 15.5,11.64 9.75,8.26" fill="#A5BBD2"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="footer-country-badge">
+            India's Multi-Sector Career Platform
+          </div>
+        </div>
+
+      </div>
+    </footer>
+
+  </div> <!-- End site-canvas -->
+
+  <!-- ========================================================================= -->
+  <!-- 7. INTERACTIVE MODALS & DRAWERS (FULLY WORKING FUNCTIONALITY)             -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal 1: College Intelligence & Course Details Modal (Collegedunia-Style) -->
+  <div class="modal-backdrop" id="course-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <button class="modal-close-btn" onclick="closeModal('course-modal')">✕</button>
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <span class="modal-category-badge" id="modal-course-cat">Nursing & Healthcare</span>
+          <span class="star-rating-pill" id="modal-rating-pill">★ 4.8 / 5</span>
+          <span class="modal-category-badge badge-green" id="modal-approval-badge">INC Approved</span>
+        </div>
+        <h2 class="modal-title" id="modal-course-title">Sunrise College of Nursing</h2>
+        <div class="modal-institute-name" id="modal-course-institute">Mumbai, Maharashtra • Est. 2012</div>
+      </div>
+
+      <!-- College Tabs Nav -->
+      <div class="college-tab-nav">
+        <button class="c-tab-btn active" onclick="switchCollegeTab(this, 'c-tab-overview')">Overview</button>
+        <button class="c-tab-btn" onclick="switchCollegeTab(this, 'c-tab-courses')">Courses & Fees (<span id="modal-tab-courses-count">3</span>)</button>
+        <button class="c-tab-btn" onclick="switchCollegeTab(this, 'c-tab-placements')">Placements & Recruiters</button>
+        <button class="c-tab-btn" onclick="switchCollegeTab(this, 'c-tab-campus')">Campus & Hostel</button>
+      </div>
+
+      <!-- Tab 1: Overview -->
+      <div class="college-tab-pane active" id="c-tab-overview">
+        <div class="modal-info-grid">
+          <div class="info-pill"><span class="pill-label">Duration</span><strong id="modal-course-duration">3 Years</strong></div>
+          <div class="info-pill"><span class="pill-label">Annual Fee</span><strong id="modal-course-fee">₹ 45,000</strong></div>
+          <div class="info-pill"><span class="pill-label">Study Mode</span><strong id="modal-course-mode">Offline Campus</strong></div>
+          <div class="info-pill"><span class="pill-label">Approval</span><strong id="modal-course-appr">INC Approved</strong></div>
+        </div>
+
+        <div class="modal-description-box">
+          <h4>Institute Profile & Academics</h4>
+          <p id="modal-course-desc">Leading accredited institution offering intensive hands-on lab training, experienced hospital mentors, and high placement ratios.</p>
+          <ul class="modal-bullet-list">
+            <li>✔ Complete clinical & practical rotational internships in tier-1 partner hospitals/companies</li>
+            <li>✔ 100% Placement assistance with top corporate healthcare and hospitality chains</li>
+            <li>✔ Zero-cost educational financing and state scholarship assistance available</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tab 2: Courses & Fees Table (Collegedunia-style) -->
+      <div class="college-tab-pane" id="c-tab-courses">
+        <div class="courses-fee-table-wrap">
+          <table class="courses-fee-table">
+            <thead>
+              <tr>
+                <th>Course Name</th>
+                <th>Duration</th>
+                <th>Annual Fee</th>
+                <th>Study Mode</th>
+                <th>Eligibility</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="modal-courses-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 3: Placements -->
+      <div class="college-tab-pane" id="c-tab-placements">
+        <div class="placements-stat-grid">
+          <div class="placement-stat-box">
+            <div class="p-stat-val" id="modal-highest-pkg">₹ 6.5 LPA</div>
+            <div class="p-stat-lbl">Highest Salary Package</div>
+          </div>
+          <div class="placement-stat-box">
+            <div class="p-stat-val" id="modal-avg-pkg">₹ 3.4 LPA</div>
+            <div class="p-stat-lbl">Average Salary Package</div>
+          </div>
+        </div>
+        <div class="modal-description-box">
+          <h4>Top Corporate Hiring Partners</h4>
+          <div class="recruiters-tag-list" id="modal-recruiters-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Campus & Hostel -->
+      <div class="college-tab-pane" id="c-tab-campus">
+        <div class="modal-description-box">
+          <h4>Campus Facilities & Living Accommodation</h4>
+          <p id="modal-hostel-info">Hostel: Separate Boys & Girls campus accommodation with Wi-Fi, 24/7 security, mess food facilities, and gym amenities.</p>
+          <ul class="modal-bullet-list">
+            <li>✔ Advanced Simulation Labs & Computer Centers</li>
+            <li>✔ Central Library with access to national and international research journals</li>
+            <li>✔ Free Bus Transport facility connecting major transit points in the city</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Direct Admission Inquiry Form -->
+      <form class="modal-form" onsubmit="event.preventDefault(); submitEnrollment();">
+        <h4 style="margin-top:10px;">Apply for Direct Admission / Counseling</h4>
+        <div class="form-row">
+          <input type="text" class="input-field" placeholder="Full Name *" required>
+          <input type="tel" class="input-field" placeholder="Mobile Number *" required>
+        </div>
+        <div class="form-row">
+          <input type="email" class="input-field" placeholder="Email Address *" required>
+          <select class="input-field">
+            <option value="">Preferred Batch / Year</option>
+            <option value="2026-regular">2026 Regular Batch</option>
+            <option value="2026-lateral">Lateral Entry (Diploma Holders)</option>
+            <option value="counseling">Free Counseling Session</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary-submit">Submit Direct Admission Application</button>
+          <button type="button" class="btn btn-secondary-btn" onclick="showToast('Brochure and detailed fee breakdown sent to your email!')">Download Official Brochure</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Modal 2: Job Application Modal -->
+  <div class="modal-backdrop" id="job-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeModal('job-modal')">✕</button>
+      <div class="modal-header">
+        <span class="modal-category-badge badge-green">Verified Job Opening</span>
+        <h2 class="modal-title" id="modal-job-title">Staff Nurse (GNM/B.Sc)</h2>
+        <div class="modal-institute-name" id="modal-job-company">City Hospital & Research Centre • Lucknow</div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-info-grid">
+          <div class="info-pill"><span class="pill-label">Salary</span><strong id="modal-job-salary">₹ 18,000 - 28,000 / month</strong></div>
+          <div class="info-pill"><span class="pill-label">Job Type</span><strong>Full Time</strong></div>
+          <div class="info-pill"><span class="pill-label">Location</span><strong id="modal-job-loc">Lucknow, UP</strong></div>
+          <div class="info-pill"><span class="pill-label">Experience</span><strong>0 - 3 Years</strong></div>
+        </div>
+        <form class="modal-form" onsubmit="event.preventDefault(); submitJobApplication();">
+          <h4>Quick Job Application</h4>
+          <div class="form-group">
+            <input type="text" class="input-field" placeholder="Your Full Name *" required>
+          </div>
+          <div class="form-row">
+            <input type="tel" class="input-field" placeholder="Mobile Number *" required>
+            <input type="email" class="input-field" placeholder="Email Address *" required>
+          </div>
+          <div class="form-group">
+            <label class="form-sublabel">Upload Resume (PDF, DOCX up to 5MB):</label>
+            <input type="file" class="input-field" accept=".pdf,.doc,.docx" required>
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary-submit">Confirm & Apply Now</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Partner Registration Modal -->
+  <div class="modal-backdrop" id="partner-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeModal('partner-modal')">✕</button>
+      <div class="modal-header">
+        <h2 class="modal-title">Join SkillOra as a Partner</h2>
+        <p class="modal-sub">Empowering educational institutes, healthcare employers, and master trainers across India.</p>
+      </div>
+      <div class="modal-body">
+        <div class="partner-type-tabs">
+          <button class="ptab active" onclick="setPartnerTab(this, 'institute')">College / Institute</button>
+          <button class="ptab" onclick="setPartnerTab(this, 'employer')">Hospital / Employer</button>
+          <button class="ptab" onclick="setPartnerTab(this, 'trainer')">Trainer / Educator</button>
+        </div>
+        <form class="modal-form" onsubmit="event.preventDefault(); submitPartnerForm();">
+          <div class="form-group">
+            <input type="text" id="partner-org-name" class="input-field" placeholder="Organization / Institute Name *" required>
+          </div>
+          <div class="form-row">
+            <input type="text" class="input-field" placeholder="Contact Person Name *" required>
+            <input type="tel" class="input-field" placeholder="Official Phone Number *" required>
+          </div>
+          <div class="form-row">
+            <input type="email" class="input-field" placeholder="Official Email Address *" required>
+            <input type="text" class="input-field" placeholder="City & State *" required>
+          </div>
+          <div class="form-group">
+            <textarea class="input-field textarea-field" placeholder="Tell us about your courses, hiring requirements, or training expertise..." rows="3"></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary-submit">Register as Verified Partner</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Login & Authentication Modal -->
+  <div class="modal-backdrop" id="login-modal" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <button class="modal-close-btn" onclick="closeModal('login-modal')">✕</button>
+      <div class="modal-header text-center">
+        <h2 class="modal-title">Welcome to SkillOra</h2>
+        <p class="modal-sub">Access your courses, applications, and verified certificates.</p>
+      </div>
+      <div class="modal-body">
+        <div class="partner-type-tabs">
+          <button class="ptab active" onclick="setLoginTab(this, 'student')">Student / Jobseeker</button>
+          <button class="ptab" onclick="setLoginTab(this, 'partner')">Partner / Employer</button>
+        </div>
+        <form class="modal-form" onsubmit="event.preventDefault(); submitLogin();">
+          <div class="form-group">
+            <input type="text" class="input-field" placeholder="Mobile Number or Email *" required>
+          </div>
+          <div class="form-group">
+            <input type="password" class="input-field" placeholder="Password or 6-digit OTP *" required>
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary-submit w-full">Sign In</button>
+          </div>
+          <div class="auth-divider"><span>OR</span></div>
+          <button type="button" class="btn btn-google-login w-full" onclick="showToast('Signed in successfully with Google!')">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.7 0 3 .6 4 1.5l3-3C17.2 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5.1 3.7-8.8z"/><path fill="#FBBC05" d="M5.6 14.8c-.3-.8-.4-1.8-.4-2.8s.2-2 .4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/></svg>
+            Continue with Google
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: State-Wise Directory Modal -->
+  <div class="modal-backdrop" id="state-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <button class="modal-close-btn" onclick="closeModal('state-modal')">✕</button>
+      <div class="modal-header">
+        <h2 class="modal-title">State-wise Course & Institute Directory</h2>
+        <p class="modal-sub">Browse accredited vocational and degree programs available in your state.</p>
+      </div>
+      <div class="modal-body">
+        <div class="state-grid-list">
+          <div class="state-item" onclick="filterByState('Maharashtra')">
+            <strong class="state-name">Maharashtra</strong>
+            <span class="state-count">124 Courses • 48 Institutes</span>
+          </div>
+          <div class="state-item" onclick="filterByState('Delhi')">
+            <strong class="state-name">Delhi NCR</strong>
+            <span class="state-count">98 Courses • 36 Institutes</span>
+          </div>
+          <div class="state-item" onclick="filterByState('Karnataka')">
+            <strong class="state-name">Karnataka</strong>
+            <span class="state-count">112 Courses • 42 Institutes</span>
+          </div>
+          <div class="state-item" onclick="filterByState('Uttar Pradesh')">
+            <strong class="state-name">Uttar Pradesh</strong>
+            <span class="state-count">85 Courses • 31 Institutes</span>
+          </div>
+          <div class="state-item" onclick="filterByState('Rajasthan')">
+            <strong class="state-name">Rajasthan</strong>
+            <span class="state-count">64 Courses • 22 Institutes</span>
+          </div>
+          <div class="state-item" onclick="filterByState('Tamil Nadu')">
+            <strong class="state-name">Tamil Nadu</strong>
+            <span class="state-count">78 Courses • 29 Institutes</span>
+          </div>
+          <div class="state-item" onclick="filterByState('Gujarat')">
+            <strong class="state-name">Gujarat</strong>
+            <span class="state-count">56 Courses • 19 Institutes</span>
+          </div>
+          <div class="state-item" onclick="filterByState('West Bengal')">
+            <strong class="state-name">West Bengal</strong>
+            <span class="state-count">51 Courses • 18 Institutes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Verified Institutes & Accreditation Details Modal -->
+  <div class="modal-backdrop" id="verified-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeModal('verified-modal')">✕</button>
+      <div class="modal-header">
+        <div class="verified-header-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" fill="#087BFF"/>
+            <path d="M9 12L11 14L15 9" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2 class="modal-title">SkillOra Verification Framework</h2>
+        <p class="modal-sub">How we ensure 100% quality and authenticity across all colleges, courses, and job offers.</p>
+      </div>
+      <div class="modal-body">
+        <div class="verification-steps">
+          <div class="vstep">
+            <div class="vstep-num">1</div>
+            <div>
+              <strong>Government Accreditation Check</strong>
+              <p>Every institute must possess valid approvals from statutory bodies such as INC (Indian Nursing Council), AICTE, UGC, or State Technical Boards.</p>
+            </div>
+          </div>
+          <div class="vstep">
+            <div class="vstep-num">2</div>
+            <div>
+              <strong>Physical Infrastructure & Lab Audit</strong>
+              <p>SkillOra field auditors inspect campus labs, simulation wards, computer infrastructure, and teaching faculty ratios.</p>
+            </div>
+          </div>
+          <div class="vstep">
+            <div class="vstep-num">3</div>
+            <div>
+              <strong>Verified Employer Payroll Alignment</strong>
+              <p>All job postings are pre-screened with genuine corporate HR teams with salary transparency and no recruitment fees.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7: General Information Modal (About Us, Contact Us, Terms, Privacy) -->
+  <div class="modal-backdrop" id="info-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeModal('info-modal')">✕</button>
+      <div class="modal-header">
+        <h2 class="modal-title" id="info-modal-title">About SkillOra</h2>
+      </div>
+      <div class="modal-body" id="info-modal-content">
+        <p>Loading details...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer 8: Live Interactive WhatsApp Support Chat -->
+  <div class="whatsapp-chat-drawer" id="whatsapp-drawer">
+    <div class="wa-drawer-header">
+      <div class="wa-header-profile">
+        <div class="wa-avatar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" fill="#25D366"/><path d="M16.9 14.5C16.6 15.3 15.4 15.9 14.6 16C14 16.1 13.2 16.1 11.2 15.3C8.7 14.2 7.1 11.6 7 11.4C6.9 11.2 6.1 10.1 6.1 9C6.1 7.9 6.7 7.3 6.9 7.1C7.1 6.9 7.4 6.8 7.7 6.8C7.9 6.8 8.1 6.8 8.3 6.8C8.5 6.8 8.7 6.7 9 7.4C9.3 8.1 10 9.7 10.1 9.9C10.2 10.1 10.2 10.3 10.1 10.5C10 10.7 9.9 10.8 9.7 11C9.5 11.2 9.3 11.4 9.1 11.6C8.9 11.8 8.7 12 8.9 12.3C9.1 12.6 10 14 11.3 15.1C13 16.5 14.4 16.9 14.7 17.1C15 17.2 15.3 17.2 15.5 17C15.7 16.8 16.4 15.9 16.6 15.5C16.8 15.1 17 15.2 17.3 15.3C17.6 15.4 19.3 16.2 19.6 16.4C19.9 16.6 20.1 16.7 20.2 16.9C20.3 17.2 20.3 17.8 16.9 14.5Z" fill="#FFFFFF"/></svg>
+        </div>
+        <div class="wa-meta">
+          <strong>SkillOra Support Desk</strong>
+          <span class="wa-status-text">🟢 Online • Instant Response</span>
+        </div>
+      </div>
+      <button class="wa-close-btn" onclick="closeWhatsAppDrawer()">✕</button>
+    </div>
+    <div class="wa-chat-body" id="wa-chat-body">
+      <div class="wa-msg wa-incoming">
+        <span>Namaste! Welcome to SkillOra Support. How can we guide your career journey today?</span>
+        <div class="wa-time">Just now</div>
+      </div>
+      <div class="wa-quick-options">
+        <button onclick="sendQuickWAMsg('Find nursing admissions in my city')">🏥 Nursing Admissions</button>
+        <button onclick="sendQuickWAMsg('Latest hospital and hotel jobs')">💼 Latest Verified Jobs</button>
+        <button onclick="sendQuickWAMsg('Speak with a career counselor')">📞 Talk to Counselor</button>
+      </div>
+    </div>
+    <div class="wa-chat-input-bar">
+      <input type="text" id="wa-chat-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendWAMessage()">
+      <button class="wa-send-btn" onclick="sendWAMessage()">➤</button>
+    </div>
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script src="data/colleges_db.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
