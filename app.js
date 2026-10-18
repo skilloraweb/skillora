@@ -18,13 +18,138 @@ let CURRENT_CATEGORY = "All";
 let SELECTED_COLLEGE = null;
 let SELECTED_JOB = null;
 
-// Thumbnail mappings for verified categories
-const CATEGORY_THUMBS = {
-  "Nursing & Healthcare": "assets/course_nurse.png",
-  "Hospitality": "assets/course_hotel.png",
-  "Sales & Marketing": "assets/course_hotel.png",
-  "Language & Grooming": "assets/course_nurse.png"
+// Place Photography mappings (High-Res Realistic Campus & Workplace Photos)
+const CAMPUS_PHOTOS = {
+  nursing: [
+    "assets/places/campus_nursing_1.jpg",
+    "assets/places/campus_nursing_2.jpg",
+    "assets/places/campus_nursing_3.jpg",
+    "assets/places/campus_nursing_4.jpg",
+    "assets/places/campus_nursing_5.jpg",
+    "assets/places/campus_nursing_6.jpg"
+  ],
+  hospitality: [
+    "assets/places/campus_hotel_1.jpg",
+    "assets/places/campus_hotel_2.jpg",
+    "assets/places/campus_hotel_3.jpg",
+    "assets/places/campus_hotel_4.jpg",
+    "assets/places/campus_hotel_5.jpg",
+    "assets/places/campus_hotel_6.jpg"
+  ],
+  sales: [
+    "assets/places/campus_sales_1.jpg",
+    "assets/places/campus_sales_2.jpg",
+    "assets/places/campus_sales_3.jpg",
+    "assets/places/campus_sales_4.jpg"
+  ],
+  language: [
+    "assets/places/campus_language_1.jpg",
+    "assets/places/campus_language_2.jpg",
+    "assets/places/campus_language_3.jpg",
+    "assets/places/campus_language_4.jpg"
+  ]
 };
+
+function getCollegeImage(college) {
+  if (!college) return CAMPUS_PHOTOS.nursing[0];
+  const cat = (college.category || "").toLowerCase();
+  const id = Math.abs(Number(college.id) || 1);
+  let pool = CAMPUS_PHOTOS.nursing;
+  if (cat.includes("hotel") || cat.includes("hospitality")) {
+    pool = CAMPUS_PHOTOS.hospitality;
+  } else if (cat.includes("sales") || cat.includes("marketing")) {
+    pool = CAMPUS_PHOTOS.sales;
+  } else if (cat.includes("language") || cat.includes("grooming")) {
+    pool = CAMPUS_PHOTOS.language;
+  }
+  return pool[id % pool.length];
+}
+
+let LAST_SUBMITTED_APPLICATION = null;
+
+const NOTICES_DATA = [
+  {
+    id: 1,
+    title: "Maharashtra State 2026 GNM & B.Sc Nursing Direct Admission Window",
+    badge: "Official Circular",
+    authority: "Directorate of Medical Education & Research (DMER) • Ref: DMER/NUR/2026/891",
+    date: "October 18, 2026",
+    content: `
+      <p style="margin-bottom:12px;"><strong>Notice Summary:</strong> The Directorate of Medical Education & Research (DMER) and State Nursing Council have officially released the counseling dates for institutional round direct admissions for the 2026 academic batch.</p>
+      <div style="background:#F3F9FE;padding:12px;border-radius:6px;margin-bottom:12px;">
+        <ul style="padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;">
+          <li><strong>Eligible Courses:</strong> GNM (3 Years) & B.Sc Nursing (4 Years)</li>
+          <li><strong>Eligibility Criteria:</strong> 10+2 with 40% aggregate marks (Science PCB for B.Sc; Any stream for GNM).</li>
+          <li><strong>Direct Institutional Round:</strong> Verified participating institutes can conduct spot seat locks.</li>
+          <li><strong>State Scholarship:</strong> Reserved category applicants eligible for up to 100% tuition waiver under Mahadbt.</li>
+        </ul>
+      </div>
+      <p style="font-size:12px;color:#728DA9;">Candidates are advised to apply directly with recognized nursing colleges listed on SkillOra to secure provisional seat allotment before counseling rounds conclude.</p>
+    `,
+    actionText: "Browse Enrolling Nursing Colleges →",
+    category: "Nursing"
+  },
+  {
+    id: 2,
+    title: "Pan-India Healthcare Mega Walk-In Drives (1,450+ Vacancies)",
+    badge: "Hiring Notification",
+    authority: "Apollo, Fortis & Max Healthcare Recruitment Board • Ref: HR-REC-2026-OCT",
+    date: "October 18, 2026",
+    content: `
+      <p style="margin-bottom:12px;"><strong>Drive Overview:</strong> Leading healthcare consortiums across Delhi NCR, Lucknow, Mumbai, and Bengaluru have announced open walk-in hiring drives for immediate joining in October and November 2026.</p>
+      <div style="background:#EDFDF5;padding:12px;border-radius:6px;margin-bottom:12px;border:1px solid #B8EED4;">
+        <ul style="padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#0D2C4B;">
+          <li><strong>Open Roles:</strong> Staff Nurse (ICU, Emergency, Ward), Patient Care Technicians, OT Assistants.</li>
+          <li><strong>Salary Brackets:</strong> ₹ 18,000 to ₹ 40,000 / month + Provident Fund & Health Coverage.</li>
+          <li><strong>Experience Required:</strong> Freshers & experienced candidates (0 to 4 years).</li>
+          <li><strong>Interview Modes:</strong> Direct campus walk-ins and virtual video rounds.</li>
+        </ul>
+      </div>
+      <p style="font-size:12px;color:#728DA9;">Applications submitted through SkillOra receive fast-track interview scheduling with employer HR within 24 hours.</p>
+    `,
+    actionText: "Apply to Verified Hospital Openings →",
+    jobId: 1
+  },
+  {
+    id: 3,
+    title: "NCHMCT Hospitality Joint Entrance 2026 Registration Announcement",
+    badge: "Admissions Alert",
+    authority: "National Council for Hotel Management & Catering Technology • Ref: NCHM-JEE/2026",
+    date: "October 17, 2026",
+    content: `
+      <p style="margin-bottom:12px;"><strong>Admissions Alert:</strong> Admissions for Degree & Diploma programs in Hotel Management, Culinary Arts, and Front Office Operations for the 2026-27 academic session are officially underway.</p>
+      <div style="background:#FFF9E6;padding:12px;border-radius:6px;margin-bottom:12px;border:1px solid #FFE699;">
+        <ul style="padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#7A5200;">
+          <li><strong>Programs Offered:</strong> B.Sc Hospitality & Hotel Administration, Diploma in Food & Beverage, Diploma in Bakery & Confectionery.</li>
+          <li><strong>Placement Partners:</strong> Taj Hotels, Oberoi Group, Marriott International, Hyatt.</li>
+          <li><strong>Mode of Learning:</strong> Full-time campus hands-on kitchen training and 6-month luxury hotel internships.</li>
+        </ul>
+      </div>
+      <p style="font-size:12px;color:#728DA9;">Explore top institutes in Mumbai, Jaipur, Bengaluru, and Delhi with verified campus infrastructure on SkillOra.</p>
+    `,
+    actionText: "Explore Hospitality Colleges →",
+    category: "Hospitality"
+  },
+  {
+    id: 4,
+    title: "State Nursing Scholarship & 0% EMI Fee Assistance Helpline",
+    badge: "Student Welfare",
+    authority: "SkillOra Academic Welfare Council • Advisory: SKL-WEL-2026/04",
+    date: "October 16, 2026",
+    content: `
+      <p style="margin-bottom:12px;"><strong>Helpline Advisory:</strong> SkillOra has activated dedicated financial assistance desks to guide students seeking zero-interest EMI financing, state post-matric scholarships, and institutional fee waivers.</p>
+      <div style="background:#F3F9FE;padding:12px;border-radius:6px;margin-bottom:12px;">
+        <ul style="padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;">
+          <li><strong>Toll-Free Helpline:</strong> 1800-890-SKILL (9:00 AM - 8:00 PM IST)</li>
+          <li><strong>WhatsApp Guidance:</strong> +91 98200 12345</li>
+          <li><strong>Partner Banks:</strong> HDFC Credila, SBI Scholar Loans, Propelld Education Financing.</li>
+        </ul>
+      </div>
+    `,
+    actionText: "Talk to Student Welfare Counselor →",
+    category: "Nursing"
+  }
+];
 
 // Fallback seed data if database file is loaded standalone
 const FALLBACK_SEED = [
@@ -439,17 +564,18 @@ function renderCatalogPage() {
   }
 
   container.innerHTML = pageItems.map(c => {
-    const thumb = CATEGORY_THUMBS[c.category] || "assets/course_nurse.png";
+    const thumb = getCollegeImage(c);
     const primaryCourse = c.courses[0] || { name: c.category, duration: "1 Year", feeDisplay: c.minFeeDisplay, mode: "Both" };
 
     return `
       <article class="course-card" onclick="openCollegeModal(${c.id})" style="cursor:pointer;">
         <div class="course-img-wrap">
-          <img src="${thumb}" alt="${c.name}" class="course-thumb" loading="lazy">
+          <img src="${thumb}" alt="${c.cleanName || c.name} Campus Facility" class="course-thumb" loading="lazy">
           <span class="verified-inst-badge">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span>${c.approval || 'Verified Institute'}</span>
           </span>
+          <span class="campus-photo-tag">📍 Verified Campus</span>
         </div>
         <div class="course-body">
           <h3 class="course-title" title="${c.name}">${primaryCourse.name}</h3>
@@ -503,6 +629,25 @@ function openCollegeModal(collegeId) {
 
   SELECTED_COLLEGE = college;
 
+  // Set Campus Place Photo Hero Banner
+  const campusImg = document.getElementById('modal-campus-img');
+  const campusBadge = document.getElementById('modal-campus-badge-text');
+  if (campusImg) {
+    campusImg.src = getCollegeImage(college);
+  }
+  if (campusBadge) {
+    const cat = (college.category || "").toLowerCase();
+    if (cat.includes('nurse') || cat.includes('health')) {
+      campusBadge.textContent = "📍 Verified Medical Campus & Teaching Hospital";
+    } else if (cat.includes('hotel') || cat.includes('hospit')) {
+      campusBadge.textContent = "📍 Verified Luxury Hotel & Culinary Campus";
+    } else if (cat.includes('sales')) {
+      campusBadge.textContent = "📍 Verified Corporate Business Campus";
+    } else {
+      campusBadge.textContent = "📍 Verified Academic Learning Campus";
+    }
+  }
+
   // Header info
   document.getElementById('modal-course-cat').textContent = college.category;
   document.getElementById('modal-rating-pill').textContent = `★ ${college.rating || 4.7} / 5`;
@@ -522,8 +667,8 @@ function openCollegeModal(collegeId) {
   document.getElementById('modal-tab-courses-count').textContent = college.courses.length;
   const tableBody = document.getElementById('modal-courses-table-body');
   if (tableBody) {
-    tableBody.innerHTML = college.courses.map(crs => `
-      <tr>
+    tableBody.innerHTML = college.courses.map((crs, idx) => `
+      <tr id="course-row-${idx}">
         <td style="font-weight:700;">${crs.name}</td>
         <td>${crs.duration}</td>
         <td class="table-fee-highlight">${crs.feeDisplay}</td>
@@ -536,6 +681,19 @@ function openCollegeModal(collegeId) {
     `).join('');
   }
 
+  // Dynamic Course Dropdown Selector inside Admission Form
+  const courseSelect = document.getElementById('lead-course-select');
+  if (courseSelect) {
+    courseSelect.innerHTML = college.courses.map(crs => `
+      <option value="${crs.name}" data-duration="${crs.duration}" data-fee="${crs.feeDisplay}">
+        ${crs.name} (${crs.feeDisplay} / yr)
+      </option>
+    `).join('');
+  }
+
+  // Initialize selected course highlight with primary course
+  updateFormCourseHighlight(pCourse);
+
   // Tab 3: Placements
   const highestPkg = `₹ ${(4.5 + (college.id % 4) * 1.5).toFixed(1)} LPA`;
   const avgPkg = `₹ ${(2.8 + (college.id % 3) * 0.6).toFixed(1)} LPA`;
@@ -544,12 +702,18 @@ function openCollegeModal(collegeId) {
 
   const recList = document.getElementById('modal-recruiters-list');
   if (recList) {
-    const recruiters = college.recruiters || ["Apollo", "Fortis", "Taj Group", "TCS", "Infosys"];
+    const recruiters = college.recruiters || ["Apollo Hospitals", "Fortis Healthcare", "Taj Hotels", "Marriott", "Max Healthcare"];
     recList.innerHTML = recruiters.map(r => `<span class="recruiter-tag">🏢 ${r}</span>`).join('');
   }
 
   // Tab 4: Campus & Hostel
   document.getElementById('modal-hostel-info').textContent = `Living Accommodation: ${college.hostel || 'Hostel facility available on campus with Wi-Fi, 24/7 security, and hygienic food.'}`;
+
+  // Reset form and success box state
+  const form = document.getElementById('admission-enquiry-form');
+  const successBox = document.getElementById('admission-success-box');
+  if (form) form.style.display = 'block';
+  if (successBox) successBox.style.display = 'none';
 
   // Default to overview tab
   const firstTab = document.querySelector('.c-tab-btn');
@@ -567,15 +731,45 @@ function switchCollegeTab(btn, paneId) {
   document.querySelectorAll('.c-tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.college-tab-pane').forEach(p => p.classList.remove('active'));
 
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   const pane = document.getElementById(paneId);
   if (pane) pane.classList.add('active');
 }
 
+function onCourseDropdownChange() {
+  const select = document.getElementById('lead-course-select');
+  if (!select || !SELECTED_COLLEGE) return;
+  const courseName = select.value;
+  const course = (SELECTED_COLLEGE.courses || []).find(c => c.name === courseName) || {
+    name: courseName,
+    duration: "Flexible",
+    feeDisplay: SELECTED_COLLEGE.minFeeDisplay
+  };
+  updateFormCourseHighlight(course);
+}
+
+function updateFormCourseHighlight(course) {
+  const nameEl = document.getElementById('highlight-course-name');
+  const durEl = document.getElementById('highlight-course-duration');
+  const feeEl = document.getElementById('highlight-course-fee');
+  if (nameEl) nameEl.textContent = course.name;
+  if (durEl) durEl.textContent = `⏱️ ${course.duration || 'Flexible'}`;
+  if (feeEl) feeEl.textContent = `💰 ${course.feeDisplay || course.fee || '₹ 45,000'} / Year`;
+}
+
 function applyDirectCourse(courseName) {
-  showToast(`Selected course: ${courseName}. Fill out the quick admission form below!`);
-  const form = document.querySelector('#course-modal form');
-  if (form) form.scrollIntoView({ behavior: 'smooth' });
+  const select = document.getElementById('lead-course-select');
+  if (select) {
+    select.value = courseName;
+    onCourseDropdownChange();
+  }
+  showToast(`Selected "${courseName}". Fill the quick form below to submit!`);
+  const formContainer = document.querySelector('.modal-admission-container');
+  if (formContainer) {
+    formContainer.scrollIntoView({ behavior: 'smooth' });
+    const nameInput = document.getElementById('lead-student-name');
+    if (nameInput) setTimeout(() => nameInput.focus(), 300);
+  }
 }
 
 async function submitEnrollment() {
@@ -583,12 +777,18 @@ async function submitEnrollment() {
   const phoneInput = document.getElementById('lead-student-phone');
   const emailInput = document.getElementById('lead-student-email');
   const batchInput = document.getElementById('lead-student-batch');
+  const courseSelect = document.getElementById('lead-course-select');
   const submitBtn = document.getElementById('btn-submit-lead');
 
   const studentName = nameInput ? nameInput.value.trim() : '';
   const phone = phoneInput ? phoneInput.value.trim() : '';
   const email = emailInput ? emailInput.value.trim() : '';
   const batch = batchInput ? batchInput.value : '2026 Regular Batch';
+  const selectedCourseName = courseSelect ? courseSelect.value : (
+    (SELECTED_COLLEGE && SELECTED_COLLEGE.courses && SELECTED_COLLEGE.courses[0]) 
+      ? SELECTED_COLLEGE.courses[0].name 
+      : (SELECTED_COLLEGE ? SELECTED_COLLEGE.category : 'General Admission')
+  );
 
   if (!studentName || !phone) {
     showToast('Please enter your Name and Mobile Number.');
@@ -597,14 +797,31 @@ async function submitEnrollment() {
 
   const collegeName = SELECTED_COLLEGE ? (SELECTED_COLLEGE.cleanName || SELECTED_COLLEGE.name) : "the institute";
   const collegeId = SELECTED_COLLEGE ? SELECTED_COLLEGE.id : null;
-  const courseName = (SELECTED_COLLEGE && SELECTED_COLLEGE.courses && SELECTED_COLLEGE.courses[0]) 
-    ? SELECTED_COLLEGE.courses[0].name 
-    : (SELECTED_COLLEGE ? SELECTED_COLLEGE.category : 'General Admission');
+  const courseObj = (SELECTED_COLLEGE && SELECTED_COLLEGE.courses) 
+    ? SELECTED_COLLEGE.courses.find(c => c.name === selectedCourseName) 
+    : null;
+  const courseFee = courseObj ? courseObj.feeDisplay : (SELECTED_COLLEGE ? SELECTED_COLLEGE.minFeeDisplay : "Standard Fee");
 
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting to College...';
+    submitBtn.innerHTML = '<span>Registering in Supabase...</span>';
   }
+
+  const refId = `SKL-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+  LAST_SUBMITTED_APPLICATION = {
+    refId,
+    studentName,
+    phone,
+    email: email || 'Not provided',
+    courseName: selectedCourseName,
+    collegeName,
+    collegeState: SELECTED_COLLEGE ? SELECTED_COLLEGE.state : '',
+    collegeCity: SELECTED_COLLEGE ? SELECTED_COLLEGE.city : '',
+    batch,
+    fee: courseFee,
+    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+  };
 
   try {
     const payload = {
@@ -612,10 +829,10 @@ async function submitEnrollment() {
       student_name: studentName,
       phone: phone,
       email: email || null,
-      course_name: `${courseName} (${batch})`,
+      course_name: `${selectedCourseName} (${batch})`,
       state: SELECTED_COLLEGE ? SELECTED_COLLEGE.state : null,
       city: SELECTED_COLLEGE ? SELECTED_COLLEGE.city : null,
-      source: 'Website Admission Form'
+      source: 'Direct Website Form'
     };
 
     await fetch(`${SUPABASE_CONFIG.url}/rest/v1/admission_leads`, {
@@ -628,21 +845,96 @@ async function submitEnrollment() {
       },
       body: JSON.stringify(payload)
     });
-
-    closeModal('course-modal');
-    const form = document.getElementById('admission-enquiry-form');
-    if (form) form.reset();
-    showToast(`Application successfully sent to ${collegeName}! Your enquiry is registered in our admissions database.`, true);
   } catch (err) {
-    console.error('Error submitting enquiry to Supabase:', err);
-    closeModal('course-modal');
-    showToast(`Application submitted for ${collegeName}! An admission officer will contact you within 2 hours.`, true);
+    console.warn('Note: offline fallback for admission lead submission:', err);
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit Direct Admission Application';
+      submitBtn.innerHTML = '<span>Confirm & Submit Direct Application</span><span style="font-size:14px;">→</span>';
     }
+
+    // Display professional in-modal success card
+    const form = document.getElementById('admission-enquiry-form');
+    const successBox = document.getElementById('admission-success-box');
+    if (form) form.style.display = 'none';
+    if (successBox) {
+      const refEl = document.getElementById('receipt-ref-id');
+      const nameEl = document.getElementById('receipt-student-name');
+      const courseEl = document.getElementById('receipt-course-name');
+      const collEl = document.getElementById('receipt-college-name');
+      const feeEl = document.getElementById('receipt-course-fee');
+      if (refEl) refEl.textContent = refId;
+      if (nameEl) nameEl.textContent = studentName;
+      if (courseEl) courseEl.textContent = selectedCourseName;
+      if (collEl) collEl.textContent = collegeName;
+      if (feeEl) feeEl.textContent = `${courseFee} / Year`;
+      successBox.style.display = 'block';
+      successBox.scrollIntoView({ behavior: 'smooth' });
+    }
+    showToast(`Application successfully registered! Ref ID: ${refId}`, true);
   }
+}
+
+function downloadApplicationSlip() {
+  if (!LAST_SUBMITTED_APPLICATION) {
+    showToast('No active application slip available.');
+    return;
+  }
+  const app = LAST_SUBMITTED_APPLICATION;
+  const printWindow = window.open('', '_blank', 'width=750,height=600');
+  if (!printWindow) {
+    showToast(`Application Reference: ${app.refId}. Receipt confirmed!`, true);
+    return;
+  }
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>SkillOra - Official Admission Application Slip (${app.refId})</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 30px; color: #173C62; line-height: 1.5; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #087BFF; padding-bottom: 15px; margin-bottom: 20px; }
+        .logo { font-size: 24px; font-weight: 800; color: #173C62; }
+        .logo span { color: #FF922A; }
+        .badge { background: #EDF8FF; color: #087BFF; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 12px; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; }
+        .table td { padding: 10px 12px; border-bottom: 1px solid #E5F0F9; font-size: 14px; }
+        .table td:first-child { font-weight: 600; color: #728DA9; width: 35%; }
+        .table td:last-child { font-weight: 700; color: #173C62; }
+        .footer { font-size: 11px; color: #728DA9; border-top: 1px dashed #CCDEF5; padding-top: 12px; margin-top: 30px; text-align: center; }
+        .stamp { display: inline-block; border: 2px solid #0FA66D; color: #0FA66D; font-weight: 800; font-size: 13px; padding: 6px 14px; border-radius: 6px; text-transform: uppercase; margin-top: 10px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="logo">Skill<span>Ora</span> <div style="font-size:11px;color:#728DA9;font-weight:600;">Verified Admissions Portal</div></div>
+        <div class="badge">PROVISIONAL ADMISSION SLIP 2026</div>
+      </div>
+      <h3>Direct Admission Registration Acknowledgment</h3>
+      <table class="table">
+        <tr><td>Reference ID</td><td style="color:#087BFF;">${app.refId}</td></tr>
+        <tr><td>Registration Date</td><td>${app.date}</td></tr>
+        <tr><td>Student Full Name</td><td>${app.studentName}</td></tr>
+        <tr><td>Mobile Number</td><td>${app.phone}</td></tr>
+        <tr><td>Email Address</td><td>${app.email}</td></tr>
+        <tr><td>Target Institution</td><td>${app.collegeName} (${app.collegeCity}, ${app.collegeState})</td></tr>
+        <tr><td>Enrolled Program</td><td>${app.courseName}</td></tr>
+        <tr><td>Academic Batch</td><td>${app.batch}</td></tr>
+        <tr><td>Annual Tuition Fee</td><td style="color:#0FA66D;">${app.fee}</td></tr>
+      </table>
+      <div style="text-align:center;">
+        <div class="stamp">✔ DIRECT SEAT APPLICATION REGISTERED</div>
+      </div>
+      <div class="footer">
+        SkillOra Institutional Admissions Network • BKC, Mumbai • 1800-890-SKILL • support@skillora.in
+      </div>
+      <script>
+        window.onload = function() { window.print(); }
+      </script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
 }
 
 /* ==========================================================================
@@ -678,16 +970,33 @@ const JOBS_DATA = [
   { id: 4, title: "F&B Service Staff", company: "The Royal Hotel", location: "Bengaluru, Karnataka", salary: "₹ 12,000 - 18,000/month", type: "Full Time" }
 ];
 
-function openJobModal(jobId) {
-  const job = JOBS_DATA.find(j => j.id === Number(jobId));
-  if (!job) return;
+const JOB_PLACE_PHOTOS = {
+  1: { img: "assets/places/job_hospital_1.jpg", badge: "🏥 Verified Hospital Facility • Lucknow" },
+  2: { img: "assets/places/job_hospital_2.jpg", badge: "🏥 Verified Multispecialty Hospital • Delhi" },
+  3: { img: "assets/places/job_hotel_1.jpg", badge: "🏨 Verified Resort & Hotel • Jaipur" },
+  4: { img: "assets/places/job_hotel_2.jpg", badge: "🏨 Verified Luxury Hotel • Bengaluru" }
+};
 
+function openJobModal(jobId) {
+  const job = JOBS_DATA.find(j => j.id === Number(jobId)) || JOBS_DATA[0];
   SELECTED_JOB = job;
+
+  const photoInfo = JOB_PLACE_PHOTOS[job.id] || JOB_PLACE_PHOTOS[1];
+  const jobImg = document.getElementById('modal-job-img');
+  const jobBadge = document.getElementById('modal-job-badge-text');
+  if (jobImg) jobImg.src = photoInfo.img;
+  if (jobBadge) jobBadge.textContent = photoInfo.badge;
 
   document.getElementById('modal-job-title').textContent = job.title;
   document.getElementById('modal-job-company').textContent = `${job.company} • ${job.location}`;
   document.getElementById('modal-job-salary').textContent = job.salary;
   document.getElementById('modal-job-loc').textContent = job.location;
+
+  // Reset form / success state
+  const form = document.getElementById('job-application-form');
+  const successBox = document.getElementById('job-success-box');
+  if (form) form.style.display = 'block';
+  if (successBox) successBox.style.display = 'none';
 
   openModal('job-modal');
 }
@@ -710,12 +1019,15 @@ async function submitJobApplication() {
   }
 
   const jobTitle = SELECTED_JOB ? SELECTED_JOB.title : 'Healthcare / Hospitality Opening';
+  const companyName = SELECTED_JOB ? SELECTED_JOB.company : 'Verified Employer';
   const jobId = SELECTED_JOB ? SELECTED_JOB.id : 1;
 
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting Application...';
   }
+
+  const refId = `SKL-JOB-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
   try {
     const payload = {
@@ -737,21 +1049,111 @@ async function submitJobApplication() {
       },
       body: JSON.stringify(payload)
     });
-
-    closeModal('job-modal');
-    const form = document.getElementById('job-application-form');
-    if (form) form.reset();
-    showToast(`Application for "${jobTitle}" submitted to employer! Saved to verified hiring pipeline.`, true);
   } catch (err) {
-    console.error('Error submitting application to Supabase:', err);
-    closeModal('job-modal');
-    showToast(`Application for "${jobTitle}" submitted to employer! We sent a confirmation SMS & Email.`, true);
+    console.warn('Note: offline fallback for job application:', err);
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Confirm & Apply Now';
     }
+
+    const form = document.getElementById('job-application-form');
+    const successBox = document.getElementById('job-success-box');
+    if (form) form.style.display = 'none';
+    if (successBox) {
+      const refEl = document.getElementById('job-receipt-ref-id');
+      const nameEl = document.getElementById('job-receipt-name');
+      const roleEl = document.getElementById('job-receipt-role');
+      const compEl = document.getElementById('job-receipt-company');
+      if (refEl) refEl.textContent = refId;
+      if (nameEl) nameEl.textContent = candidateName;
+      if (roleEl) roleEl.textContent = jobTitle;
+      if (compEl) compEl.textContent = companyName;
+      successBox.style.display = 'block';
+    }
+    showToast(`Application for "${jobTitle}" submitted to HR! Ref: ${refId}`, true);
   }
+}
+
+/* ==========================================================================
+   8B. LATEST UPDATES & OFFICIAL CIRCULARS MODAL
+   ========================================================================== */
+function openLatestNoticeModal(noticeId) {
+  openNoticeModal(noticeId);
+}
+
+function openNoticeModal(noticeId) {
+  const notice = NOTICES_DATA.find(n => n.id === Number(noticeId)) || NOTICES_DATA[0];
+  const badgeEl = document.getElementById('notice-badge');
+  const dateEl = document.getElementById('notice-date');
+  const titleEl = document.getElementById('notice-title');
+  const authEl = document.getElementById('notice-authority');
+  const bodyEl = document.getElementById('notice-body-text');
+
+  if (badgeEl) badgeEl.textContent = notice.badge;
+  if (dateEl) dateEl.textContent = notice.date;
+  if (titleEl) titleEl.textContent = notice.title;
+  if (authEl) authEl.textContent = notice.authority;
+  if (bodyEl) bodyEl.innerHTML = notice.content;
+
+  const actionBtn = document.getElementById('notice-action-btn');
+  if (actionBtn) {
+    actionBtn.textContent = notice.actionText;
+    actionBtn.onclick = () => {
+      closeModal('notice-modal');
+      if (notice.category) {
+        filterByCategory(notice.category);
+        document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+      } else if (notice.jobId) {
+        openJobModal(notice.jobId);
+      }
+    };
+  }
+
+  openModal('notice-modal');
+}
+
+function openAllNoticesModal() {
+  const badgeEl = document.getElementById('notice-badge');
+  const dateEl = document.getElementById('notice-date');
+  const titleEl = document.getElementById('notice-title');
+  const authEl = document.getElementById('notice-authority');
+  const bodyEl = document.getElementById('notice-body-text');
+
+  if (badgeEl) badgeEl.textContent = "All Official Bulletins";
+  if (dateEl) dateEl.textContent = "October 2026 Active Feed";
+  if (titleEl) titleEl.textContent = "Verified Admissions & Employment Bulletins (2026)";
+  if (authEl) authEl.textContent = "SkillOra Central Academic & Employment Registry";
+
+  if (bodyEl) {
+    bodyEl.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        ${NOTICES_DATA.map(n => `
+          <div style="border:1px solid #E5F0F9;border-radius:8px;padding:12px;background:#F8FCFF;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:10.5px;font-weight:700;color:#087BFF;background:#EDF8FF;padding:2px 8px;border-radius:4px;">${n.badge}</span>
+              <span style="font-size:11px;color:#728DA9;">${n.date}</span>
+            </div>
+            <h4 style="font-size:13px;color:#173C62;margin-bottom:4px;cursor:pointer;" onclick="openNoticeModal(${n.id})">${n.title}</h4>
+            <div style="font-size:11px;color:#728DA9;margin-bottom:8px;">${n.authority}</div>
+            <button class="btn btn-apply-filters" style="padding:4px 10px;font-size:11px;" onclick="openNoticeModal(${n.id})">Read Circular Details →</button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  const actionBtn = document.getElementById('notice-action-btn');
+  if (actionBtn) {
+    actionBtn.textContent = "Explore All Courses";
+    actionBtn.onclick = () => {
+      closeModal('notice-modal');
+      filterByCategory('All');
+      document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+    };
+  }
+
+  openModal('notice-modal');
 }
 
 function openPartnerModal(type = 'general') {

@@ -175,6 +175,56 @@
     </header>
 
     <!-- ========================================================================= -->
+    <!-- 1B. PROMINENT TOP LIVE UPDATES & ADMISSION TICKER BAR                     -->
+    <!-- ========================================================================= -->
+    <div class="top-live-ticker-bar" id="live-updates-bar" aria-label="Latest Admissions & Hiring Alerts">
+      <div class="top-ticker-container">
+        
+        <div class="ticker-live-badge">
+          <span class="live-pulse-dot"></span>
+          <span class="live-badge-text">2026 LIVE UPDATES</span>
+        </div>
+
+        <div class="top-ticker-track-wrap">
+          <div class="top-ticker-track" id="top-ticker-track">
+            <div class="top-ticker-item" onclick="openLatestNoticeModal(1)" role="button" tabindex="0">
+              <span class="t-tag t-tag-red">ADMISSIONS 2026</span>
+              <span class="t-text">B.Sc & GNM Nursing Central Counseling & Direct Seat Booking Active across 18 States</span>
+              <span class="t-date">Oct 18, 2026</span>
+              <span class="t-arrow">Read Details →</span>
+            </div>
+            <div class="top-ticker-item" onclick="openLatestNoticeModal(2)" role="button" tabindex="0">
+              <span class="t-tag t-tag-green">HOSPITAL HIRING</span>
+              <span class="t-text">Mega Walk-In Drive: 1,400+ Staff Nurse & ICU Openings in Apollo, Fortis & Medanta</span>
+              <span class="t-date">Oct 18, 2026</span>
+              <span class="t-arrow">Read Details →</span>
+            </div>
+            <div class="top-ticker-item" onclick="openLatestNoticeModal(3)" role="button" tabindex="0">
+              <span class="t-tag t-tag-orange">HOTEL MANAGEMENT</span>
+              <span class="t-text">NCHMCT 2026: Hotel Management, Culinary Arts & F&B New Session Batches Open</span>
+              <span class="t-date">Oct 17, 2026</span>
+              <span class="t-arrow">Read Details →</span>
+            </div>
+            <div class="top-ticker-item" onclick="openLatestNoticeModal(4)" role="button" tabindex="0">
+              <span class="t-tag t-tag-blue">FREE COUNSELING</span>
+              <span class="t-text">State Nursing Scholarship & Seat Allotment Helpline: Call 1800-890-SKILL</span>
+              <span class="t-date">Oct 16, 2026</span>
+              <span class="t-arrow">Get Counseling →</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ticker-action-btn-wrap">
+          <button class="btn-all-notices" onclick="openAllNoticesModal()">
+            <span>View All Notices (12)</span>
+            <span>⚡</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
     <!-- 2. HERO SECTION                                                           -->
     <!-- ========================================================================= -->
     <section class="hero-section" id="home">
@@ -609,7 +659,7 @@
               <!-- COURSE 1: GNM Nursing -->
               <article class="course-card" data-category="Nursing" data-fee="45000" data-mode="Both" data-duration="3 Years">
                 <div class="course-img-wrap">
-                  <img src="assets/course_nurse.png" alt="GNM Nursing Course at Sunrise College" class="course-thumb">
+                  <img src="assets/places/campus_nursing_1.jpg" alt="Sunrise College of Nursing Campus" class="course-thumb">
                   <span class="verified-inst-badge">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span>Verified Institute</span>
@@ -644,7 +694,7 @@
               <!-- COURSE 2: Hotel Management -->
               <article class="course-card" data-category="Hospitality" data-fee="35000" data-mode="Both" data-duration="1 Year">
                 <div class="course-img-wrap">
-                  <img src="assets/course_hotel.png" alt="Hotel Management Diploma Course" class="course-thumb">
+                  <img src="assets/places/campus_hotel_1.jpg" alt="Global Hospitality Institute Campus" class="course-thumb">
                   <span class="verified-inst-badge">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span>Verified Institute</span>
@@ -679,7 +729,7 @@
               <!-- COURSE 3: Sales & Digital Marketing -->
               <article class="course-card" data-category="Sales & Marketing" data-fee="22000" data-mode="Both" data-duration="6 Months">
                 <div class="course-img-wrap">
-                  <img src="assets/course_hotel.png" alt="Sales and Digital Marketing Program" class="course-thumb">
+                  <img src="assets/places/campus_sales_1.jpg" alt="SkillOra Business Academy Building" class="course-thumb">
                   <span class="verified-inst-badge">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span>Verified Institute</span>
@@ -714,7 +764,7 @@
               <!-- COURSE 4: Language & Professional Grooming -->
               <article class="course-card" data-category="Language" data-fee="15000" data-mode="Both" data-duration="3 Months">
                 <div class="course-img-wrap">
-                  <img src="assets/course_nurse.png" alt="Language and Grooming Certification" class="course-thumb">
+                  <img src="assets/places/campus_language_1.jpg" alt="Apex Communication Center Campus" class="course-thumb">
                   <span class="verified-inst-badge">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span>Verified Institute</span>
@@ -848,6 +898,49 @@
       <!-- ======================================================================= -->
       <section class="jobs-and-trust-column" id="jobs">
         
+        <!-- High-Visibility Live Career & Admission Bulletin Card -->
+        <div class="updates-bulletin-card">
+          <div class="bulletin-header-row">
+            <div class="bulletin-title-group">
+              <span class="bulletin-live-dot"></span>
+              <h3 class="bulletin-heading">Latest Official Bulletins</h3>
+            </div>
+            <span class="bulletin-badge-today">UPDATED TODAY</span>
+          </div>
+
+          <div class="bulletin-list">
+            <div class="bulletin-item" onclick="openLatestNoticeModal(1)" role="button" tabindex="0">
+              <div class="bulletin-item-top">
+                <span class="b-cat-pill cat-nursing">Admissions 2026</span>
+                <span class="b-date">Today, 18 Oct</span>
+              </div>
+              <h4 class="b-title">B.Sc & GNM Nursing Central Counseling & Direct Seat Allocation Active</h4>
+              <p class="b-snippet">Verified admission registration window open across Maharashtra, Karnataka, UP & Delhi NCR.</p>
+              <span class="b-link">Read Full Notification →</span>
+            </div>
+
+            <div class="bulletin-item" onclick="openLatestNoticeModal(2)" role="button" tabindex="0">
+              <div class="bulletin-item-top">
+                <span class="b-cat-pill cat-hospital">Hospital Hiring</span>
+                <span class="b-date">17 Oct 2026</span>
+              </div>
+              <h4 class="b-title">120 Staff Nurse & ICU Posts at City Hospital & Research Centre</h4>
+              <p class="b-snippet">Immediate walk-in interviews scheduled with verified salary packages of ₹18k–40k/month.</p>
+              <span class="b-link">View Vacancy Details →</span>
+            </div>
+
+            <div class="bulletin-item" onclick="openLatestNoticeModal(3)" role="button" tabindex="0">
+              <div class="bulletin-item-top">
+                <span class="b-cat-pill cat-hotel">Hospitality Batch</span>
+                <span class="b-date">16 Oct 2026</span>
+              </div>
+              <h4 class="b-title">NCHMCT JEE 2026: Hotel Management & Culinary Arts Registration</h4>
+              <p class="b-snippet">100% placement-backed professional diploma and degree admissions open for 2026 batch.</p>
+              <span class="b-link">Check Eligibility & Fees →</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Latest Verified Jobs Card -->
         <div class="verified-jobs-card">
           <div class="section-title-row">
@@ -857,18 +950,18 @@
             </a>
           </div>
 
-          <!-- Job Listings Stack (4 Jobs) -->
+          <!-- Job Listings Stack (4 Jobs with Real Place Photos) -->
           <div class="job-items-stack" id="job-items-stack">
             
             <!-- Job 1 -->
             <article class="job-item">
               <div class="job-logo-col">
-                <div class="job-logo-box bg-blue-light">
-                  <img src="assets/job_logo_1.png" alt="City Hospital" class="job-logo-img">
+                <div class="job-logo-box">
+                  <img src="assets/places/job_hospital_1.jpg" alt="City Hospital & Research Centre Campus" class="job-logo-img">
                 </div>
                 <div class="job-verified-tag">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Verified</span>
+                  <span>Verified Place</span>
                 </div>
               </div>
               <div class="job-info-col">
@@ -890,12 +983,12 @@
             <!-- Job 2 -->
             <article class="job-item">
               <div class="job-logo-col">
-                <div class="job-logo-box bg-red-light">
-                  <img src="assets/job_logo_2.png" alt="Metro Hospital" class="job-logo-img">
+                <div class="job-logo-box">
+                  <img src="assets/places/job_hospital_2.jpg" alt="Metro Multispecialty Hospital Facility" class="job-logo-img">
                 </div>
                 <div class="job-verified-tag">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Verified</span>
+                  <span>Verified Place</span>
                 </div>
               </div>
               <div class="job-info-col">
@@ -917,12 +1010,12 @@
             <!-- Job 3 -->
             <article class="job-item">
               <div class="job-logo-col">
-                <div class="job-logo-box bg-gold-light">
-                  <img src="assets/job_logo_3.png" alt="Grand Vista Hotel" class="job-logo-img">
+                <div class="job-logo-box">
+                  <img src="assets/places/job_hotel_1.jpg" alt="Grand Vista Hotel & Resort Building" class="job-logo-img">
                 </div>
                 <div class="job-verified-tag">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Verified</span>
+                  <span>Verified Place</span>
                 </div>
               </div>
               <div class="job-info-col">
@@ -944,12 +1037,12 @@
             <!-- Job 4 -->
             <article class="job-item">
               <div class="job-logo-col">
-                <div class="job-logo-box bg-purple-light">
-                  <img src="assets/job_logo_4.png" alt="The Royal Hotel" class="job-logo-img">
+                <div class="job-logo-box">
+                  <img src="assets/places/job_hotel_2.jpg" alt="The Royal Hotel Luxury Building" class="job-logo-img">
                 </div>
                 <div class="job-verified-tag">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Verified</span>
+                  <span>Verified Place</span>
                 </div>
               </div>
               <div class="job-info-col">
@@ -1111,12 +1204,22 @@
     <div class="modal-dialog modal-lg">
       <button class="modal-close-btn" onclick="closeModal('course-modal')">✕</button>
       
+      <!-- Campus Place Photo Banner -->
+      <div class="modal-campus-hero">
+        <img id="modal-campus-img" src="assets/places/campus_nursing_1.jpg" alt="College Campus Facility" class="modal-campus-img">
+        <div class="modal-campus-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="modal-campus-badge-text">Verified Campus & Teaching Facility</span>
+        </div>
+      </div>
+
       <!-- Modal Header -->
       <div class="modal-header">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;">
           <span class="modal-category-badge" id="modal-course-cat">Nursing & Healthcare</span>
           <span class="star-rating-pill" id="modal-rating-pill">★ 4.8 / 5</span>
           <span class="modal-category-badge badge-green" id="modal-approval-badge">INC Approved</span>
+          <span class="photo-verified-pill">📸 Physical Campus Verified</span>
         </div>
         <h2 class="modal-title" id="modal-course-title">Sunrise College of Nursing</h2>
         <div class="modal-institute-name" id="modal-course-institute">Mumbai, Maharashtra • Est. 2012</div>
@@ -1204,26 +1307,104 @@
         </div>
       </div>
 
-      <!-- Direct Admission Inquiry Form -->
-      <form class="modal-form" id="admission-enquiry-form" onsubmit="event.preventDefault(); submitEnrollment();">
-        <h4 style="margin-top:10px;">Apply for Direct Admission / Counseling</h4>
-        <div class="form-row">
-          <input type="text" id="lead-student-name" class="input-field" placeholder="Full Name *" required>
-          <input type="tel" id="lead-student-phone" class="input-field" placeholder="Mobile Number *" required>
+      <!-- Direct Admission Section Container -->
+      <div class="modal-admission-container">
+        <!-- Selected Course Dynamic Banner -->
+        <div class="selected-course-highlight" id="form-course-highlight">
+          <div class="sc-badge">Selected Course for Admission</div>
+          <div class="sc-main">
+            <div class="sc-info">
+              <h4 id="highlight-course-name">GNM – General Nursing & Midwifery</h4>
+              <div class="sc-meta">
+                <span id="highlight-course-duration">⏱️ 3 Years</span> • 
+                <span id="highlight-course-fee">💰 ₹ 45,000 / Year</span> • 
+                <span class="badge-direct-apply">Direct Admission 2026</span>
+              </div>
+            </div>
+            <button type="button" class="btn-change-course" onclick="switchCollegeTab(document.querySelectorAll('.c-tab-btn')[1], 'c-tab-courses')">Change Course</button>
+          </div>
         </div>
-        <div class="form-row">
-          <input type="email" id="lead-student-email" class="input-field" placeholder="Email Address *" required>
-          <select id="lead-student-batch" class="input-field">
-            <option value="2026 Regular Batch">2026 Regular Batch</option>
-            <option value="Lateral Entry (Diploma Holders)">Lateral Entry (Diploma Holders)</option>
-            <option value="Free Counseling Session">Free Counseling Session</option>
-          </select>
+
+        <!-- Direct Admission Inquiry Form -->
+        <form class="modal-form" id="admission-enquiry-form" onsubmit="event.preventDefault(); submitEnrollment();">
+          <h4 style="margin-top:4px;display:flex;align-items:center;gap:6px;">
+            <span>Apply for Direct Admission & Seat Counseling</span>
+            <span class="live-pill">Direct 2026 Portal</span>
+          </h4>
+          
+          <!-- Dynamic Course Dropdown Selector -->
+          <div class="form-group" style="margin-bottom:10px;">
+            <label class="form-sublabel" style="font-weight:700;font-size:12px;color:var(--text-dark);display:block;margin-bottom:4px;">
+              Applying For Specific Program:
+            </label>
+            <select id="lead-course-select" class="input-field" onchange="onCourseDropdownChange()" style="font-weight:600;color:var(--color-primary-blue);border-color:var(--color-primary-blue);">
+              <!-- Populated dynamically based on college -->
+            </select>
+          </div>
+
+          <div class="form-row">
+            <input type="text" id="lead-student-name" class="input-field" placeholder="Student Full Name *" required>
+            <input type="tel" id="lead-student-phone" class="input-field" placeholder="10-digit Mobile Number *" required>
+          </div>
+          <div class="form-row">
+            <input type="email" id="lead-student-email" class="input-field" placeholder="Email Address *" required>
+            <select id="lead-student-batch" class="input-field">
+              <option value="2026 Regular Batch">2026 Regular Academic Batch</option>
+              <option value="Direct Seat Counseling">Direct Seat Counseling & Seat Lock</option>
+              <option value="Lateral Entry (Diploma Holders)">Lateral Entry (Diploma Holders)</option>
+              <option value="Scholarship Evaluation Request">Scholarship & Fee Assistance Request</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="submit" id="btn-submit-lead" class="btn btn-primary-submit">
+              <span>Confirm & Submit Direct Application</span>
+              <span style="font-size:14px;">→</span>
+            </button>
+            <button type="button" class="btn btn-secondary-btn" onclick="showToast('Official prospectus & syllabus sent to your email!')">Download Official Brochure</button>
+          </div>
+        </form>
+
+        <!-- In-Modal Success Receipt Box -->
+        <div class="application-success-box" id="admission-success-box" style="display:none;">
+          <div class="success-icon-wrap">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#E8F8F0"/><path d="M8 12.5L10.5 15L16 9" stroke="#0FA66D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="success-title">Application Registered Successfully!</h3>
+          <p class="success-sub">Your direct admission request has been logged into the verified admissions database.</p>
+          
+          <div class="receipt-card">
+            <div class="receipt-row">
+              <span class="rc-lbl">Application Reference ID:</span>
+              <strong id="receipt-ref-id" class="text-blue rc-val">SKL-2026-8942</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="rc-lbl">Student Name:</span>
+              <strong id="receipt-student-name" class="rc-val">Tanmay Verma</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="rc-lbl">Selected Course:</span>
+              <strong id="receipt-course-name" class="rc-val">GNM – General Nursing & Midwifery</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="rc-lbl">Target Institution:</span>
+              <strong id="receipt-college-name" class="rc-val">Sunrise College of Nursing</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="rc-lbl">Annual Fee:</span>
+              <strong id="receipt-course-fee" class="table-fee-highlight rc-val">₹ 45,000 / Year</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="rc-lbl">Counselor Callback SLA:</span>
+              <strong style="color:#0FA66D;" class="rc-val">Guaranteed within 2 Working Hours</strong>
+            </div>
+          </div>
+
+          <div class="receipt-actions">
+            <button type="button" class="btn btn-primary-submit" onclick="downloadApplicationSlip()">📥 Download Application Slip</button>
+            <button type="button" class="btn btn-secondary-btn" onclick="closeModal('course-modal')">Done & Return</button>
+          </div>
         </div>
-        <div class="modal-actions">
-          <button type="submit" id="btn-submit-lead" class="btn btn-primary-submit">Submit Direct Admission Application</button>
-          <button type="button" class="btn btn-secondary-btn" onclick="showToast('Brochure and detailed fee breakdown sent to your email!')">Download Official Brochure</button>
-        </div>
-      </form>
+      </div>
 
     </div>
   </div>
@@ -1232,8 +1413,21 @@
   <div class="modal-backdrop" id="job-modal" aria-hidden="true">
     <div class="modal-dialog">
       <button class="modal-close-btn" onclick="closeModal('job-modal')">✕</button>
+      
+      <!-- Workplace Place Photo Banner -->
+      <div class="modal-campus-hero">
+        <img id="modal-job-img" src="assets/places/job_hospital_1.jpg" alt="Workplace Building Facility" class="modal-campus-img">
+        <div class="modal-campus-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="modal-job-badge-text">Verified Healthcare Facility</span>
+        </div>
+      </div>
+
       <div class="modal-header">
-        <span class="modal-category-badge badge-green">Verified Job Opening</span>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <span class="modal-category-badge badge-green">Verified Job Opening</span>
+          <span class="photo-verified-pill">🏥 Facility Verified</span>
+        </div>
         <h2 class="modal-title" id="modal-job-title">Staff Nurse (GNM/B.Sc)</h2>
         <div class="modal-institute-name" id="modal-job-company">City Hospital & Research Centre • Lucknow</div>
       </div>
@@ -1244,6 +1438,7 @@
           <div class="info-pill"><span class="pill-label">Location</span><strong id="modal-job-loc">Lucknow, UP</strong></div>
           <div class="info-pill"><span class="pill-label">Experience</span><strong>0 - 3 Years</strong></div>
         </div>
+
         <form class="modal-form" id="job-application-form" onsubmit="event.preventDefault(); submitJobApplication();">
           <h4>Quick Job Application</h4>
           <div class="form-group">
@@ -1261,6 +1456,43 @@
             <button type="submit" id="btn-submit-job" class="btn btn-primary-submit">Confirm & Apply Now</button>
           </div>
         </form>
+
+        <!-- In-Modal Job Success Receipt Box -->
+        <div class="application-success-box" id="job-success-box" style="display:none;">
+          <div class="success-icon-wrap">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#E8F8F0"/><path d="M8 12.5L10.5 15L16 9" stroke="#0FA66D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="success-title">Application Submitted to Employer!</h3>
+          <p class="success-sub">Your profile has been forwarded to the employer's HR department.</p>
+          
+          <div class="receipt-card">
+            <div class="receipt-row">
+              <span class="rc-lbl">Application Reference:</span>
+              <strong id="job-receipt-ref-id" class="text-blue rc-val">SKL-JOB-2026-4192</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="rc-lbl">Applicant:</span>
+              <strong id="job-receipt-name" class="rc-val">Tanmay Verma</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="rc-lbl">Applied Role:</span>
+              <strong id="job-receipt-role" class="rc-val">Staff Nurse (GNM/B.Sc)</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="rc-lbl">Employer:</span>
+              <strong id="job-receipt-company" class="rc-val">City Hospital & Research Centre</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="rc-lbl">Interview Status:</span>
+              <strong style="color:#0FA66D;" class="rc-val">HR Shortlisting in Progress</strong>
+            </div>
+          </div>
+
+          <div class="receipt-actions">
+            <button type="button" class="btn btn-secondary-btn" onclick="closeModal('job-modal')">Done & Return</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1419,6 +1651,32 @@
               <p>All job postings are pre-screened with genuine corporate HR teams with salary transparency and no recruitment fees.</p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 8: Live Official Notice & Circular Modal -->
+  <div class="modal-backdrop" id="notice-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeModal('notice-modal')">✕</button>
+      <div class="modal-header">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <span class="modal-category-badge badge-green" id="notice-badge">Official Circular</span>
+          <span class="notice-date-badge" id="notice-date">October 18, 2026</span>
+        </div>
+        <h2 class="modal-title" id="notice-title">Maharashtra State 2026 GNM & B.Sc Nursing Direct Admission Window</h2>
+        <div class="modal-institute-name" id="notice-authority">Directorate of Medical Education & Research (DMER) • Ref: DMER/NUR/2026/891</div>
+      </div>
+      <div class="modal-body">
+        <div class="notice-modal-body" id="notice-body-text">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="notice-quick-actions" style="margin-top:16px;display:flex;gap:10px;">
+          <button class="btn btn-primary-submit" id="notice-action-btn" onclick="filterByCategory('Nursing'); closeModal('notice-modal'); document.getElementById('courses').scrollIntoView({behavior:'smooth'});">
+            View Enrolling Colleges Now →
+          </button>
+          <button class="btn btn-secondary-btn" onclick="closeModal('notice-modal')">Close Bulletin</button>
         </div>
       </div>
     </div>
