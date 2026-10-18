@@ -666,8 +666,8 @@ body {
 }
 
 .cat-card {
-  flex: 0 0 calc((100% - (16px * 6)) / 7);
-  min-width: 195px;
+  flex: 1 1 calc((100% - (16px * 3)) / 4);
+  min-width: 220px;
   height: 105px;
   background-color: var(--color-card-bg);
   border: 1px solid var(--border-light);
