@@ -91,7 +91,7 @@ const NOTICES_DATA = [
   },
   {
     id: 2,
-    title: "Pan-India Healthcare Mega Walk-In Drives (1,450+ Vacancies)",
+    title: "Pan-India Healthcare Mega Walk-In Drives (Direct Hospital Hiring)",
     badge: "Hiring Notification",
     authority: "Apollo, Fortis & Max Healthcare Recruitment Board • Ref: HR-REC-2026-OCT",
     date: "October 18, 2026",
@@ -219,6 +219,22 @@ function initSearchEngine() {
 
   if (!searchInput || !dropdown) return;
 
+  const executeSearch = () => {
+    const term = searchInput.value.trim();
+    if (!term) return;
+    dropdown.style.display = 'none';
+
+    const lower = term.toLowerCase();
+    const jobKeywords = ['job', 'vacancy', 'hiring', 'work', 'salary', 'nurse vacancy', 'icu nurse', 'staff nurse', 'receptionist', 'executive', 'technician', 'fresher job', 'walk in'];
+    const isJobRelated = jobKeywords.some(k => lower.includes(k));
+
+    if (isJobRelated) {
+      window.location.href = `jobs.html?search=${encodeURIComponent(term)}`;
+    } else {
+      window.location.href = `colleges.html?search=${encodeURIComponent(term)}`;
+    }
+  };
+
   searchInput.addEventListener('input', (e) => {
     const val = e.target.value.trim().toLowerCase();
 
@@ -232,85 +248,171 @@ function initSearchEngine() {
       return;
     }
 
-    const matches = [];
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+    }
 
-    // Search across all colleges, cities, states, and courses
+    const collegeMatches = [];
+    const courseMatches = [];
+    const jobMatches = [];
+
+    // 1. Search Colleges Database (488+ institutes)
     for (let i = 0; i < ALL_COLLEGES.length; i++) {
       const c = ALL_COLLEGES[i];
       const nameMatch = c.name.toLowerCase().includes(val);
       const cityMatch = c.city.toLowerCase().includes(val);
       const stateMatch = c.state.toLowerCase().includes(val);
-      const catMatch = c.category.toLowerCase().includes(val);
+      const catMatch = (c.category || '').toLowerCase().includes(val);
 
-      if (nameMatch || cityMatch || stateMatch || catMatch) {
-        matches.push({
+      if ((nameMatch || cityMatch || stateMatch || catMatch) && collegeMatches.length < 4) {
+        collegeMatches.push({
           title: c.name,
           sub: `${c.category} • ${c.city}, ${c.state}`,
-          tag: c.approval || 'Verified',
-          id: c.id
+          tag: '🎓 College',
+          url: `colleges.html?collegeId=${c.id}`
         });
       }
 
       // Check inner courses
-      for (let j = 0; j < c.courses.length; j++) {
-        const course = c.courses[j];
-        if (course.name.toLowerCase().includes(val)) {
-          matches.push({
-            title: course.name,
-            sub: `${c.cleanName} • Fee: ${course.feeDisplay}`,
-            tag: 'Course',
-            id: c.id
-          });
-          break;
+      if (c.courses && courseMatches.length < 4) {
+        for (let j = 0; j < c.courses.length; j++) {
+          const crs = c.courses[j];
+          if (crs.name.toLowerCase().includes(val)) {
+            if (!courseMatches.some(m => m.title === crs.name)) {
+              courseMatches.push({
+                title: crs.name,
+                sub: `Offered at ${c.cleanName || c.name} • Fee: ${crs.feeDisplay}`,
+                tag: '📚 Course',
+                url: `colleges.html?search=${encodeURIComponent(crs.name)}`
+              });
+            }
+          }
         }
       }
 
-      if (matches.length >= 8) break; // Keep suggestions ultra-fast
+      if (collegeMatches.length >= 4 && courseMatches.length >= 4) break;
     }
 
-    if (matches.length === 0) {
+    // 2. Search Verified Jobs Database
+    const ALL_VERIFIED_JOBS = [
+      { id: 1, title: "Staff Nurse (GNM / B.Sc)", company: "City Hospital & Research Centre", location: "Lucknow, Uttar Pradesh", salary: "₹ 18,000 - 28,000 / mo", sector: "Healthcare" },
+      { id: 2, title: "ICU & Critical Care Nurse", company: "Metro Multispecialty Hospital", location: "Delhi, Delhi NCR", salary: "₹ 25,000 - 40,000 / mo", sector: "Healthcare" },
+      { id: 3, title: "Front Office Executive & Receptionist", company: "Grand Vista Hotel & Resort", location: "Jaipur, Rajasthan", salary: "₹ 16,000 - 22,000 / mo", sector: "Hospitality" },
+      { id: 4, title: "Food & Beverage (F&B) Service Staff", company: "The Royal Hotel & Suites", location: "Bengaluru, Karnataka", salary: "₹ 14,000 - 20,000 / mo", sector: "Hospitality" },
+      { id: 5, title: "Hospital Operations & Admission Desk", company: "Medanta Super Specialty Wing", location: "Lucknow, Uttar Pradesh", salary: "₹ 20,000 - 30,000 / mo", sector: "Healthcare" },
+      { id: 6, title: "Corporate Healthcare Relationship Manager", company: "Apex Healthcare Network", location: "Mumbai, Maharashtra", salary: "₹ 22,000 - 35,000 / mo", sector: "Sales" }
+    ];
+
+    for (let k = 0; k < ALL_VERIFIED_JOBS.length; k++) {
+      const j = ALL_VERIFIED_JOBS[k];
+      const titleMatch = j.title.toLowerCase().includes(val);
+      const compMatch = j.company.toLowerCase().includes(val);
+      const locMatch = j.location.toLowerCase().includes(val);
+      const secMatch = (j.sector || '').toLowerCase().includes(val);
+
+      if ((titleMatch || compMatch || locMatch || secMatch) && jobMatches.length < 4) {
+        jobMatches.push({
+          title: j.title,
+          sub: `${j.company} • ${j.location} • ${j.salary}`,
+          tag: '💼 Job Vacancy',
+          url: `jobs.html?jobId=${j.id}`
+        });
+      }
+    }
+
+    const totalMatches = collegeMatches.length + courseMatches.length + jobMatches.length;
+
+    if (totalMatches === 0) {
       dropdown.innerHTML = `
-        <div class="autocomplete-item">
-          <div>
-            <div class="ac-title">No direct matches for "${val}"</div>
-            <div style="font-size:11px;color:#728DA9;">Press Enter to search entire 850+ directory</div>
+        <div class="ac-top-summary" style="background:#FFF9F0; border-bottom:1px solid #FFE4CC;">
+          <div class="ac-top-summary-text">
+            <span>⚠️ No immediate match for &ldquo;<strong>${escapeHtml(val)}</strong>&rdquo;</span>
           </div>
-          <span class="ac-tag">Directory</span>
+          <span class="ac-top-count-badge" style="color:#FF922A; border-color:#FFD2A8;">0 Found</span>
+        </div>
+        <div class="autocomplete-item" onclick="window.location.href='colleges.html?search=${encodeURIComponent(val)}'">
+          <div class="ac-main-col">
+            <div class="ac-title">Search complete database for &ldquo;${escapeHtml(val)}&rdquo;</div>
+            <div class="ac-sub">Press Enter to explore all 488+ colleges, accredited courses, and hospital/hotel jobs</div>
+          </div>
+          <span class="ac-tag ac-tag-college">Search All →</span>
         </div>
       `;
       dropdown.style.display = 'block';
       return;
     }
 
-    dropdown.innerHTML = matches.map(m => `
-      <div class="autocomplete-item" onclick="handleSearchSelect(${m.id})">
-        <div>
-          <div class="ac-title">${m.title}</div>
-          <div style="font-size:11px;color:#728DA9;">${m.sub}</div>
+    let html = `
+      <div class="ac-top-summary">
+        <div class="ac-top-summary-text">
+          <span class="ac-summary-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#087BFF" stroke-width="2.5"/><path d="M21 21L16.65 16.65" stroke="#087BFF" stroke-width="2.5" stroke-linecap="round"/></svg>
+          </span>
+          <span>Found <strong>${totalMatches}</strong> results for &ldquo;<strong>${escapeHtml(val)}</strong>&rdquo;</span>
         </div>
-        <span class="ac-tag">${m.tag}</span>
+        <span class="ac-top-count-badge">${totalMatches} Matches</span>
       </div>
-    `).join('');
+    `;
 
+    if (collegeMatches.length > 0) {
+      html += `<div class="ac-group-header">🎓 Colleges & Institutes (${collegeMatches.length})</div>`;
+      html += collegeMatches.map(m => `
+        <a class="autocomplete-item" href="${m.url}">
+          <div class="ac-main-col">
+            <div class="ac-title">${escapeHtml(m.title)}</div>
+            <div class="ac-sub">${escapeHtml(m.sub)}</div>
+          </div>
+          <span class="ac-tag ac-tag-college">${m.tag}</span>
+        </a>
+      `).join('');
+    }
+
+    if (courseMatches.length > 0) {
+      html += `<div class="ac-group-header">📚 Courses & Degrees (${courseMatches.length})</div>`;
+      html += courseMatches.map(m => `
+        <a class="autocomplete-item" href="${m.url}">
+          <div class="ac-main-col">
+            <div class="ac-title">${escapeHtml(m.title)}</div>
+            <div class="ac-sub">${escapeHtml(m.sub)}</div>
+          </div>
+          <span class="ac-tag ac-tag-course">${m.tag}</span>
+        </a>
+      `).join('');
+    }
+
+    if (jobMatches.length > 0) {
+      html += `<div class="ac-group-header">💼 Verified Jobs & Openings (${jobMatches.length})</div>`;
+      html += jobMatches.map(m => `
+        <a class="autocomplete-item" href="${m.url}">
+          <div class="ac-main-col">
+            <div class="ac-title">${escapeHtml(m.title)}</div>
+            <div class="ac-sub">${escapeHtml(m.sub)}</div>
+          </div>
+          <span class="ac-tag ac-tag-job">${m.tag}</span>
+        </a>
+      `).join('');
+    }
+
+    html += `
+      <div class="ac-footer-action" onclick="executeHeroSearchSubmit()">
+        <span>🔎 Press <kbd style="background:#FFFFFF;border:1px solid #C7D8E8;padding:2px 6px;border-radius:4px;font-family:inherit;font-size:11px;font-weight:800;color:#0A2540;">Enter</kbd> to explore full results for &ldquo;${escapeHtml(val)}&rdquo; in dedicated tab →</span>
+      </div>
+    `;
+
+    dropdown.innerHTML = html;
     dropdown.style.display = 'block';
   });
+
+  window.executeHeroSearchSubmit = executeSearch;
 
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       searchInput.value = '';
       clearBtn.style.display = 'none';
       dropdown.style.display = 'none';
-      filterByCategory('All');
     });
   }
-
-  const executeSearch = () => {
-    const term = searchInput.value.trim();
-    if (term) {
-      dropdown.style.display = 'none';
-      runGlobalSearch(term);
-    }
-  };
 
   searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') executeSearch();
@@ -335,24 +437,11 @@ function initSearchEngine() {
 function handleSearchSelect(collegeId) {
   const dropdown = document.getElementById('search-autocomplete-dropdown');
   if (dropdown) dropdown.style.display = 'none';
-  openCollegeModal(collegeId);
+  window.location.href = `colleges.html?collegeId=${collegeId}`;
 }
 
 function runGlobalSearch(term) {
-  const lower = term.toLowerCase();
-  CURRENT_FILTERED = ALL_COLLEGES.filter(c => {
-    const nameMatch = c.name.toLowerCase().includes(lower);
-    const cityMatch = c.city.toLowerCase().includes(lower);
-    const stateMatch = c.state.toLowerCase().includes(lower);
-    const catMatch = c.category.toLowerCase().includes(lower);
-    const courseMatch = c.courses.some(crs => crs.name.toLowerCase().includes(lower));
-    return nameMatch || cityMatch || stateMatch || catMatch || courseMatch;
-  });
-
-  CURRENT_PAGE = 1;
-  renderCatalogPage();
-  showToast(`Found ${CURRENT_FILTERED.length} colleges matching "${term}"`);
-  document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+  window.location.href = `colleges.html?search=${encodeURIComponent(term)}`;
 }
 
 /* ==========================================================================
@@ -568,7 +657,7 @@ function renderCatalogPage() {
     const primaryCourse = c.courses[0] || { name: c.category, duration: "1 Year", feeDisplay: c.minFeeDisplay, mode: "Both" };
 
     return `
-      <article class="course-card" onclick="openCollegeModal(${c.id})" style="cursor:pointer;">
+      <article class="course-card" onclick="window.location.href='colleges.html?collegeId=' + ${c.id}" style="cursor:pointer;">
         <div class="course-img-wrap">
           <img src="${thumb}" alt="${c.cleanName || c.name} Campus Facility" class="course-thumb" loading="lazy">
           <span class="verified-inst-badge">
@@ -600,7 +689,7 @@ function renderCatalogPage() {
 
           <div class="course-provider" title="${c.name}">${c.cleanName || c.name}</div>
           
-          <button class="btn btn-view-course" onclick="event.stopPropagation(); openCollegeModal(${c.id})">
+          <button class="btn btn-view-course" onclick="event.stopPropagation(); window.location.href='colleges.html?collegeId=' + ${c.id}">
             <span>View College & Fees</span>
             <span class="btn-arrow">→</span>
           </button>
@@ -624,6 +713,8 @@ function slideCourses(direction) {
    6. COLLEGE INTELLIGENCE MULTI-TAB MODAL (Collegedunia-style)
    ========================================================================== */
 function openCollegeModal(collegeId) {
+  window.location.href = `colleges.html?collegeId=${collegeId}`;
+  return;
   const college = ALL_COLLEGES.find(c => c.id === Number(collegeId));
   if (!college) return;
 
@@ -715,6 +806,20 @@ function openCollegeModal(collegeId) {
   if (form) form.style.display = 'block';
   if (successBox) successBox.style.display = 'none';
 
+  // Auto-fill student profile if authenticated
+  const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+  if (userStr) {
+    try {
+      const u = JSON.parse(userStr);
+      const nameInput = document.getElementById('lead-student-name');
+      const phoneInput = document.getElementById('lead-student-phone');
+      const emailInput = document.getElementById('lead-student-email');
+      if (nameInput && u.name) nameInput.value = u.name;
+      if (phoneInput && u.phone) phoneInput.value = u.phone;
+      if (emailInput && u.email) emailInput.value = u.email;
+    } catch (e) {}
+  }
+
   // Default to overview tab
   const firstTab = document.querySelector('.c-tab-btn');
   if (firstTab) switchCollegeTab(firstTab, 'c-tab-overview');
@@ -780,23 +885,39 @@ async function submitEnrollment() {
   const courseSelect = document.getElementById('lead-course-select');
   const submitBtn = document.getElementById('btn-submit-lead');
 
-  const studentName = nameInput ? nameInput.value.trim() : '';
-  const phone = phoneInput ? phoneInput.value.trim() : '';
-  const email = emailInput ? emailInput.value.trim() : '';
   const batch = batchInput ? batchInput.value : '2026 Regular Batch';
   const selectedCourseName = courseSelect ? courseSelect.value : (
     (SELECTED_COLLEGE && SELECTED_COLLEGE.courses && SELECTED_COLLEGE.courses[0]) 
       ? SELECTED_COLLEGE.courses[0].name 
       : (SELECTED_COLLEGE ? SELECTED_COLLEGE.category : 'General Admission')
   );
+  const collegeName = SELECTED_COLLEGE ? (SELECTED_COLLEGE.cleanName || SELECTED_COLLEGE.name) : "the institute";
+  const collegeId = SELECTED_COLLEGE ? SELECTED_COLLEGE.id : null;
+
+  // 1. Mandatory Student Authentication Check
+  const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+  if (!userStr) {
+    sessionStorage.setItem('SKILLORA_PENDING_APPLY', JSON.stringify({
+      type: 'course',
+      collegeId: collegeId,
+      courseName: selectedCourseName,
+      collegeName: collegeName
+    }));
+    alert(`To apply for "${selectedCourseName}" at ${collegeName}, please Sign In or create your free Student Account.`);
+    window.location.href = `auth.html?redirect=apply&type=course&title=${encodeURIComponent(selectedCourseName)}`;
+    return;
+  }
+
+  const user = JSON.parse(userStr);
+  const studentName = (nameInput && nameInput.value.trim()) || user.name;
+  const phone = (phoneInput && phoneInput.value.trim()) || user.phone;
+  const email = (emailInput && emailInput.value.trim()) || user.email;
 
   if (!studentName || !phone) {
     showToast('Please enter your Name and Mobile Number.');
     return;
   }
 
-  const collegeName = SELECTED_COLLEGE ? (SELECTED_COLLEGE.cleanName || SELECTED_COLLEGE.name) : "the institute";
-  const collegeId = SELECTED_COLLEGE ? SELECTED_COLLEGE.id : null;
   const courseObj = (SELECTED_COLLEGE && SELECTED_COLLEGE.courses) 
     ? SELECTED_COLLEGE.courses.find(c => c.name === selectedCourseName) 
     : null;
@@ -820,8 +941,33 @@ async function submitEnrollment() {
     collegeCity: SELECTED_COLLEGE ? SELECTED_COLLEGE.city : '',
     batch,
     fee: courseFee,
-    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+    timestamp: new Date().toISOString()
   };
+
+  // Persist locally for Admin Portal and Student Dashboard
+  try {
+    const allCourseApps = JSON.parse(localStorage.getItem('SKILLORA_ALL_COURSE_APPLICATIONS') || '[]');
+    allCourseApps.unshift(LAST_SUBMITTED_APPLICATION);
+    localStorage.setItem('SKILLORA_ALL_COURSE_APPLICATIONS', JSON.stringify(allCourseApps));
+
+    const myAdmissions = JSON.parse(localStorage.getItem('SKILLORA_MY_ADMISSIONS') || '[]');
+    myAdmissions.unshift(LAST_SUBMITTED_APPLICATION);
+    localStorage.setItem('SKILLORA_MY_ADMISSIONS', JSON.stringify(myAdmissions));
+
+    const activityLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
+    activityLog.unshift({
+      id: refId,
+      type: 'course',
+      title: `${studentName} applied for ${selectedCourseName}`,
+      desc: `${collegeName} (${SELECTED_COLLEGE ? SELECTED_COLLEGE.city : 'Campus'}) • 10-Digit: ${phone}`,
+      time: 'Just now',
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('SKILLORA_LIVE_ACTIVITY_LOG', JSON.stringify(activityLog.slice(0, 50)));
+  } catch (storageErr) {
+    console.warn('LocalStorage save error:', storageErr);
+  }
 
   try {
     const payload = {
@@ -978,6 +1124,8 @@ const JOB_PLACE_PHOTOS = {
 };
 
 function openJobModal(jobId) {
+  window.location.href = `jobs.html?jobId=${jobId}`;
+  return;
   const job = JOBS_DATA.find(j => j.id === Number(jobId)) || JOBS_DATA[0];
   SELECTED_JOB = job;
 
@@ -998,6 +1146,20 @@ function openJobModal(jobId) {
   if (form) form.style.display = 'block';
   if (successBox) successBox.style.display = 'none';
 
+  // Auto-fill student profile if authenticated
+  const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+  if (userStr) {
+    try {
+      const u = JSON.parse(userStr);
+      const nameInput = document.getElementById('job-candidate-name');
+      const phoneInput = document.getElementById('job-candidate-phone');
+      const emailInput = document.getElementById('job-candidate-email');
+      if (nameInput && u.name) nameInput.value = u.name;
+      if (phoneInput && u.phone) phoneInput.value = u.phone;
+      if (emailInput && u.email) emailInput.value = u.email;
+    } catch (e) {}
+  }
+
   openModal('job-modal');
 }
 
@@ -1008,9 +1170,28 @@ async function submitJobApplication() {
   const expInput = document.getElementById('job-candidate-exp');
   const submitBtn = document.getElementById('btn-submit-job');
 
-  const candidateName = nameInput ? nameInput.value.trim() : '';
-  const phone = phoneInput ? phoneInput.value.trim() : '';
-  const email = emailInput ? emailInput.value.trim() : '';
+  const jobTitle = SELECTED_JOB ? SELECTED_JOB.title : 'Healthcare / Hospitality Opening';
+  const companyName = SELECTED_JOB ? SELECTED_JOB.company : 'Verified Employer';
+  const jobId = SELECTED_JOB ? SELECTED_JOB.id : 1;
+
+  // 1. Mandatory Student Authentication Check
+  const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+  if (!userStr) {
+    sessionStorage.setItem('SKILLORA_PENDING_APPLY', JSON.stringify({
+      type: 'job',
+      jobId: jobId,
+      role: jobTitle,
+      company: companyName
+    }));
+    alert(`To apply for "${jobTitle}" at ${companyName}, please Sign In or create your free Student Account.`);
+    window.location.href = `auth.html?redirect=apply&type=job&title=${encodeURIComponent(jobTitle)}`;
+    return;
+  }
+
+  const user = JSON.parse(userStr);
+  const candidateName = (nameInput && nameInput.value.trim()) || user.name;
+  const phone = (phoneInput && phoneInput.value.trim()) || user.phone;
+  const email = (emailInput && emailInput.value.trim()) || user.email;
   const exp = expInput ? expInput.value.trim() : '';
 
   if (!candidateName || !phone) {
@@ -1018,16 +1199,51 @@ async function submitJobApplication() {
     return;
   }
 
-  const jobTitle = SELECTED_JOB ? SELECTED_JOB.title : 'Healthcare / Hospitality Opening';
-  const companyName = SELECTED_JOB ? SELECTED_JOB.company : 'Verified Employer';
-  const jobId = SELECTED_JOB ? SELECTED_JOB.id : 1;
-
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting Application...';
   }
 
   const refId = `SKL-JOB-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+  const jobAppRecord = {
+    refId,
+    candidateName,
+    phone,
+    email: email || 'Not provided',
+    role: jobTitle,
+    company: companyName,
+    location: SELECTED_JOB ? SELECTED_JOB.location : 'Pan-India',
+    salary: SELECTED_JOB ? SELECTED_JOB.salary : '₹ 20,000 - 35,000/mo',
+    exp: exp || 'Fresher',
+    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+    timestamp: new Date().toISOString(),
+    status: 'Shortlisted for Interview',
+    statusClass: 'status-shortlisted'
+  };
+
+  try {
+    const allJobApps = JSON.parse(localStorage.getItem('SKILLORA_ALL_JOB_APPLICATIONS') || '[]');
+    allJobApps.unshift(jobAppRecord);
+    localStorage.setItem('SKILLORA_ALL_JOB_APPLICATIONS', JSON.stringify(allJobApps));
+
+    const myJobs = JSON.parse(localStorage.getItem('SKILLORA_MY_JOBS') || '[]');
+    myJobs.unshift(jobAppRecord);
+    localStorage.setItem('SKILLORA_MY_JOBS', JSON.stringify(myJobs));
+
+    const activityLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
+    activityLog.unshift({
+      id: refId,
+      type: 'job',
+      title: `${candidateName} applied for ${jobTitle}`,
+      desc: `${companyName} • Contact: ${phone}`,
+      time: 'Just now',
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('SKILLORA_LIVE_ACTIVITY_LOG', JSON.stringify(activityLog.slice(0, 50)));
+  } catch (storageErr) {
+    console.warn('LocalStorage save error:', storageErr);
+  }
 
   try {
     const payload = {
@@ -1204,25 +1420,54 @@ function openStateModal() { openModal('state-modal'); }
 function openVerifiedModal() { openModal('verified-modal'); }
 
 const loginBtn = document.getElementById('login-btn');
-if (loginBtn) loginBtn.addEventListener('click', () => openModal('login-modal'));
-
 const joinPartnerBtn = document.getElementById('join-partner-btn');
-if (joinPartnerBtn) joinPartnerBtn.addEventListener('click', () => openPartnerModal('general'));
 
-function setLoginTab(btn, type) {
-  document.querySelectorAll('#login-modal .ptab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
+function checkAuthStatus() {
+  const student = localStorage.getItem('SKILLORA_CURRENT_USER');
+  const college = localStorage.getItem('SKILLORA_COLLEGE_USER');
+  const employer = localStorage.getItem('SKILLORA_EMPLOYER_USER');
 
-function submitLogin() {
-  closeModal('login-modal');
-  showToast('Signed in successfully! Welcome to SkillOra Dashboard.', true);
   if (loginBtn) {
-    loginBtn.textContent = 'My Account';
-    loginBtn.style.borderColor = '#0FA66D';
-    loginBtn.style.color = '#0FA66D';
+    if (student) {
+      try {
+        const u = JSON.parse(student);
+        loginBtn.textContent = `Student (${u.name ? u.name.split(' ')[0] : 'Profile'})`;
+        loginBtn.href = 'dashboard.html';
+        loginBtn.style.color = '#0FA66D';
+        loginBtn.style.borderColor = '#0FA66D';
+      } catch (e) {
+        loginBtn.href = 'dashboard.html';
+      }
+    } else {
+      loginBtn.textContent = 'Student Login / Sign Up';
+      loginBtn.href = 'auth.html?role=student';
+      loginBtn.style.color = '#087BFF';
+      loginBtn.style.borderColor = '#087BFF';
+    }
   }
+
+  if (joinPartnerBtn) {
+    joinPartnerBtn.onclick = function(e) {
+      window.location.href = 'auth.html?role=institute';
+    };
+  }
+
+  // Handle return redirect from authentication
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('openApply') === 'true' && urlParams.get('collegeId')) {
+      const colId = Number(urlParams.get('collegeId'));
+      const crs = urlParams.get('courseName');
+      setTimeout(() => {
+        openCollegeModal(colId);
+        if (crs) applyDirectCourse(decodeURIComponent(crs));
+      }, 500);
+    }
+  } catch (e) {}
 }
+
+document.addEventListener('DOMContentLoaded', checkAuthStatus);
+checkAuthStatus();
 
 function openInfoModal(type) {
   const title = document.getElementById('info-modal-title');
@@ -1359,8 +1604,8 @@ function initTickerAnimation() {
     "• New Nursing Batch Admissions Open across Maharashtra & Karnataka",
     "• Top 10 In-Demand Jobs in Healthcare Sector Announced",
     "• Hotel Management Diploma Courses Now Available in Online Mode",
-    "• 850+ Verified Colleges Enrolling for 2026 Academic Batch",
-    "• 120+ Walk-In Interviews Scheduled in Bengaluru, Delhi & Mumbai"
+    "• 488+ Verified Colleges Enrolling for 2026 Academic Batch",
+    "• Direct Walk-In Interviews Scheduled in Bengaluru, Delhi & Mumbai"
   ];
 
   let idx = 0;

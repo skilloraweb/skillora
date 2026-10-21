@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colleges & Direct Admissions Directory 2026 | SkillOra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/auth_db.js"></script>
+  <style>
+    body { background-color: #F0F4F8; }
+    .colleges-hero-bar {
+      background: linear-gradient(135deg, #0A2540 0%, #173C62 100%);
+      color: #FFFFFF;
+      padding: 36px 20px 28px 20px;
+      text-align: center;
+    }
+    .colleges-hero-bar h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .colleges-hero-bar p {
+      font-size: 14px;
+      color: #CFE3F7;
+      max-width: 700px;
+      margin: 0 auto 20px auto;
+    }
+    .colleges-search-box {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      background: #FFFFFF;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .c-search-input {
+      flex: 1;
+      height: 48px;
+      border: none;
+      padding: 0 18px;
+      font-size: 14px;
+      font-family: var(--font-family);
+      outline: none;
+      color: var(--text-dark);
+    }
+    .c-search-btn {
+      background: var(--color-primary-blue);
+      color: #FFFFFF;
+      border: none;
+      padding: 0 24px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .colleges-layout {
+      max-width: 1560px;
+      margin: 24px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+    }
+    .colleges-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+    .col-card-custom {
+      background: #FFFFFF;
+      border: 1px solid #D6E3F0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(10, 37, 64, 0.05);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                  border-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .col-card-custom:hover {
+      box-shadow: 0 10px 24px rgba(8, 123, 255, 0.12);
+      transform: translateY(-3px);
+      border-color: #AAD2FF;
+    }
+    .col-img-wrap {
+      height: 160px;
+      min-height: 160px;
+      max-height: 160px;
+      position: relative;
+      background: #173C62;
+      overflow: hidden;
+    }
+    .col-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .col-card-custom:hover .col-img-wrap img {
+      transform: scale(1.04);
+    }
+    .col-card-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .col-name-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+      margin-bottom: 6px;
+      height: 42px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.35;
+    }
+    .col-meta-tag {
+      font-size: 11.5px;
+      color: var(--color-primary-blue);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .col-fee-badge {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0FA66D;
+      background: #EDFDF5;
+      border: 1px solid #B8EED4;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 12px;
+      width: fit-content;
+    }
+    .col-direct-apply-btn {
+      width: 100%;
+      height: 40px;
+      background-color: var(--color-primary-blue);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      margin-top: auto;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all var(--transition-fast);
+    }
+    .col-direct-apply-btn:hover {
+      background-color: #0064db;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(8, 123, 255, 0.25);
+    }
+    @media (max-width: 1100px) {
+      .colleges-grid-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 850px) {
+      .colleges-layout { grid-template-columns: 1fr; }
+      .colleges-grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="SkillOra Home">
+        <div class="logo-mark">
+          <svg class="logo-symbol" viewBox="0 0 38 38" fill="none">
+            <rect width="38" height="38" rx="8" fill="#087BFF"/>
+            <path d="M10 26L19 12L28 26H10Z" fill="#FFFFFF"/>
+            <circle cx="19" cy="18" r="3.5" fill="#FF922A"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-title">Skill<span class="highlight-orange">Ora</span></span>
+          <span class="logo-tagline">Learn • Skill • Build Your Future</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="jobs.html" class="nav-link">Find Jobs</a>
+        <a href="colleges.html" class="nav-link" style="color:var(--color-primary-blue);font-weight:800;">Colleges & Admissions</a>
+        <a href="dashboard.html" class="nav-link" id="nav-dashboard-link">Student Dashboard</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="auth.html?role=student" class="btn btn-outline-login" id="nav-auth-btn">Student Login / Sign Up</a>
+        <a href="admin.html" class="btn btn-secondary-btn" style="text-decoration:none;font-size:12.5px;">Admin Portal</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Header for Colleges Tab -->
+  <div class="colleges-hero-bar">
+    <h1>488+ Verified Colleges & Direct Admissions (2026 Batch)</h1>
+    <p>Search accredited nursing universities, hotel management academies, and vocational institutes across India with complete fee transparency and direct counseling support.</p>
+    
+    <div class="colleges-search-box">
+      <input type="text" id="college-search-input" class="c-search-input" placeholder="Search by college name, course, state, or city (e.g. GNM Mumbai, Sunrise Nursing, Jaipur)..." oninput="filterCollegesLive()">
+      <button class="c-search-btn" onclick="filterCollegesLive()">Search Colleges</button>
+    </div>
+  </div>
+
+  <!-- Dedicated Main Layout -->
+  <div class="colleges-layout">
+    
+    <!-- Left Filter Sidebar -->
+    <aside class="filter-sidebar">
+      <div class="filter-card">
+        <h2 class="filter-header-title">Filter Institutions</h2>
+
+        <!-- Sector Filter -->
+        <div class="filter-field">
+          <label class="filter-label">Course Sector</label>
+          <div class="select-wrapper">
+            <select id="filter-sector" class="filter-select" onchange="filterCollegesLive()">
+              <option value="All">All Sectors</option>
+              <option value="Nursing & Healthcare">Nursing & Healthcare</option>
+              <option value="Hospitality">Hospitality & Hotel Mgmt</option>
+              <option value="Sales & Marketing">Sales & Marketing</option>
+              <option value="Language & Grooming">Language & Grooming</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- State Filter -->
+        <div class="filter-field">
+          <label class="filter-label">State</label>
+          <div class="select-wrapper">
+            <select id="filter-state" class="filter-select" onchange="filterCollegesLive()">
+              <option value="All">All States (Pan-India)</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Delhi">Delhi NCR</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Rajasthan">Rajasthan</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Kerala">Kerala</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Fee Range Slider -->
+        <div class="filter-field">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <label class="filter-label">Max Fee / Year</label>
+            <span id="fee-val-text" style="font-size:12px;font-weight:700;color:var(--color-primary-blue);">Up to ₹ 2,00,000</span>
+          </div>
+          <input type="range" id="filter-fee-range" min="20000" max="200000" step="5000" value="200000" oninput="updateFeeRangeText(this.value); filterCollegesLive();" style="width:100%;">
+        </div>
+
+        <button class="btn btn-apply-filters w-full" onclick="resetCollegeFilters()">Reset All Filters</button>
+      </div>
+    </aside>
+
+    <!-- Main Colleges Feed -->
+    <main>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 id="colleges-count-header" style="font-size:16px;font-weight:800;color:var(--color-navy-dark);">Showing 488 Verified Colleges</h3>
+        <span style="font-size:12px;color:var(--text-muted);">Verified Campus Photos & Approved Intake</span>
+      </div>
+
+      <div class="colleges-grid-3" id="colleges-grid-container">
+        <!-- Dynamically rendered -->
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Direct Admission Modal on Colleges Page -->
+  <div class="modal-backdrop" id="direct-apply-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeApplyModal()">✕</button>
+      <div class="modal-header">
+        <span class="modal-category-badge badge-green" id="app-modal-badge">Direct Seat Booking</span>
+        <h2 class="modal-title" id="app-modal-college-name">Sunrise College of Nursing</h2>
+        <div class="modal-institute-name" id="app-modal-loc">Mumbai, Maharashtra</div>
+      </div>
+      <div class="modal-body">
+        <form class="modal-form" onsubmit="event.preventDefault(); submitDirectAdmission();">
+          <div class="form-group">
+            <label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px;">Program / Course</label>
+            <input type="text" id="app-form-course" class="input-field" readonly style="background:#F0F5FA;font-weight:700;color:var(--color-primary-blue);">
+          </div>
+          <div class="form-row">
+            <input type="text" id="app-form-name" class="input-field" placeholder="Full Name *" required>
+            <input type="tel" id="app-form-phone" class="input-field" placeholder="Mobile Number *" required>
+          </div>
+          <div class="form-row">
+            <input type="email" id="app-form-email" class="input-field" placeholder="Email Address *" required>
+            <input type="text" id="app-form-fee" class="input-field" readonly style="background:#F0F5FA;font-weight:700;color:#0FA66D;">
+          </div>
+          <button type="submit" class="btn btn-primary-submit w-full" style="padding:12px;font-size:14px;margin-top:6px;">
+            Confirm Application & Reserve Counseling Slot →
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/colleges_db.js"></script>
+  <script>
+    let ALL_COLLEGES_DATA = [];
+    let CURRENT_APPLYING_COLLEGE = null;
+
+    const PLACE_CAMPUS_IMAGES = [
+      "assets/places/campus_nursing_1.jpg",
+      "assets/places/campus_nursing_2.jpg",
+      "assets/places/campus_nursing_3.jpg",
+      "assets/places/campus_nursing_4.jpg",
+      "assets/places/campus_nursing_5.jpg",
+      "assets/places/campus_nursing_6.jpg",
+      "assets/places/campus_hotel_1.jpg",
+      "assets/places/campus_hotel_2.jpg",
+      "assets/places/campus_hotel_3.jpg",
+      "assets/places/campus_hotel_4.jpg"
+    ];
+
+    function getPlacePhoto(id) {
+      return PLACE_CAMPUS_IMAGES[Math.abs(Number(id) || 0) % PLACE_CAMPUS_IMAGES.length];
+    }
+
+    function initCollegesPage() {
+      if (window.COLLEGES_DB && window.COLLEGES_DB.length > 0) {
+        ALL_COLLEGES_DATA = window.COLLEGES_DB;
+      } else {
+        ALL_COLLEGES_DATA = [
+          { id: 1, name: "Sunrise College of Nursing", category: "Nursing & Healthcare", state: "Maharashtra", city: "Mumbai", minFeeDisplay: "₹ 45,000", approval: "INC Approved", courses: [{ name: "GNM – General Nursing & Midwifery", feeDisplay: "₹ 45,000" }] }
+        ];
+      }
+      renderColleges(ALL_COLLEGES_DATA.slice(0, 48)); // Initial fast chunk
+    }
+
+    function renderColleges(list) {
+      const container = document.getElementById('colleges-grid-container');
+      const countEl = document.getElementById('colleges-count-header');
+      if (countEl) countEl.textContent = `Showing ${list.length} Verified Colleges`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; background:#FFFFFF; border:1px dashed #CCDEF5; border-radius:10px; padding:40px; text-align:center;">
+            <h4>No colleges found matching your search</h4>
+            <p style="font-size:12px;color:var(--text-muted);margin:8px 0 16px 0;">Try expanding your budget slider or choosing All States.</p>
+            <button class="btn btn-apply-filters" onclick="resetCollegeFilters()">Reset All Filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(c => {
+        const photo = getPlacePhoto(c.id);
+        const pCourse = c.courses[0] || { name: c.category, feeDisplay: c.minFeeDisplay };
+        const coursesList = c.courses || [];
+
+        return `
+          <article class="col-card-custom" id="college-card-${c.id}">
+            <div class="col-img-wrap">
+              <img src="${photo}" alt="${c.name} Campus Facility" loading="lazy">
+              <span class="campus-photo-tag">📍 Verified Campus</span>
+            </div>
+            <div class="col-card-body">
+              <div style="flex:1;display:flex;flex-direction:column;">
+                <span class="col-meta-tag">${c.category} • ${c.approval || 'Verified'}</span>
+                <h3 class="col-name-title" title="${c.name}">${c.name}</h3>
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📍 ${c.city}, ${c.state} • Est. ${c.established || '2000'}</div>
+                <div class="col-fee-badge">Fee starts at: ${c.minFeeDisplay} / yr</div>
+
+                <!-- Expandable Course Details Toggle -->
+                <button type="button" class="col-details-toggle-btn" onclick="toggleCollegeCourses(${c.id})">
+                  <span>View All ${coursesList.length} Courses & Eligibility</span>
+                  <span id="col-arrow-${c.id}">▾</span>
+                </button>
+
+                <!-- Expanded Courses & Details Panel -->
+                <div class="col-expand-panel" id="col-panel-${c.id}">
+                  <div style="font-size:11px;font-weight:800;color:#0A2540;margin-bottom:6px;text-transform:uppercase;">Offered Programs & Fees</div>
+                  <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px;">
+                    ${coursesList.map(crs => `
+                      <div class="col-course-item-row">
+                        <div>
+                          <strong>${crs.name}</strong>
+                          <div style="font-size:10.5px;color:#728DA9;">Duration: ${crs.duration} • Mode: ${crs.mode || 'Both'}</div>
+                        </div>
+                        <div style="font-size:11.5px;font-weight:700;color:#0FA66D;white-space:nowrap;">
+                          ${crs.feeDisplay}
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                  <div style="font-size:11px;color:#728DA9;background:#EDF4FA;padding:6px 8px;border-radius:4px;margin-top:6px;">
+                    <strong>Hostel:</strong> ${c.hostel || 'Available'} | <strong>Top Recruiters:</strong> ${(c.recruiters || ['Apollo', 'Taj', 'Fortis']).slice(0, 3).join(', ')}
+                  </div>
+                </div>
+
+              </div>
+              <button class="col-direct-apply-btn" onclick="openDirectApplyModal(${c.id})">
+                Direct Admission 2026 →
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function filterCollegesLive() {
+      const query = (document.getElementById('college-search-input')?.value || '').toLowerCase();
+      const sector = document.getElementById('filter-sector')?.value || 'All';
+      const state = document.getElementById('filter-state')?.value || 'All';
+      const maxFee = Number(document.getElementById('filter-fee-range')?.value || 200000);
+
+      const filtered = ALL_COLLEGES_DATA.filter(c => {
+        if (sector !== 'All' && !c.category.includes(sector.split(' ')[0])) return false;
+        if (state !== 'All' && c.state !== state) return false;
+        if (c.minFee && c.minFee > maxFee) return false;
+
+        if (query) {
+          const matchName = c.name.toLowerCase().includes(query);
+          const matchCity = c.city.toLowerCase().includes(query);
+          const matchState = c.state.toLowerCase().includes(query);
+          const matchCourse = c.courses.some(crs => crs.name.toLowerCase().includes(query));
+          if (!matchName && !matchCity && !matchState && !matchCourse) return false;
+        }
+
+        return true;
+      });
+
+      renderColleges(filtered.slice(0, 48));
+    }
+
+    function updateFeeRangeText(val) {
+      document.getElementById('fee-val-text').textContent = `Up to ₹ ${Number(val).toLocaleString('en-IN')}`;
+    }
+
+    function toggleCollegeCourses(id) {
+      const panel = document.getElementById(`col-panel-${id}`);
+      const arrow = document.getElementById(`col-arrow-${id}`);
+      if (!panel) return;
+      panel.classList.toggle('active');
+      if (arrow) arrow.textContent = panel.classList.contains('active') ? '▴' : '▾';
+    }
+
+    function resetCollegeFilters() {
+      document.getElementById('college-search-input').value = '';
+      document.getElementById('filter-sector').value = 'All';
+      document.getElementById('filter-state').value = 'All';
+      document.getElementById('filter-fee-range').value = 200000;
+      updateFeeRangeText(200000);
+      renderColleges(ALL_COLLEGES_DATA.slice(0, 48));
+    }
+
+    function openDirectApplyModal(collegeId) {
+      const college = ALL_COLLEGES_DATA.find(c => c.id === collegeId);
+      if (!college) return;
+
+      const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+      if (!userStr) {
+        sessionStorage.setItem('SKILLORA_PENDING_APPLY', JSON.stringify({
+          type: 'course',
+          collegeId: college.id,
+          collegeName: college.name,
+          source: 'colleges_page'
+        }));
+        alert(`To apply for direct admission at ${college.name}, please Sign In or create your free Student Account.`);
+        window.location.href = `auth.html?redirect=colleges&collegeId=${college.id}&title=${encodeURIComponent(college.name)}`;
+        return;
+      }
+
+      CURRENT_APPLYING_COLLEGE = college;
+      document.getElementById('app-modal-college-name').textContent = college.name;
+      document.getElementById('app-modal-loc').textContent = `${college.city}, ${college.state} • ${college.approval || 'Verified'}`;
+      
+      const pCourse = college.courses[0] || { name: college.category, feeDisplay: college.minFeeDisplay };
+      document.getElementById('app-form-course').value = pCourse.name;
+      document.getElementById('app-form-fee').value = `Fee: ${pCourse.feeDisplay} / Year`;
+
+      // Auto-fill student profile from authenticated session
+      const u = JSON.parse(userStr);
+      document.getElementById('app-form-name').value = u.name || '';
+      document.getElementById('app-form-phone').value = u.phone || '';
+      document.getElementById('app-form-email').value = u.email || '';
+
+      const modal = document.getElementById('direct-apply-modal');
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeApplyModal() {
+      const modal = document.getElementById('direct-apply-modal');
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    async function submitDirectAdmission() {
+      const name = document.getElementById('app-form-name').value.trim();
+      const phone = document.getElementById('app-form-phone').value.trim();
+      const email = document.getElementById('app-form-email').value.trim();
+      const course = document.getElementById('app-form-course').value;
+
+      if (!name || !phone) {
+        alert('Please enter your full name and phone number.');
+        return;
+      }
+
+      const refId = `SKL-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      const admissionRecord = {
+        refId,
+        studentName: name,
+        phone,
+        email: email || 'Not provided',
+        courseName: course,
+        collegeName: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.name : 'Verified College',
+        collegeState: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.state : '',
+        collegeCity: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.city : '',
+        fee: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.minFeeDisplay : 'Standard Fee',
+        date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+        timestamp: new Date().toISOString(),
+        status: 'Counselor Assigned',
+        statusClass: 'status-assigned'
+      };
+
+      try {
+        const allCourseApps = JSON.parse(localStorage.getItem('SKILLORA_ALL_COURSE_APPLICATIONS') || '[]');
+        allCourseApps.unshift(admissionRecord);
+        localStorage.setItem('SKILLORA_ALL_COURSE_APPLICATIONS', JSON.stringify(allCourseApps));
+
+        const myAdmissions = JSON.parse(localStorage.getItem('SKILLORA_MY_ADMISSIONS') || '[]');
+        myAdmissions.unshift(admissionRecord);
+        localStorage.setItem('SKILLORA_MY_ADMISSIONS', JSON.stringify(myAdmissions));
+
+        const activityLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
+        activityLog.unshift({
+          id: refId,
+          type: 'course',
+          title: `${name} applied for ${course}`,
+          desc: `${CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.name : 'College'} • Phone: ${phone}`,
+          time: 'Just now',
+          timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('SKILLORA_LIVE_ACTIVITY_LOG', JSON.stringify(activityLog.slice(0, 50)));
+      } catch (e) {}
+
+      try {
+        if (window.SkillOraAuth && window.SkillOraAuth.submitAdmissionToCloud) {
+          await window.SkillOraAuth.submitAdmissionToCloud({
+            collegeId: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.id : null,
+            studentName: name,
+            phone: phone,
+            email: email,
+            courseName: course,
+            collegeState: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.state : null,
+            collegeCity: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.city : null,
+            refId: refId
+          });
+        }
+      } catch (e) {
+        console.warn('Note: cloud sync notice:', e);
+      }
+
+      closeApplyModal();
+      alert(`Application Successfully Submitted!\n\nReference ID: ${refId}\nCollege: ${CURRENT_APPLYING_COLLEGE.name}\nCourse: ${course}\n\nYour application has been logged into Supabase. You can track this counseling slot in your Student Dashboard.`);
+      window.location.href = 'dashboard.html';
+    }
+
+    window.onload = function() {
+      initCollegesPage();
+      const student = localStorage.getItem('SKILLORA_CURRENT_USER');
+      const authBtn = document.getElementById('nav-auth-btn');
+      const link = document.getElementById('nav-dashboard-link');
+
+      if (student) {
+        try {
+          const u = JSON.parse(student);
+          if (link) link.textContent = `Dashboard (${u.name.split(' ')[0]})`;
+          if (authBtn) {
+            authBtn.textContent = `Dashboard (${u.name.split(' ')[0]})`;
+            authBtn.href = 'dashboard.html';
+          }
+        } catch (e) {}
+      } else {
+        if (authBtn) {
+          authBtn.textContent = 'Student Login / Sign Up';
+          authBtn.href = 'auth.html?role=student';
+        }
+      }
+
+      // Dynamic URL Parameter Handling for Dedicated Page (search, sector, state, collegeId)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const qSearch = urlParams.get('search') || urlParams.get('q') || urlParams.get('course');
+        const qSector = urlParams.get('sector');
+        const qState = urlParams.get('state');
+        const qColId = urlParams.get('collegeId');
+        const autoApply = urlParams.get('apply') === 'true' || urlParams.get('applyCollege');
+
+        if (qSearch) {
+          const sInput = document.getElementById('college-search-input');
+          if (sInput) sInput.value = decodeURIComponent(qSearch);
+          filterCollegesLive();
+        } else if (qSector) {
+          const sSel = document.getElementById('filter-sector');
+          if (sSel) {
+            for (let opt of sSel.options) {
+              if (opt.value.toLowerCase().includes(qSector.toLowerCase())) {
+                sSel.value = opt.value;
+                break;
+              }
+            }
+          }
+          filterCollegesLive();
+        } else if (qColId) {
+          const targetId = Number(qColId);
+          const targetCol = ALL_COLLEGES_DATA.find(c => c.id === targetId);
+          if (targetCol) {
+            renderColleges([targetCol]);
+            const countEl = document.getElementById('colleges-count-header');
+            if (countEl) countEl.innerHTML = `Showing Selected College: <strong>${targetCol.name}</strong> • <a href="colleges.html" style="color:var(--color-primary-blue);text-decoration:underline;">View All 488+ Colleges</a>`;
+            // Auto expand course list
+            setTimeout(() => toggleCollegeCourses(targetId), 200);
+            if (autoApply && student) {
+              setTimeout(() => openDirectApplyModal(targetId), 350);
+            }
+          }
+        }
+      } catch (e) {
+        console.error('URL param parsing error:', e);
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employer Hiring & Recruiter Portal | SkillOra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/auth_db.js"></script>
+  <style>
+    body {
+      background-color: #F0F4F8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .employer-portal-navbar {
+      height: 64px;
+      background: #0D2C4B;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 2px solid #FF922A;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .portal-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .portal-badge-employer {
+      background: #FF922A;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .portal-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .portal-nav-links a {
+      color: #CFE3F7;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: color var(--transition-fast);
+    }
+    .portal-nav-links a:hover,
+    .portal-nav-links a.active {
+      color: #FFFFFF;
+    }
+    .portal-user-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .portal-user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12.5px;
+    }
+    .portal-container {
+      max-width: 1560px;
+      margin: 24px auto;
+      padding: 0 20px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex: 1;
+    }
+
+    /* Employer Hero Header */
+    .emp-hero-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .emp-hero-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 5px;
+      background: #FF922A;
+    }
+    .emp-hero-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .emp-logo-box {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+    .emp-logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .emp-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+      margin-bottom: 4px;
+    }
+    .emp-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .emp-tag {
+      background: #FEF6EC;
+      color: #FF922A;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .emp-hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Stats Grid */
+    .emp-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .stat-card-custom {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-ic {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .stat-ic-orange { background: #FEF6EC; color: #FF922A; }
+    .stat-ic-blue { background: #EDF8FF; color: #087BFF; }
+    .stat-ic-green { background: #EDFDF5; color: #0FA66D; }
+    .stat-ic-purple { background: #F5EEFD; color: #7756C4; }
+
+    .stat-info strong {
+      display: block;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+    }
+    .stat-info span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Tab Controls */
+    .portal-tab-bar {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid var(--border-light);
+      padding-bottom: 2px;
+    }
+    .p-tab-btn {
+      padding: 10px 18px;
+      font-size: 13.5px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .p-tab-btn.active {
+      color: #FF922A;
+      border-bottom-color: #FF922A;
+    }
+
+    /* Content Pane */
+    .portal-pane-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .pane-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 12px;
+    }
+    .pane-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+    }
+    .pane-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Table Styles */
+    .portal-table-wrap {
+      overflow-x: auto;
+    }
+    .portal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .portal-table th {
+      background: #F8FCFF;
+      color: var(--color-navy-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1.5px solid var(--border-light);
+    }
+    .portal-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #F0F5FA;
+      color: var(--text-dark);
+    }
+    .portal-table tr:hover {
+      background: #FAFCFE;
+    }
+
+    /* Status Pills */
+    .pill-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+    .pill-green { background: #EDFDF5; color: #0FA66D; }
+    .pill-blue { background: #EDF8FF; color: #087BFF; }
+    .pill-orange { background: #FEF6EC; color: #FF922A; }
+
+    /* Openings Grid */
+    .openings-mgmt-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .opening-card {
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 18px;
+      background: #FAFDFE;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .opening-info h4 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+      margin-bottom: 4px;
+    }
+
+    /* Form Grid */
+    .form-2col-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 1024px) {
+      .emp-stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .openings-mgmt-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .emp-stats-grid { grid-template-columns: 1fr; }
+      .form-2col-grid { grid-template-columns: 1fr; }
+      .emp-hero-card { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Portal Navbar -->
+  <header class="employer-portal-navbar">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <a href="index.html" class="portal-brand">
+        Skill<span style="color:#FF922A;">Ora</span>
+      </a>
+      <span class="portal-badge-employer">Employer Hiring Portal</span>
+    </div>
+
+    <nav class="portal-nav-links">
+      <a href="javascript:void(0)" class="active" onclick="showTab('candidates', this)">Candidate Applications</a>
+      <a href="javascript:void(0)" onclick="showTab('post-job', this)">Post New Vacancy</a>
+      <a href="javascript:void(0)" onclick="showTab('active-jobs', this)">Active Openings</a>
+      <a href="jobs.html" target="_blank" title="View Public Job Board">Public Job Board ↗</a>
+    </nav>
+
+    <div class="portal-user-wrap">
+      <div class="portal-user-pill">
+        <span>💼</span>
+        <strong id="header-emp-name">City Hospital HR</strong>
+      </div>
+      <button class="btn btn-secondary-btn" style="padding:4px 10px;font-size:11.5px;color:#FFFFFF;border-color:rgba(255,255,255,0.3);" onclick="handleSignOut()">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- Portal Container -->
+  <main class="portal-container">
+
+    <!-- Employer Profile Banner -->
+    <div class="emp-hero-card">
+      <div class="emp-hero-left">
+        <div class="emp-logo-box">
+          <img src="assets/places/job_hospital_1.jpg" alt="Hospital Facility Photo">
+        </div>
+        <div>
+          <h1 class="emp-name" id="disp-emp-name">City Hospital & Research Centre</h1>
+          <div class="emp-meta-row">
+            <span class="emp-tag" id="disp-emp-type">Multi-Specialty Hospital (350 Beds)</span>
+            <span>📍 <strong id="disp-emp-location">Lucknow, Uttar Pradesh</strong></span>
+            <span>Recruiter: <strong id="disp-emp-hr">Priya Nair (HR Head)</strong></span>
+            <span>Hiring Mode: <strong>Direct Walk-In & Interview Drives</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="emp-hero-actions">
+        <button class="btn btn-primary-btn" style="background:#FF922A;padding:8px 14px;font-size:12.5px;" onclick="showTab('post-job')">+ Post Vacancy</button>
+        <button class="btn btn-secondary-btn" style="padding:8px 14px;font-size:12.5px;" onclick="alert('Exporting verified candidate resumes and applications in CSV format.')">📥 Download Resumes</button>
+      </div>
+    </div>
+
+    <!-- 4 Stats Counters -->
+    <div class="emp-stats-grid">
+      <div class="stat-card-custom">
+        <div class="stat-ic stat-ic-orange">👥</div>
+        <div class="stat-info">
+          <strong id="stat-total-applicants">54</strong>
+          <span>Candidate Applications</span>
+        </div>
+      </div>
+
+      <div class="stat-card-custom">
+        <div class="stat-ic stat-ic-blue">💼</div>
+        <div class="stat-info">
+          <strong>8</strong>
+          <span>Active Vacancies Published</span>
+        </div>
+      </div>
+
+      <div class="stat-card-custom">
+        <div class="stat-ic stat-ic-green">✅</div>
+        <div class="stat-info">
+          <strong>19</strong>
+          <span>Shortlisted for Interview</span>
+        </div>
+      </div>
+
+      <div class="stat-card-custom">
+        <div class="stat-ic stat-ic-purple">⚡</div>
+        <div class="stat-info">
+          <strong>11</strong>
+          <span>Immediate Joiners Available</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="portal-tab-bar">
+      <button class="p-tab-btn active" id="btn-tab-candidates" onclick="showTab('candidates', this)">
+        <span>📋</span> Candidate Applications & Resumes (54)
+      </button>
+      <button class="p-tab-btn" id="btn-tab-post-job" onclick="showTab('post-job', this)">
+        <span>➕</span> Post New Job Vacancy
+      </button>
+      <button class="p-tab-btn" id="btn-tab-active-jobs" onclick="showTab('active-jobs', this)">
+        <span>📢</span> Manage Active Openings (8)
+      </button>
+    </div>
+
+    <!-- TAB 1: CANDIDATE APPLICATIONS & RESUMES -->
+    <section class="portal-pane-card" id="pane-candidates">
+      <div class="pane-header-row">
+        <div>
+          <h2 class="pane-title">Verified Jobseeker Applications & Attached Resumes</h2>
+          <span class="pane-sub">Review incoming job applications with direct mobile contact, verified qualifications and attached resumes.</span>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <input type="text" placeholder="Search applicant by role, name, phone..." class="auth-input" style="height:34px;font-size:12px;width:260px;" oninput="filterCandidates(this.value)">
+        </div>
+      </div>
+
+      <div class="portal-table-wrap">
+        <table class="portal-table">
+          <thead>
+            <tr>
+              <th>App ID</th>
+              <th>Candidate Name</th>
+              <th>Position Applied</th>
+              <th>Qualification & Experience</th>
+              <th>Contact Phone</th>
+              <th>Resume File</th>
+              <th>Applied Date</th>
+              <th>Hiring Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="candidates-table-body">
+            <tr>
+              <td><strong style="color:#FF922A;">#JOB-801</strong></td>
+              <td><strong>Ananya Sen</strong></td>
+              <td>Staff Nurse (ICU & Ward)</td>
+              <td>B.Sc Nursing (PCB 82%) • 1 Yr Exp</td>
+              <td>+91 9820012345</td>
+              <td>
+                <a href="javascript:void(0)" onclick="alert('Viewing Verified Resume: Ananya_Sen_Nursing_Resume.pdf\n\n• Qualification: B.Sc Nursing\n• Registration: State Nursing Council (Active)\n• Skills: ICU Protocols, Medication, IV Therapy\n• Contact: +91 9820012345')" style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume.pdf</a>
+              </td>
+              <td>18 Oct 2026</td>
+              <td><span class="pill-status pill-green">Shortlisted</span></td>
+              <td>
+                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('JOB-801', this.value)">
+                  <option value="Under Review">Under Review</option>
+                  <option value="Shortlisted" selected>Shortlisted</option>
+                  <option value="Interview Scheduled">Interview Scheduled</option>
+                  <option value="Selected">Selected</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="color:#FF922A;">#JOB-802</strong></td>
+              <td><strong>Ananya Sharma</strong></td>
+              <td>Staff Nurse (GNM)</td>
+              <td>GNM Diploma (INC Approved) • Fresher</td>
+              <td>+91 9810022334</td>
+              <td>
+                <a href="javascript:void(0)" onclick="alert('Viewing Verified Resume: Ananya_Sharma_GNM.pdf')" style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume.pdf</a>
+              </td>
+              <td>17 Oct 2026</td>
+              <td><span class="pill-status pill-blue">Interview Scheduled</span></td>
+              <td>
+                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('JOB-802', this.value)">
+                  <option value="Under Review">Under Review</option>
+                  <option value="Shortlisted">Shortlisted</option>
+                  <option value="Interview Scheduled" selected>Interview Scheduled</option>
+                  <option value="Selected">Selected</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="color:#FF922A;">#JOB-803</strong></td>
+              <td><strong>Rahul Nair</strong></td>
+              <td>Front Desk & Patient Coordinator</td>
+              <td>Hotel Mgmt Diploma • 2 Yrs Hosp. Exp</td>
+              <td>+91 9845566778</td>
+              <td>
+                <a href="javascript:void(0)" onclick="alert('Viewing Verified Resume: Rahul_Nair_Hospitality.pdf')" style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume.pdf</a>
+              </td>
+              <td>16 Oct 2026</td>
+              <td><span class="pill-status pill-orange">Under Review</span></td>
+              <td>
+                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('JOB-803', this.value)">
+                  <option value="Under Review" selected>Under Review</option>
+                  <option value="Shortlisted">Shortlisted</option>
+                  <option value="Interview Scheduled">Interview Scheduled</option>
+                  <option value="Selected">Selected</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="color:#FF922A;">#JOB-804</strong></td>
+              <td><strong>Kavita Sen</strong></td>
+              <td>Dialysis & ICU Technician</td>
+              <td>DMLT / Dialysis Cert • 3 Yrs Exp</td>
+              <td>+91 9711004455</td>
+              <td>
+                <a href="javascript:void(0)" onclick="alert('Viewing Verified Resume: Kavita_Sen_Technician.pdf')" style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume.pdf</a>
+              </td>
+              <td>15 Oct 2026</td>
+              <td><span class="pill-status pill-green">Shortlisted</span></td>
+              <td>
+                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('JOB-804', this.value)">
+                  <option value="Under Review">Under Review</option>
+                  <option value="Shortlisted" selected>Shortlisted</option>
+                  <option value="Interview Scheduled">Interview Scheduled</option>
+                  <option value="Selected">Selected</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2: POST NEW JOB VACANCY -->
+    <section class="portal-pane-card" id="pane-post-job" style="display:none;">
+      <div class="pane-header-row">
+        <div>
+          <h2 class="pane-title">Create and Publish a New Job Opening</h2>
+          <span class="pane-sub">Post verified vacancies to SkillOra Job Directory with zero placement charges and instant candidate notifications.</span>
+        </div>
+      </div>
+
+      <form id="form-create-job" onsubmit="event.preventDefault(); handlePublishJob();" style="display:flex;flex-direction:column;gap:16px;">
+        <div class="form-2col-grid">
+          <div class="form-group-wrap">
+            <label for="post-job-title">Job Designation / Title *</label>
+            <input type="text" id="post-job-title" class="auth-input" placeholder="e.g. Senior ICU Staff Nurse / Front Office Executive" required>
+          </div>
+          <div class="form-group-wrap">
+            <label for="post-job-vacancies">Number of Openings *</label>
+            <input type="number" id="post-job-vacancies" class="auth-input" placeholder="e.g. 15" min="1" required>
+          </div>
+        </div>
+
+        <div class="form-2col-grid">
+          <div class="form-group-wrap">
+            <label for="post-job-sector">Industry Sector *</label>
+            <select id="post-job-sector" class="auth-input" required>
+              <option value="Nursing & Healthcare">Nursing & Healthcare</option>
+              <option value="Hospitality & Hotel Mgmt">Hospitality & Hotel Mgmt</option>
+              <option value="Sales & Marketing">Sales & Marketing</option>
+              <option value="Language & Grooming">Language & Grooming</option>
+            </select>
+          </div>
+          <div class="form-group-wrap">
+            <label for="post-job-exp">Experience Level Required *</label>
+            <select id="post-job-exp" class="auth-input" required>
+              <option value="Fresher Welcome (0-1 Year)">Fresher Welcome (0-1 Year)</option>
+              <option value="1 to 3 Years">1 to 3 Years Experience</option>
+              <option value="3 to 5+ Years">3 to 5+ Years Senior Specialist</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-2col-grid">
+          <div class="form-group-wrap">
+            <label for="post-job-salary">Monthly Salary Range *</label>
+            <input type="text" id="post-job-salary" class="auth-input" placeholder="e.g. ₹28,000 – ₹42,000 / month" required>
+          </div>
+          <div class="form-group-wrap">
+            <label for="post-job-location">Job City & State *</label>
+            <input type="text" id="post-job-location" class="auth-input" placeholder="e.g. Lucknow, Uttar Pradesh" required>
+          </div>
+        </div>
+
+        <div class="form-group-wrap">
+          <label for="post-job-desc">Job Requirements & Clinical/Hospitality Responsibilities *</label>
+          <textarea id="post-job-desc" class="auth-input" style="height:90px;padding:10px 14px;resize:vertical;" placeholder="Describe shifts, required council registration (INC/State Council), duty hours, and immediate perks (Accommodation/Food provided)..." required></textarea>
+        </div>
+
+        <button type="submit" class="auth-btn-submit" style="background:#FF922A;width:auto;align-self:flex-start;padding:0 24px;">Publish Verified Vacancy to SkillOra Jobs →</button>
+      </form>
+    </section>
+
+    <!-- TAB 3: MANAGE ACTIVE OPENINGS -->
+    <section class="portal-pane-card" id="pane-active-jobs" style="display:none;">
+      <div class="pane-header-row">
+        <div>
+          <h2 class="pane-title">Currently Published Hospital & Hotel Vacancies</h2>
+          <span class="pane-sub">Track active candidate inflows and toggle recruitment status for each vacancy.</span>
+        </div>
+        <button class="btn btn-primary-btn" style="background:#FF922A;font-size:12.5px;padding:6px 12px;" onclick="showTab('post-job')">+ New Vacancy</button>
+      </div>
+
+      <div class="openings-mgmt-grid" id="openings-grid">
+        <div class="opening-card">
+          <div class="opening-info">
+            <h4>Staff Nurse (GNM / B.Sc)</h4>
+            <p style="font-size:12px;color:#728DA9;margin-bottom:6px;">📍 Lucknow, UP • 25 Vacancies • ₹25k–38k/month</p>
+            <p style="font-size:12px;color:#173C62;"><strong>18 Applicants Received</strong> (6 Shortlisted)</p>
+          </div>
+          <div style="text-align:right;">
+            <span class="pill-status pill-green" style="margin-bottom:8px;">Active</span><br>
+            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Opening paused.')">Pause</button>
+          </div>
+        </div>
+
+        <div class="opening-card">
+          <div class="opening-info">
+            <h4>Senior ICU In-Charge Nurse</h4>
+            <p style="font-size:12px;color:#728DA9;margin-bottom:6px;">📍 Lucknow, UP • 6 Vacancies • ₹35k–50k/month</p>
+            <p style="font-size:12px;color:#173C62;"><strong>9 Applicants Received</strong> (4 Shortlisted)</p>
+          </div>
+          <div style="text-align:right;">
+            <span class="pill-status pill-green" style="margin-bottom:8px;">Active</span><br>
+            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Opening paused.')">Pause</button>
+          </div>
+        </div>
+
+        <div class="opening-card">
+          <div class="opening-info">
+            <h4>Hotel Front Desk & Hospitality Associate</h4>
+            <p style="font-size:12px;color:#728DA9;margin-bottom:6px;">📍 Lucknow, UP • 10 Vacancies • ₹20k–32k/month</p>
+            <p style="font-size:12px;color:#173C62;"><strong>14 Applicants Received</strong> (5 Shortlisted)</p>
+          </div>
+          <div style="text-align:right;">
+            <span class="pill-status pill-green" style="margin-bottom:8px;">Active</span><br>
+            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Opening paused.')">Pause</button>
+          </div>
+        </div>
+
+        <div class="opening-card">
+          <div class="opening-info">
+            <h4>Dialysis & Medical Lab Technician</h4>
+            <p style="font-size:12px;color:#728DA9;margin-bottom:6px;">📍 Lucknow, UP • 8 Vacancies • ₹18k–28k/month</p>
+            <p style="font-size:12px;color:#173C62;"><strong>13 Applicants Received</strong> (4 Shortlisted)</p>
+          </div>
+          <div style="text-align:right;">
+            <span class="pill-status pill-green" style="margin-bottom:8px;">Active</span><br>
+            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Opening paused.')">Pause</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function showTab(tab, btn) {
+      document.getElementById('pane-candidates').style.display = 'none';
+      document.getElementById('pane-post-job').style.display = 'none';
+      document.getElementById('pane-active-jobs').style.display = 'none';
+
+      document.querySelectorAll('.p-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.portal-nav-links a').forEach(a => a.classList.remove('active'));
+
+      if (tab === 'candidates') {
+        document.getElementById('pane-candidates').style.display = 'block';
+        document.getElementById('btn-tab-candidates').classList.add('active');
+      } else if (tab === 'post-job') {
+        document.getElementById('pane-post-job').style.display = 'block';
+        document.getElementById('btn-tab-post-job').classList.add('active');
+      } else if (tab === 'active-jobs') {
+        document.getElementById('pane-active-jobs').style.display = 'block';
+        document.getElementById('btn-tab-active-jobs').classList.add('active');
+      }
+      if (btn) btn.classList.add('active');
+    }
+
+    function updateApplicantStatus(appId, newStatus) {
+      alert(`Applicant #${appId} moved to "${newStatus}". Candidate status updated.`);
+    }
+
+    function filterCandidates(query) {
+      const q = query.toLowerCase();
+      document.querySelectorAll('#candidates-table-body tr').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    function handlePublishJob() {
+      const title = document.getElementById('post-job-title').value;
+      const vac = document.getElementById('post-job-vacancies').value;
+      const salary = document.getElementById('post-job-salary').value;
+      const loc = document.getElementById('post-job-location').value;
+
+      alert(`Job Opening "${title}" (${vac} Openings) successfully published to SkillOra Job Directory!`);
+
+      // Add card to active openings
+      const grid = document.getElementById('openings-grid');
+      const card = document.createElement('div');
+      card.className = 'opening-card';
+      card.innerHTML = `
+        <div class="opening-info">
+          <h4>${title}</h4>
+          <p style="font-size:12px;color:#728DA9;margin-bottom:6px;">📍 ${loc} • ${vac} Vacancies • ${salary}</p>
+          <p style="font-size:12px;color:#173C62;"><strong>0 Applicants Received</strong> (Just published)</p>
+        </div>
+        <div style="text-align:right;">
+          <span class="pill-status pill-green" style="margin-bottom:8px;">Active</span><br>
+          <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Opening paused.')">Pause</button>
+        </div>
+      `;
+      grid.prepend(card);
+
+      document.getElementById('form-create-job').reset();
+      showTab('active-jobs');
+    }
+
+    function handleSignOut() {
+      if (confirm('Sign out of Employer Hiring Portal?')) {
+        localStorage.removeItem('SKILLORA_EMPLOYER_USER');
+        window.location.href = 'auth.html?role=employer';
+      }
+    }
+
+    // Load Employer Session
+    window.onload = function() {
+      const raw = localStorage.getItem('SKILLORA_EMPLOYER_USER');
+      if (!raw) {
+        alert("Please sign in or register your recruiter account to access the Employer Hiring Portal.");
+        window.location.href = "auth.html?role=employer";
+        return;
+      }
+      try {
+        const emp = JSON.parse(raw);
+        if (emp.orgName) {
+            document.getElementById('header-emp-name').textContent = emp.orgName.split(' ')[0] + ' HR';
+            document.getElementById('disp-emp-name').textContent = emp.orgName;
+          }
+          if (emp.location) document.getElementById('disp-emp-location').textContent = emp.location;
+          if (emp.hrName) document.getElementById('disp-emp-hr').textContent = emp.hrName;
+          if (emp.orgType) document.getElementById('disp-emp-type').textContent = emp.orgType;
+        } catch(e) {}
+      }
+    };
+  </script>
+</body>
+</html>

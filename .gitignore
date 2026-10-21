@@ -8,3 +8,6 @@ figma_source/
 *.log
 .env
 *.py
+scratch/
+*.local.js
+config.local.js

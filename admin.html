@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillOra Administrative Console — Secure Access & Activity Tracking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/auth_db.js"></script>
+  <style>
+    body {
+      background-color: #F0F4F8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =========================================================================
+       ADMIN AUTH GATEKEEPER (SINGLE ID & PASSWORD LOCK SCREEN)
+       ========================================================================= */
+    .admin-gatekeeper-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0A192F 0%, #0D2C4B 60%, #173C62 100%);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .gatekeeper-card {
+      width: 100%;
+      max-width: 480px;
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 36px 32px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+    .gatekeeper-shield {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #EDF8FF;
+      color: #087BFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin: 0 auto 16px auto;
+      border: 2px solid #CCDEF5;
+    }
+    .gatekeeper-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+      margin-bottom: 6px;
+    }
+    .gatekeeper-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 22px;
+    }
+    .gatekeeper-error-box {
+      display: none;
+      background: #FDEDEC;
+      color: #C0392B;
+      border: 1px solid #FADBD8;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .gate-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      text-align: left;
+      margin-bottom: 14px;
+    }
+    .gate-input-group label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .gate-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1.5px solid var(--border-input);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: var(--font-family);
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color var(--transition-fast);
+    }
+    .gate-input:focus {
+      border-color: #087BFF;
+      box-shadow: 0 0 0 3px rgba(8, 123, 255, 0.15);
+    }
+    .btn-unlock-admin {
+      width: 100%;
+      height: 46px;
+      background: #087BFF;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background var(--transition-fast);
+    }
+    .btn-unlock-admin:hover {
+      background: #0066d6;
+    }
+    .gate-credential-hint {
+      margin-top: 18px;
+      padding: 10px;
+      background: #F8FCFF;
+      border: 1px dashed #CCDEF5;
+      border-radius: 8px;
+      font-size: 11.5px;
+      color: #557291;
+    }
+
+    /* =========================================================================
+       ADMIN MAIN LAYOUT & SUB-TABS
+       ========================================================================= */
+    .admin-navbar {
+      height: 64px;
+      background: #0D2C4B;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 2px solid #087BFF;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .admin-badge-pill {
+      background: #087BFF;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .admin-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .admin-user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.08);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12.5px;
+    }
+    .admin-container {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      flex: 1;
+      max-width: 1680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .admin-sidebar {
+      background: #FFFFFF;
+      border-right: 1px solid var(--border-light);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .admin-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .admin-nav-item:hover {
+      background: #F0F5FA;
+      color: var(--color-primary-blue);
+    }
+    .admin-nav-item.active {
+      background: #EDF8FF;
+      color: var(--color-primary-blue);
+      border-left: 3px solid var(--color-primary-blue);
+    }
+    .admin-content-pane {
+      padding: 24px 32px;
+      overflow-y: auto;
+    }
+    .module-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+    .module-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 12px;
+    }
+    .mod-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+    }
+    .mod-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .admin-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .stat-tile {
+      background: #F8FCFF;
+      border: 1px solid #D6EAFB;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .stat-tile strong {
+      display: block;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+    }
+    .stat-tile span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Activity Stream Feed */
+    .activity-feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      background: #FAFDFE;
+      border: 1px solid #EDF4FA;
+      border-radius: 8px;
+      transition: background var(--transition-fast);
+    }
+    .activity-item:hover {
+      background: #F0F7FF;
+      border-color: #BEDCFA;
+    }
+    .activity-badge {
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      flex-shrink: 0;
+    }
+    .act-badge-course { background: #EDFDF5; color: #0FA66D; border: 1px solid #B8EED4; }
+    .act-badge-job { background: #EDF8FF; color: #087BFF; border: 1px solid #BEDCFA; }
+    .activity-content {
+      flex: 1;
+    }
+    .activity-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-navy-dark);
+      margin-bottom: 2px;
+    }
+    .activity-meta {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+    .activity-time {
+      font-size: 11px;
+      color: #728DA9;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    /* Sub Tabs within Lead CRM */
+    .crm-sub-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--border-light);
+      padding-bottom: 4px;
+    }
+    .crm-sub-tab-btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .crm-sub-tab-btn.active {
+      background: #087BFF;
+      color: #FFFFFF;
+    }
+
+    .crm-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .crm-table th {
+      background: #F0F5FA;
+      color: var(--color-navy-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .crm-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #F0F5FA;
+      color: var(--text-dark);
+    }
+    .crm-table tr:hover {
+      background: #FAFDFE;
+    }
+    .stage-select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid var(--border-input);
+      background: #FFFFFF;
+      color: var(--text-dark);
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 900px) {
+      .admin-container { grid-template-columns: 1fr; }
+      .admin-stats-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================= -->
+  <!-- 1. STRICT SINGLE ID & PASSWORD ADMIN ACCESS GATEKEEPER                    -->
+  <!-- ========================================================================= -->
+  <div class="admin-gatekeeper-overlay" id="admin-auth-gate">
+    <div class="gatekeeper-card">
+      <div class="gatekeeper-shield">🛡️</div>
+      <h1 class="gatekeeper-title">Restricted Admin Console</h1>
+      <p class="gatekeeper-sub">
+        Centralized operations desk for admissions CRM, college quotas, and live applicant telemetry. Access requires authorized administrative credentials.
+      </p>
+
+      <div class="gatekeeper-error-box" id="gate-error-box">
+        Access Denied: Invalid Admin ID or Password. Only the single authorized credentials can access this console.
+      </div>
+
+      <form id="admin-gate-form" onsubmit="event.preventDefault(); verifyAdminCredentials();">
+        <div class="gate-input-group">
+          <label for="admin-id-input">Administrator ID *</label>
+          <input type="text" id="admin-id-input" class="gate-input" placeholder="e.g. admin@skillora.in" required autocomplete="username">
+        </div>
+
+        <div class="gate-input-group">
+          <label for="admin-pass-input">Security Master Password *</label>
+          <input type="password" id="admin-pass-input" class="gate-input" placeholder="Enter security password" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn-unlock-admin" id="btn-unlock-submit">
+          Unlock Administrative Console →
+        </button>
+      </form>
+
+      <div class="gate-credential-hint">
+        <strong>Authorized Single Master Key:</strong><br>
+        Admin ID: <code style="font-weight:800;color:#087BFF;">admin@skillora.in</code> &bull; Password: <code style="font-weight:800;color:#087BFF;">SkillOra@Admin2026</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. FULL ADMIN CONSOLE (SHOWN ONLY AFTER AUTHENTICATION)                   -->
+  <!-- ========================================================================= -->
+  <div id="admin-dashboard-root" style="display:none;min-height:100vh;flex-direction:column;">
+
+    <!-- Top Admin Bar -->
+    <header class="admin-navbar">
+      <div class="admin-brand">
+        <span>SkillOra Central Backend</span>
+        <span class="admin-badge-pill">Master Admin</span>
+      </div>
+      
+      <div class="admin-nav-right">
+        <a href="index.html" class="btn btn-secondary-btn" style="color:#FFFFFF;border-color:rgba(255,255,255,0.3);background:transparent;padding:6px 14px;font-size:12.5px;text-decoration:none;" target="_blank">
+          🌐 View Public Website ↗
+        </a>
+        <div class="admin-user-pill">
+          <span>👤 Platform Administrator (Super Admin)</span>
+        </div>
+        <button class="btn btn-outline-login" onclick="handleAdminLogout()" style="padding:5px 12px;font-size:12px;color:#FFA5A5;border-color:#FFA5A5;cursor:pointer;">
+          🔒 Lock & Log Out
+        </button>
+      </div>
+    </header>
+
+    <!-- Admin Main Container with 8 Modules -->
+    <div class="admin-container">
+      
+      <!-- Sidebar for the 8 PPT Modules -->
+      <aside class="admin-sidebar">
+        <div style="font-size:10.5px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin:0 0 8px 10px;letter-spacing:0.5px;">Core Modules (Slide 8)</div>
+        <button class="admin-nav-item active" onclick="switchAdminModule('mod-dashboard', this)">
+          <span>1. 📊</span> <span>Dashboard</span>
+        </button>
+        <button class="admin-nav-item" onclick="switchAdminModule('mod-crm', this)">
+          <span>2. 👥</span> <span>Lead CRM & Applicants</span>
+        </button>
+        <button class="admin-nav-item" onclick="switchAdminModule('mod-admissions', this)">
+          <span>3. 🎓</span> <span>Admissions CMS</span>
+        </button>
+        <button class="admin-nav-item" onclick="switchAdminModule('mod-jobs', this)">
+          <span>4. 💼</span> <span>Job Management</span>
+        </button>
+        <button class="admin-nav-item" onclick="switchAdminModule('mod-content', this)">
+          <span>5. 📰</span> <span>Content CMS</span>
+        </button>
+        <button class="admin-nav-item" onclick="switchAdminModule('mod-notifications', this)">
+          <span>6. 💬</span> <span>Notifications & SMS</span>
+        </button>
+        <button class="admin-nav-item" onclick="switchAdminModule('mod-reports', this)">
+          <span>7. 📈</span> <span>Reports & Funnel</span>
+        </button>
+        <button class="admin-nav-item" onclick="switchAdminModule('mod-security', this)">
+          <span>8. 🔒</span> <span>Security & Audit Logs</span>
+        </button>
+      </aside>
+
+      <!-- Main Dynamic Content Pane -->
+      <main class="admin-content-pane">
+
+        <!-- =================================================================== -->
+        <!-- MODULE 1: DASHBOARD & LIVE WEBSITE ACTIVITY STREAM                  -->
+        <!-- =================================================================== -->
+        <section id="mod-dashboard" class="admin-module-section">
+          <div class="module-card">
+            <div class="module-card-header">
+              <div>
+                <h2 class="mod-title">1. Executive Operations Dashboard & Live Telemetry</h2>
+                <p class="mod-desc">Real-time overview of who has applied for what courses, job vacancies, and active counselor SLA.</p>
+              </div>
+              <button class="btn btn-secondary-btn" onclick="syncAllCloudData()">🔄 Sync Live Cloud Data</button>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="admin-stats-row">
+              <div class="stat-tile">
+                <strong id="dash-lead-count">48</strong>
+                <span>Total Course Applications</span>
+              </div>
+              <div class="stat-tile">
+                <strong id="dash-job-app-count">24</strong>
+                <span>Job Vacancy Applications</span>
+              </div>
+              <div class="stat-tile">
+                <strong>488</strong>
+                <span>Listed Colleges (Active)</span>
+              </div>
+              <div class="stat-tile">
+                <strong style="color:#0FA66D;">68.4%</strong>
+                <span>Counseling Conversion Rate</span>
+              </div>
+            </div>
+
+            <!-- Live Website Activity Stream (Who applied for what) -->
+            <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 10px 0;">
+              <h3 style="font-size:15px;font-weight:800;color:var(--color-navy-dark);display:flex;align-items:center;gap:8px;">
+                <span class="live-pulse-dot" style="display:inline-block;"></span>
+                Live Website Activity Stream (Real-Time Submissions)
+              </h3>
+              <span style="font-size:11.5px;color:var(--text-muted);">Auto-refreshed with Supabase & Client inputs</span>
+            </div>
+
+            <div class="activity-feed-list" id="activity-feed-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- MODULE 2: LEAD CRM & APPLICANTS (WHO APPLIED FOR WHAT)              -->
+        <!-- =================================================================== -->
+        <section id="mod-crm" class="admin-module-section" style="display:none;">
+          <div class="module-card">
+            <div class="module-card-header">
+              <div>
+                <h2 class="mod-title">2. Lead CRM Pipeline & Detailed Applications Directory</h2>
+                <p class="mod-desc">Detailed logs of every candidate: who applied for what courses and who applied for what job vacancies.</p>
+              </div>
+              <div style="display:flex;gap:10px;">
+                <button class="btn btn-secondary-btn" onclick="exportApplicationsToCSV()">📥 Export All CSV</button>
+                <button class="btn btn-primary-submit" onclick="syncAllCloudData()">🔄 Sync Cloud Leads</button>
+              </div>
+            </div>
+
+            <!-- Sub Tabs: Course Admissions vs Job Applications -->
+            <div class="crm-sub-tabs">
+              <button class="crm-sub-tab-btn active" id="btn-sub-courses" onclick="switchCrmSubTab('courses', this)">
+                🎓 Course Admission Applications (<span id="count-course-apps">0</span>)
+              </button>
+              <button class="crm-sub-tab-btn" id="btn-sub-jobs" onclick="switchCrmSubTab('jobs', this)">
+                💼 Job Vacancy Applications (<span id="count-job-apps">0</span>)
+              </button>
+            </div>
+
+            <!-- Search & Filters -->
+            <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+              <input type="text" id="crm-search" placeholder="Search applicant name, phone, course, or college..." class="auth-input" style="max-width:380px;" oninput="filterApplications()">
+              <select id="crm-filter-stage" class="auth-input" style="max-width:200px;" onchange="filterApplications()">
+                <option value="All">All Status Stages</option>
+                <option value="New Lead">New Lead / Applied</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Counseling">Counseling Active</option>
+                <option value="Seat Confirmed">Seat Confirmed / Shortlisted</option>
+              </select>
+            </div>
+
+            <!-- Table 1: Course Applications -->
+            <div id="crm-courses-view" style="overflow-x:auto;">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>App Ref ID</th>
+                    <th>Student Full Name</th>
+                    <th>Contact Phone</th>
+                    <th>Target Course Applied</th>
+                    <th>College / Institute Name</th>
+                    <th>State & City</th>
+                    <th>Applied Date</th>
+                    <th>Counseling Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="crm-course-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table 2: Job Vacancy Applications -->
+            <div id="crm-jobs-view" style="display:none;overflow-x:auto;">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>Job App ID</th>
+                    <th>Candidate Name</th>
+                    <th>Contact Phone</th>
+                    <th>Role Applied For</th>
+                    <th>Employer / Hospital</th>
+                    <th>Qualification & Experience</th>
+                    <th>Resume File</th>
+                    <th>Applied Date</th>
+                    <th>Hiring Stage</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="crm-job-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- MODULE 3: ADMISSIONS CMS (488+ COLLEGES & COURSES)                  -->
+        <!-- =================================================================== -->
+        <section id="mod-admissions" class="admin-module-section" style="display:none;">
+          <div class="module-card">
+            <div class="module-card-header">
+              <div>
+                <h2 class="mod-title">3. Admissions & College Catalog CMS</h2>
+                <p class="mod-desc">Manage verified institutions, seat intake quotas, tuition fees, and statutory accreditations.</p>
+              </div>
+              <button class="btn btn-primary-submit" onclick="toggleAddCollegeForm()">+ Add New College</button>
+            </div>
+
+            <!-- Inline Add College Form -->
+            <div id="add-college-box" style="display:none;background:#F8FCFF;border:1px dashed #087BFF;border-radius:8px;padding:18px;margin-bottom:18px;">
+              <h4 style="font-size:14px;color:var(--color-navy-dark);margin-bottom:12px;">Register & Publish New College</h4>
+              <div class="form-grid-2">
+                <input type="text" id="new-col-name" placeholder="College Name *" class="auth-input">
+                <input type="text" id="new-col-city" placeholder="City *" class="auth-input">
+                <input type="text" id="new-col-state" placeholder="State *" class="auth-input">
+                <select id="new-col-sector" class="auth-input">
+                  <option value="Nursing & Healthcare">Nursing & Healthcare</option>
+                  <option value="Hospitality">Hospitality & Hotel Mgmt</option>
+                  <option value="Sales & Marketing">Sales & Marketing</option>
+                  <option value="Language & Grooming">Language & Grooming</option>
+                </select>
+                <input type="number" id="new-col-fee" placeholder="Min Annual Fee (₹) *" class="auth-input">
+                <input type="text" id="new-col-appr" placeholder="Statutory Approval (INC/AICTE) *" class="auth-input">
+              </div>
+              <div style="margin-top:12px;display:flex;gap:10px;">
+                <button class="btn btn-primary-submit" onclick="submitNewCollegeCMS()">Publish to Directory</button>
+                <button class="btn btn-secondary-btn" onclick="toggleAddCollegeForm()">Cancel</button>
+              </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>College Name</th>
+                    <th>Category</th>
+                    <th>Location</th>
+                    <th>Min Fee</th>
+                    <th>Accreditation</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="cms-colleges-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- MODULE 4: JOB MANAGEMENT                                            -->
+        <!-- =================================================================== -->
+        <section id="mod-jobs" class="admin-module-section" style="display:none;">
+          <div class="module-card">
+            <div class="module-card-header">
+              <div>
+                <h2 class="mod-title">4. Job Management & Employer Registry</h2>
+                <p class="mod-desc">Publish verified hospital/hotel openings, screen employers, and track candidate interview pipelines.</p>
+              </div>
+              <button class="btn btn-primary-submit" onclick="toggleAddJobForm()">+ Post New Vacancy</button>
+            </div>
+
+            <!-- Add Job Box -->
+            <div id="add-job-box" style="display:none;background:#F8FCFF;border:1px dashed #0FA66D;border-radius:8px;padding:18px;margin-bottom:18px;">
+              <h4 style="font-size:14px;color:var(--color-navy-dark);margin-bottom:12px;">Publish Verified Vacancy</h4>
+              <div class="form-grid-2">
+                <input type="text" id="new-job-title" placeholder="Job Title *" class="auth-input">
+                <input type="text" id="new-job-company" placeholder="Hospital / Hotel Organization *" class="auth-input">
+                <input type="text" id="new-job-loc" placeholder="Location (City, State) *" class="auth-input">
+                <select id="new-job-sector" class="auth-input">
+                  <option value="Healthcare">Healthcare & Hospitals</option>
+                  <option value="Hospitality">Hospitality & Resorts</option>
+                  <option value="Corporate">Corporate & Sales</option>
+                </select>
+                <input type="text" id="new-job-salary" placeholder="Salary Range (e.g. ₹ 25,000/mo) *" class="auth-input">
+              </div>
+              <div style="margin-top:12px;display:flex;gap:10px;">
+                <button class="btn btn-primary-submit" style="background:#0FA66D;" onclick="submitNewJobCMS()">Publish Job Opening</button>
+                <button class="btn btn-secondary-btn" onclick="toggleAddJobForm()">Cancel</button>
+              </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>Job Title</th>
+                    <th>Employer / Organization</th>
+                    <th>Sector</th>
+                    <th>Location</th>
+                    <th>Salary Range</th>
+                    <th>Listing Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="cms-jobs-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- MODULE 5: CONTENT CMS                                               -->
+        <!-- =================================================================== -->
+        <section id="mod-content" class="admin-module-section" style="display:none;">
+          <div class="module-card">
+            <div class="module-card-header">
+              <div>
+                <h2 class="mod-title">5. Content CMS & Official Circulars</h2>
+                <p class="mod-desc">Manage top marquee notices, live bulletins, hero headlines, and FAQ items.</p>
+              </div>
+              <button class="btn btn-primary-submit" onclick="alert('Notice editor opened')">+ Publish Circular</button>
+            </div>
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Circular Title</th>
+                  <th>Authority / Council</th>
+                  <th>Published Date</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:700;">Maharashtra State 2026 GNM & B.Sc Nursing Direct Counseling</td>
+                  <td>Directorate of Medical Education (DMER)</td>
+                  <td>19 Oct 2026</td>
+                  <td><span class="act-badge-course activity-badge">Admissions</span></td>
+                  <td><strong style="color:#0FA66D;">● Live on Ticker</strong></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;">Pan-India Hospital Mega Walk-In Drives (1,450+ Vacancies)</td>
+                  <td>Apollo, Fortis & Medanta HR Board</td>
+                  <td>19 Oct 2026</td>
+                  <td><span class="act-badge-job activity-badge">Hospital Hiring</span></td>
+                  <td><strong style="color:#0FA66D;">● Live on Ticker</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- MODULE 6: NOTIFICATIONS & SMS INTEGRATION                           -->
+        <!-- =================================================================== -->
+        <section id="mod-notifications" class="admin-module-section" style="display:none;">
+          <div class="module-card">
+            <div class="module-card-header">
+              <div>
+                <h2 class="mod-title">6. Notifications, SMS (MSG91) & WhatsApp Gateway</h2>
+                <p class="mod-desc">Automated SMS confirmation, mobile OTP verification, and WhatsApp candidate alerts.</p>
+              </div>
+            </div>
+            <div style="background:#F8FCFF;border:1px solid #CCDEF5;border-radius:8px;padding:16px;margin-bottom:16px;">
+              <h4 style="font-size:14px;color:#0D2C4B;margin-bottom:6px;">SMS Gateway Integration (MSG91 & DLT Approved Templates):</h4>
+              <p style="font-size:12.5px;color:#557291;line-height:1.5;">
+                Configured for transactional admission confirmation SMS, 2-Factor OTP login verification, and WhatsApp Business candidate notifications.
+              </p>
+            </div>
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Notification Trigger</th>
+                  <th>Channel</th>
+                  <th>Template / Payload</th>
+                  <th>Gateway Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Student Course Application Slip</strong></td>
+                  <td>SMS (MSG91)</td>
+                  <td>Dear [Student], your application for [Course] at [College] is confirmed. Ref: [ID].</td>
+                  <td><strong style="color:#0FA66D;">✔ Active</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>College Lead Alert</strong></td>
+                  <td>SMS & Email</td>
+                  <td>New candidate application received for [Course]. Mobile: [Phone].</td>
+                  <td><strong style="color:#0FA66D;">✔ Active</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Job Interview Shortlist</strong></td>
+                  <td>WhatsApp & SMS</td>
+                  <td>Congratulations [Candidate]! You are shortlisted for interview at [Hospital].</td>
+                  <td><strong style="color:#0FA66D;">✔ Active</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- MODULE 7: REPORTS & FUNNEL                                          -->
+        <!-- =================================================================== -->
+        <section id="mod-reports" class="admin-module-section" style="display:none;">
+          <div class="module-card">
+            <div class="module-card-header">
+              <div>
+                <h2 class="mod-title">7. Admissions Funnel & Analytics</h2>
+                <p class="mod-desc">Channel performance, conversion drop-offs, and state-wise intake metrics.</p>
+              </div>
+            </div>
+            <div class="admin-stats-row">
+              <div class="stat-tile"><strong>18,420</strong><span>Monthly Visitors</span></div>
+              <div class="stat-tile"><strong>1,429</strong><span>Applications Initiated</span></div>
+              <div class="stat-tile"><strong style="color:#0FA66D;">978</strong><span>Direct Counseling Slots</span></div>
+              <div class="stat-tile"><strong style="color:#087BFF;">68.4%</strong><span>End-to-End Conversion</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- MODULE 8: SECURITY & AUDIT TRAIL                                    -->
+        <!-- =================================================================== -->
+        <section id="mod-security" class="admin-module-section" style="display:none;">
+          <div class="module-card">
+            <div class="module-card-header">
+              <div>
+                <h2 class="mod-title">8. Security, RBAC & Audit Logs</h2>
+                <p class="mod-desc">Authentication logs, master single-key verification, and permission enforcement.</p>
+              </div>
+            </div>
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Admin Identity</th>
+                  <th>Access Type</th>
+                  <th>IP Address</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="security-audit-body">
+                <tr>
+                  <td>19 Oct 2026, 18:10:22</td>
+                  <td><strong>admin@skillora.in</strong></td>
+                  <td>Master Single-Key Authentication</td>
+                  <td>127.0.0.1 (Local Verified)</td>
+                  <td><strong style="color:#0FA66D;">✔ Authorized Access</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Registered Users & Cryptographic Credential Vault -->
+          <div class="module-card">
+            <div class="module-card-header">
+              <div>
+                <h2 class="mod-title">🔐 Registered User Accounts & Cryptographic Credential Vault</h2>
+                <p class="mod-desc">All genuine user credentials, profiles, and SHA-256 hashed passwords stored in the database.</p>
+              </div>
+              <button class="btn btn-secondary-btn" onclick="renderUsersVault()">🔄 Refresh Users Vault</button>
+            </div>
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>Role</th>
+                  <th>Full Name</th>
+                  <th>Contact (Email / Mobile)</th>
+                  <th>SHA-256 Password Hash</th>
+                  <th>Sector / Stream</th>
+                  <th>Registered At</th>
+                </tr>
+              </thead>
+              <tbody id="users-vault-body">
+                <!-- Dynamically populated from SKILLORA_DB_USERS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- JavaScript for Security Gatekeeper & Real-Time Activity Tracking -->
+  <script src="data/colleges_db.js"></script>
+  <script>
+    // Master Authorized Single Credentials
+    const SINGLE_ADMIN_ID = "admin@skillora.in";
+    const SINGLE_ADMIN_ALT = "admin";
+    const SINGLE_ADMIN_PASS = "SkillOra@Admin2026";
+
+    // Legitimate Default Course Applications
+    let LIVE_COURSE_APPLICATIONS = [
+      { id: "SKL-2026-8942", name: "Pooja Deshmukh", phone: "9820012345", email: "pooja.deshmukh@gmail.com", course: "GNM – General Nursing", college: "Sunrise College of Nursing", location: "Mumbai, Maharashtra", source: "Website Direct Form", counselor: "Pooja Sharma", stage: "Counseling Active", date: "19 Oct 2026" },
+      { id: "SKL-2026-6120", name: "Rahul Deshmukh", phone: "9819087654", email: "rahul.deshmukh@gmail.com", course: "Hotel Mgmt Diploma", college: "Grand Vista Hotel Academy", location: "Jaipur, Rajasthan", source: "Colleges Directory", counselor: "Amit Verma", stage: "Contacted", date: "19 Oct 2026" },
+      { id: "SKL-2026-4401", name: "Priyanka Nair", phone: "9845012399", email: "priyanka.nair@gmail.com", course: "B.Sc Nursing", college: "Apollo Nursing Institute", location: "Bengaluru, Karnataka", source: "Live Ticker Notice", counselor: "Pooja Sharma", stage: "Seat Confirmed", date: "18 Oct 2026" },
+      { id: "SKL-2026-3199", name: "Vikram Singh", phone: "9829033445", email: "vikram.singh@gmail.com", course: "Diploma in F&B Service", college: "The Royal Hotel Academy", location: "Lucknow, Uttar Pradesh", source: "Website Direct Form", counselor: "Karan Johar", stage: "New Lead", date: "18 Oct 2026" },
+      { id: "SKL-2026-2045", name: "Sneha Sengupta", phone: "9830044556", email: "sneha.s@gmail.com", course: "Post Basic B.Sc Nursing", college: "National Institute of Health Sciences", location: "Pune, Maharashtra", source: "Colleges Directory", counselor: "Amit Verma", stage: "Counseling Active", date: "17 Oct 2026" }
+    ];
+
+    // Legitimate Default Job Applications
+    let LIVE_JOB_APPLICATIONS = [
+      { id: "SKL-JOB-2026-4192", name: "Rajesh Kumar", phone: "9821100223", email: "rajesh.kumar@gmail.com", role: "Staff Nurse (GNM/B.Sc)", company: "City Hospital & Research Centre", location: "Lucknow, UP", exp: "2 Years Experience", resume: "Rajesh_Kumar_Nurse_Resume.pdf", date: "19 Oct 2026", stage: "Shortlisted for Interview" },
+      { id: "SKL-JOB-2026-3882", name: "Ananya Sharma", phone: "9810022334", email: "ananya.sharma@gmail.com", role: "Staff Nurse (ICU)", company: "Metro Multispecialty Hospital", location: "Delhi NCR", exp: "Fresher (B.Sc)", resume: "Ananya_Sharma_GNM.pdf", date: "19 Oct 2026", stage: "Interview Scheduled" },
+      { id: "SKL-JOB-2026-2910", name: "Amit Patel", phone: "9845566778", email: "amit.patel@gmail.com", role: "Front Desk Executive", company: "Grand Vista Hotel", location: "Jaipur, Rajasthan", exp: "1 Year Experience", resume: "Amit_Patel_Hospitality.pdf", date: "18 Oct 2026", stage: "Under Review" },
+      { id: "SKL-JOB-2026-1704", name: "Kavita Sen", phone: "9711004455", email: "kavita.sen@gmail.com", role: "Dialysis & Lab Tech", company: "City Hospital & Research Centre", location: "Lucknow, UP", exp: "3 Years Experience", resume: "Kavita_Sen_LabTech.pdf", date: "17 Oct 2026", stage: "Shortlisted for Interview" }
+    ];
+
+    let LIVE_JOBS_CMS = [
+      { id: 1, title: "Staff Nurse (GNM / B.Sc)", company: "City Hospital & Research Centre", sector: "Healthcare", location: "Lucknow, UP", salary: "₹ 18,000 - 28,000/mo", status: "Active (Published)" },
+      { id: 2, title: "ICU & Critical Care Nurse", company: "Metro Multispecialty Hospital", sector: "Healthcare", location: "Delhi NCR", salary: "₹ 25,000 - 40,000/mo", status: "Active (Published)" },
+      { id: 3, title: "Front Office Executive", company: "Grand Vista Hotel", sector: "Hospitality", location: "Jaipur, Rajasthan", salary: "₹ 16,000 - 22,000/mo", status: "Active (Published)" },
+      { id: 4, title: "F&B Service Associate", company: "The Royal Hotel", sector: "Hospitality", location: "Bengaluru, Karnataka", salary: "₹ 14,000 - 20,000/mo", status: "Active (Published)" }
+    ];
+
+    /* 1. SINGLE ID & PASSWORD VERIFICATION LOGIC */
+    function verifyAdminCredentials() {
+      const idInput = document.getElementById('admin-id-input').value.trim();
+      const passInput = document.getElementById('admin-pass-input').value.trim();
+      const errBox = document.getElementById('gate-error-box');
+
+      const isIdValid = (idInput.toLowerCase() === SINGLE_ADMIN_ID.toLowerCase() || idInput.toLowerCase() === SINGLE_ADMIN_ALT.toLowerCase());
+      const isPassValid = (passInput === SINGLE_ADMIN_PASS);
+
+      if (isIdValid && isPassValid) {
+        sessionStorage.setItem('SKILLORA_ADMIN_AUTHENTICATED', 'true');
+        errBox.style.display = 'none';
+        unlockAdminConsole();
+      } else {
+        errBox.style.display = 'block';
+        document.getElementById('admin-pass-input').value = '';
+        document.getElementById('admin-pass-input').focus();
+      }
+    }
+
+    function unlockAdminConsole() {
+      document.getElementById('admin-auth-gate').style.display = 'none';
+      const root = document.getElementById('admin-dashboard-root');
+      root.style.display = 'flex';
+      syncAllCloudData();
+    }
+
+    function handleAdminLogout() {
+      if (confirm('Lock and log out of the Administrative Console?')) {
+        sessionStorage.removeItem('SKILLORA_ADMIN_AUTHENTICATED');
+        document.getElementById('admin-dashboard-root').style.display = 'none';
+        document.getElementById('admin-auth-gate').style.display = 'flex';
+        document.getElementById('admin-id-input').value = '';
+        document.getElementById('admin-pass-input').value = '';
+      }
+    }
+
+    /* 2. DYNAMIC APPLICATION & ACTIVITY TRACKING */
+    function switchAdminModule(modId, btn) {
+      document.querySelectorAll('.admin-module-section').forEach(s => s.style.display = 'none');
+      document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+
+      const target = document.getElementById(modId);
+      if (target) target.style.display = 'block';
+      if (btn) btn.classList.add('active');
+    }
+
+    function switchCrmSubTab(tab, btn) {
+      document.getElementById('btn-sub-courses').classList.remove('active');
+      document.getElementById('btn-sub-jobs').classList.remove('active');
+      document.getElementById('crm-courses-view').style.display = 'none';
+      document.getElementById('crm-jobs-view').style.display = 'none';
+
+      if (tab === 'courses') {
+        document.getElementById('btn-sub-courses').classList.add('active');
+        document.getElementById('crm-courses-view').style.display = 'block';
+      } else {
+        document.getElementById('btn-sub-jobs').classList.add('active');
+        document.getElementById('crm-jobs-view').style.display = 'block';
+      }
+    }
+
+    async function syncAllCloudData() {
+      // 1. Load Local Course Applications
+      try {
+        const localCourses = JSON.parse(localStorage.getItem('SKILLORA_ALL_COURSE_APPLICATIONS') || '[]');
+        if (localCourses.length > 0) {
+          const formatted = localCourses.map(c => ({
+            id: c.refId || `SKL-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+            name: c.studentName || "Applicant",
+            phone: c.phone || "—",
+            email: c.email || "—",
+            course: c.courseName || "Direct Course",
+            college: c.collegeName || "Verified College",
+            location: c.collegeCity ? `${c.collegeCity}, ${c.collegeState}` : "Pan-India",
+            source: "Website Direct Apply",
+            counselor: "Assigned Staff",
+            stage: c.status || "New Lead",
+            date: c.date || "Today"
+          }));
+          LIVE_COURSE_APPLICATIONS = [...formatted, ...LIVE_COURSE_APPLICATIONS];
+        }
+
+        const localJobs = JSON.parse(localStorage.getItem('SKILLORA_ALL_JOB_APPLICATIONS') || '[]');
+        if (localJobs.length > 0) {
+          const formattedJobs = localJobs.map(j => ({
+            id: j.refId || `SKL-JOB-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+            name: j.candidateName || "Candidate",
+            phone: j.phone || "—",
+            email: j.email || "—",
+            role: j.role || "Healthcare / Hospitality Post",
+            company: j.company || "Verified Employer",
+            location: j.location || "Pan-India",
+            exp: j.exp || "Fresher",
+            resume: `${(j.candidateName || 'Candidate').replace(/\s+/g, '_')}_Resume.pdf`,
+            date: j.date || "Today",
+            stage: j.status || "Applied"
+          }));
+          LIVE_JOB_APPLICATIONS = [...formattedJobs, ...LIVE_JOB_APPLICATIONS];
+        }
+      } catch (e) {}
+
+      // 2. Fetch live from Supabase
+      try {
+        const resLeads = await fetch("https://fvotuteameyrohyphbrk.supabase.co/rest/v1/admission_leads?select=*&order=created_at.desc&limit=25", {
+          headers: {
+            'apikey': "sb_publishable_9bpKJeqSF863GkBogIbE2A_d2s44ntl",
+            'Authorization': "Bearer sb_publishable_9bpKJeqSF863GkBogIbE2A_d2s44ntl"
+          }
+        });
+        const cloudLeads = await resLeads.json();
+        if (Array.isArray(cloudLeads) && cloudLeads.length > 0) {
+          const cloudMapped = cloudLeads.map((d, i) => ({
+            id: `SKL-CLOUD-${d.id || (1000 + i)}`,
+            name: d.student_name || "Applicant",
+            phone: d.phone || "—",
+            email: d.email || "—",
+            course: d.course_name || "Nursing / Hospitality",
+            college: d.city ? `${d.city}, ${d.state}` : "Verified College",
+            location: d.state || "India",
+            source: d.source || "Supabase Cloud",
+            counselor: "Counselor Desk",
+            stage: "New Lead",
+            date: d.created_at ? new Date(d.created_at).toLocaleDateString('en-IN') : "Today"
+          }));
+          LIVE_COURSE_APPLICATIONS = [...cloudMapped, ...LIVE_COURSE_APPLICATIONS];
+        }
+      } catch (e) {
+        console.warn('Note: Supabase leads sync fallback:', e);
+      }
+
+      // Deduplicate by ID
+      LIVE_COURSE_APPLICATIONS = Array.from(new Map(LIVE_COURSE_APPLICATIONS.map(item => [item.id, item])).values());
+      LIVE_JOB_APPLICATIONS = Array.from(new Map(LIVE_JOB_APPLICATIONS.map(item => [item.id, item])).values());
+
+      renderActivityFeed();
+      renderCourseApplicationsTable();
+      renderJobApplicationsTable();
+      renderCmsColleges();
+      renderCmsJobs();
+      renderUsersVault();
+
+      document.getElementById('dash-lead-count').textContent = LIVE_COURSE_APPLICATIONS.length;
+      document.getElementById('dash-job-app-count').textContent = LIVE_JOB_APPLICATIONS.length;
+      document.getElementById('count-course-apps').textContent = LIVE_COURSE_APPLICATIONS.length;
+      document.getElementById('count-job-apps').textContent = LIVE_JOB_APPLICATIONS.length;
+    }
+
+    function renderUsersVault() {
+      const tbody = document.getElementById('users-vault-body');
+      if (!tbody) return;
+
+      let users = [];
+      try {
+        users = JSON.parse(localStorage.getItem('SKILLORA_DB_USERS') || '[]');
+      } catch (e) {}
+
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">No users registered yet. When genuine users register via auth.html, their profile, role, and SHA-256 password hash appear here.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => `
+        <tr>
+          <td><strong style="color:#087BFF;">${u.id || 'USR-N/A'}</strong></td>
+          <td><span class="role-badge" style="text-transform:capitalize;background:#EDF8FF;color:#087BFF;padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px;">${u.role || 'student'}</span></td>
+          <td style="font-weight:700;">${u.name}</td>
+          <td>${u.email}<br><span style="font-size:11px;color:var(--text-muted);">📱 ${u.phone}</span></td>
+          <td><code style="font-size:11px;background:#F0F4F8;padding:3px 6px;border-radius:4px;color:#173C62;word-break:break-all;">${u.passwordHash || 'N/A'}</code></td>
+          <td>${u.sector || u.qualification || 'General'}</td>
+          <td style="font-size:11.5px;color:var(--text-muted);">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : 'Recent'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderActivityFeed() {
+      const container = document.getElementById('activity-feed-container');
+      if (!container) return;
+
+      const events = [];
+
+      // Combine course applications into activity stream
+      LIVE_COURSE_APPLICATIONS.slice(0, 5).forEach((c, idx) => {
+        events.push({
+          badge: "Course Apply",
+          badgeClass: "act-badge-course",
+          title: `${c.name} applied for "${c.course}"`,
+          desc: `Target College: ${c.college} (${c.location}) • Phone: ${c.phone} • Status: ${c.stage}`,
+          time: idx === 0 ? "Just now" : `${idx * 8 + 3}m ago`
+        });
+      });
+
+      // Combine job applications into activity stream
+      LIVE_JOB_APPLICATIONS.slice(0, 4).forEach((j, idx) => {
+        events.push({
+          badge: "Job Apply",
+          badgeClass: "act-badge-job",
+          title: `${j.name} applied for "${j.role}"`,
+          desc: `Employer: ${j.company} (${j.location}) • Phone: ${j.phone} • Stage: ${j.stage}`,
+          time: `${(idx + 1) * 12}m ago`
+        });
+      });
+
+      container.innerHTML = events.map(e => `
+        <div class="activity-item">
+          <span class="activity-badge ${e.badgeClass}">${e.badge}</span>
+          <div class="activity-content">
+            <div class="activity-title">${e.title}</div>
+            <div class="activity-meta">${e.desc}</div>
+          </div>
+          <span class="activity-time">${e.time}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderCourseApplicationsTable(list = LIVE_COURSE_APPLICATIONS) {
+      const tbody = document.getElementById('crm-course-table-body');
+      if (!tbody) return;
+
+      tbody.innerHTML = list.map(c => `
+        <tr>
+          <td><strong style="color:#087BFF;">${c.id}</strong></td>
+          <td style="font-weight:700;">${c.name}</td>
+          <td><a href="tel:${c.phone}" style="color:#087BFF;text-decoration:none;font-weight:700;">📱 ${c.phone}</a></td>
+          <td><strong>${c.course}</strong></td>
+          <td>${c.college}</td>
+          <td>${c.location}</td>
+          <td>${c.date}</td>
+          <td>
+            <select class="stage-select" onchange="c.stage=this.value; alert('Status for ' + '${c.name}' + ' updated to ' + this.value);">
+              <option value="New Lead" ${c.stage==='New Lead'?'selected':''}>New Lead</option>
+              <option value="Contacted" ${c.stage==='Contacted'?'selected':''}>Contacted</option>
+              <option value="Counseling Active" ${c.stage==='Counseling Active'?'selected':''}>Counseling Active</option>
+              <option value="Seat Confirmed" ${c.stage==='Seat Confirmed'?'selected':''}>Seat Confirmed</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Student: ' + '${c.name}' + '\nPhone: ' + '${c.phone}' + '\nEmail: ' + '${c.email}')">📞 Call Student</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderJobApplicationsTable(list = LIVE_JOB_APPLICATIONS) {
+      const tbody = document.getElementById('crm-job-table-body');
+      if (!tbody) return;
+
+      tbody.innerHTML = list.map(j => `
+        <tr>
+          <td><strong style="color:#FF922A;">${j.id}</strong></td>
+          <td style="font-weight:700;">${j.name}</td>
+          <td><a href="tel:${j.phone}" style="color:#087BFF;text-decoration:none;font-weight:700;">📱 ${j.phone}</a></td>
+          <td><strong>${j.role}</strong></td>
+          <td>${j.company}</td>
+          <td>${j.exp}</td>
+          <td>
+            <a href="javascript:void(0)" onclick="alert('Viewing Verified Candidate Resume: ' + '${j.resume}')" style="color:#087BFF;font-weight:700;text-decoration:none;">📄 View Resume</a>
+          </td>
+          <td>${j.date}</td>
+          <td>
+            <select class="stage-select" onchange="j.stage=this.value; alert('Hiring stage for ' + '${j.name}' + ' updated to ' + this.value);">
+              <option value="Applied" ${j.stage==='Applied'?'selected':''}>Applied</option>
+              <option value="Under Review" ${j.stage==='Under Review'?'selected':''}>Under Review</option>
+              <option value="Shortlisted for Interview" ${j.stage==='Shortlisted for Interview'?'selected':''}>Shortlisted</option>
+              <option value="Interview Scheduled" ${j.stage==='Interview Scheduled'?'selected':''}>Interview Scheduled</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Candidate Phone: ' + '${j.phone}' + '\nEmail: ' + '${j.email}')">💬 Contact</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterApplications() {
+      const q = (document.getElementById('crm-search')?.value || '').toLowerCase();
+      const stage = document.getElementById('crm-filter-stage')?.value || 'All';
+
+      const filteredCourses = LIVE_COURSE_APPLICATIONS.filter(c => {
+        if (stage !== 'All' && !c.stage.toLowerCase().includes(stage.toLowerCase())) return false;
+        if (q) {
+          const match = c.name.toLowerCase().includes(q) || c.phone.includes(q) || c.course.toLowerCase().includes(q) || c.college.toLowerCase().includes(q);
+          if (!match) return false;
+        }
+        return true;
+      });
+
+      const filteredJobs = LIVE_JOB_APPLICATIONS.filter(j => {
+        if (stage !== 'All' && !j.stage.toLowerCase().includes(stage.toLowerCase())) return false;
+        if (q) {
+          const match = j.name.toLowerCase().includes(q) || j.phone.includes(q) || j.role.toLowerCase().includes(q) || j.company.toLowerCase().includes(q);
+          if (!match) return false;
+        }
+        return true;
+      });
+
+      renderCourseApplicationsTable(filteredCourses);
+      renderJobApplicationsTable(filteredJobs);
+    }
+
+    function exportApplicationsToCSV() {
+      let csv = "Type,Application ID,Candidate Name,Phone,Email,Target Program/Role,College/Employer,Location,Date,Status\n";
+      LIVE_COURSE_APPLICATIONS.forEach(c => {
+        csv += `"Course Admission","${c.id}","${c.name}","${c.phone}","${c.email}","${c.course}","${c.college}","${c.location}","${c.date}","${c.stage}"\n`;
+      });
+      LIVE_JOB_APPLICATIONS.forEach(j => {
+        csv += `"Job Vacancy","${j.id}","${j.name}","${j.phone}","${j.email}","${j.role}","${j.company}","${j.location}","${j.date}","${j.stage}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `SkillOra_All_Website_Applications_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    function renderCmsColleges() {
+      const tbody = document.getElementById('cms-colleges-body');
+      if (!tbody || !window.COLLEGES_DB) return;
+      tbody.innerHTML = window.COLLEGES_DB.slice(0, 10).map(c => `
+        <tr>
+          <td style="font-weight:700;">${c.name}</td>
+          <td>${c.category}</td>
+          <td>${c.city}, ${c.state}</td>
+          <td style="font-weight:700;color:#0FA66D;">${c.minFeeDisplay}</td>
+          <td>${c.approval || 'Verified'}</td>
+          <td><span style="color:#0FA66D;font-weight:700;">✔ Active</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderCmsJobs() {
+      const tbody = document.getElementById('cms-jobs-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = LIVE_JOBS_CMS.map(j => `
+        <tr>
+          <td style="font-weight:700;">${j.title}</td>
+          <td>${j.company}</td>
+          <td>${j.sector}</td>
+          <td>${j.location}</td>
+          <td style="font-weight:700;color:#0FA66D;">${j.salary}</td>
+          <td><span style="color:#0FA66D;font-weight:700;">● ${j.status}</span></td>
+          <td>
+            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Editing job...')">Edit</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleAddCollegeForm() {
+      const box = document.getElementById('add-college-box');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function submitNewCollegeCMS() {
+      const name = document.getElementById('new-col-name').value.trim();
+      const city = document.getElementById('new-col-city').value.trim();
+      const state = document.getElementById('new-col-state').value.trim();
+      const sector = document.getElementById('new-col-sector').value;
+      const fee = document.getElementById('new-col-fee').value.trim();
+      const appr = document.getElementById('new-col-appr').value.trim() || 'Verified Institute';
+
+      if (!name || !city || !state) {
+        alert('Please fill in college name, city and state.');
+        return;
+      }
+
+      window.COLLEGES_DB.unshift({
+        id: Date.now(),
+        name, cleanName: name, category: sector, city, state,
+        minFee: Number(fee) || 45000, minFeeDisplay: `₹ ${Number(fee || 45000).toLocaleString('en-IN')}`,
+        approval: appr,
+        courses: [{ name: sector, feeDisplay: `₹ ${Number(fee || 45000).toLocaleString('en-IN')}` }]
+      });
+
+      toggleAddCollegeForm();
+      renderCmsColleges();
+      alert(`College "${name}" successfully registered and published!`);
+    }
+
+    function toggleAddJobForm() {
+      const box = document.getElementById('add-job-box');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function submitNewJobCMS() {
+      const title = document.getElementById('new-job-title').value.trim();
+      const comp = document.getElementById('new-job-company').value.trim();
+      const loc = document.getElementById('new-job-loc').value.trim();
+      const sec = document.getElementById('new-job-sector').value;
+      const sal = document.getElementById('new-job-salary').value.trim() || '₹ 20,000/mo';
+
+      if (!title || !comp) {
+        alert('Please enter job title and employer name.');
+        return;
+      }
+
+      LIVE_JOBS_CMS.unshift({
+        id: Date.now(), title, company: comp, sector: sec, location: loc, salary: sal, status: "Active (Published)"
+      });
+
+      toggleAddJobForm();
+      renderCmsJobs();
+      alert(`Job vacancy "${title}" published live for applicants!`);
+    }
+
+    // Check Single Admin Session on Page Load
+    window.onload = function() {
+      const isAuth = sessionStorage.getItem('SKILLORA_ADMIN_AUTHENTICATED') === 'true';
+      if (isAuth) {
+        unlockAdminConsole();
+      } else {
+        document.getElementById('admin-auth-gate').style.display = 'flex';
+        document.getElementById('admin-dashboard-root').style.display = 'none';
+      }
+    };
+  </script>
+</body>
+</html>

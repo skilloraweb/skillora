@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Partner Portal & Admissions Intake | SkillOra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/auth_db.js"></script>
+  <style>
+    body {
+      background-color: #F0F4F8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .college-portal-navbar {
+      height: 64px;
+      background: #0A2540;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 2px solid #0FA66D;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .portal-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .portal-badge-college {
+      background: #0FA66D;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .portal-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .portal-nav-links a {
+      color: #CFE3F7;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: color var(--transition-fast);
+    }
+    .portal-nav-links a:hover,
+    .portal-nav-links a.active {
+      color: #FFFFFF;
+    }
+    .portal-user-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .portal-user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12.5px;
+    }
+    .portal-container {
+      max-width: 1560px;
+      margin: 24px auto;
+      padding: 0 20px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex: 1;
+    }
+
+    /* Institute Banner Header */
+    .inst-hero-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .inst-hero-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 5px;
+      background: #0FA66D;
+    }
+    .inst-hero-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .inst-logo-box {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+    .inst-logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .inst-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+      margin-bottom: 4px;
+    }
+    .inst-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .inst-tag {
+      background: #EDFDF5;
+      color: #0FA66D;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .inst-hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Stats Grid */
+    .college-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .stat-card-custom {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-ic {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .stat-ic-green { background: #EDFDF5; color: #0FA66D; }
+    .stat-ic-blue { background: #EDF8FF; color: #087BFF; }
+    .stat-ic-orange { background: #FEF6EC; color: #FF922A; }
+    .stat-ic-purple { background: #F5EEFD; color: #7756C4; }
+
+    .stat-info strong {
+      display: block;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+    }
+    .stat-info span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Tab Controls */
+    .portal-tab-bar {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid var(--border-light);
+      padding-bottom: 2px;
+    }
+    .p-tab-btn {
+      padding: 10px 18px;
+      font-size: 13.5px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .p-tab-btn.active {
+      color: #0FA66D;
+      border-bottom-color: #0FA66D;
+    }
+
+    /* Content Pane */
+    .portal-pane-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .pane-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 12px;
+    }
+    .pane-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+    }
+    .pane-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Table Styles */
+    .portal-table-wrap {
+      overflow-x: auto;
+    }
+    .portal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .portal-table th {
+      background: #F8FCFF;
+      color: var(--color-navy-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1.5px solid var(--border-light);
+    }
+    .portal-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #F0F5FA;
+      color: var(--text-dark);
+    }
+    .portal-table tr:hover {
+      background: #FAFCFE;
+    }
+
+    /* Status Pills */
+    .pill-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+    .pill-green { background: #EDFDF5; color: #0FA66D; }
+    .pill-blue { background: #EDF8FF; color: #087BFF; }
+    .pill-orange { background: #FEF6EC; color: #FF922A; }
+
+    /* Courses Grid */
+    .course-mgmt-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .course-mgmt-card {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 16px;
+      background: #FAFDFE;
+    }
+    .course-mgmt-card h4 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 1024px) {
+      .college-stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .course-mgmt-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .college-stats-grid { grid-template-columns: 1fr; }
+      .course-mgmt-grid { grid-template-columns: 1fr; }
+      .inst-hero-card { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Portal Navbar -->
+  <header class="college-portal-navbar">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <a href="index.html" class="portal-brand">
+        Skill<span style="color:#FF922A;">Ora</span>
+      </a>
+      <span class="portal-badge-college">College Partner Portal</span>
+    </div>
+
+    <nav class="portal-nav-links">
+      <a href="javascript:void(0)" class="active" onclick="showTab('leads', this)">Admission Leads</a>
+      <a href="javascript:void(0)" onclick="showTab('courses', this)">Courses & Seat Quota</a>
+      <a href="javascript:void(0)" onclick="showTab('profile', this)">Campus Profile</a>
+      <a href="colleges.html" target="_blank" title="View Public Listing on SkillOra">View Public Directory ↗</a>
+    </nav>
+
+    <div class="portal-user-wrap">
+      <div class="portal-user-pill">
+        <span>🏫</span>
+        <strong id="header-college-name">Sunrise Institute</strong>
+      </div>
+      <button class="btn btn-secondary-btn" style="padding:4px 10px;font-size:11.5px;color:#FFFFFF;border-color:rgba(255,255,255,0.3);" onclick="handleSignOut()">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- Portal Container -->
+  <main class="portal-container">
+
+    <!-- Institute Profile Banner -->
+    <div class="inst-hero-card">
+      <div class="inst-hero-left">
+        <div class="inst-logo-box">
+          <img src="assets/places/campus_nursing_1.jpg" alt="College Campus Facility">
+        </div>
+        <div>
+          <h1 class="inst-name" id="disp-college-name">Sunrise Institute of Nursing & Paramedical</h1>
+          <div class="inst-meta-row">
+            <span class="inst-tag" id="disp-accreditation">INC & State Nursing Council Approved</span>
+            <span>📍 <strong id="disp-location">Lucknow, Uttar Pradesh</strong></span>
+            <span>Principal: <strong id="disp-principal">Dr. R. Sharma</strong></span>
+            <span>Batch: <strong>2026 Academic Session</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-hero-actions">
+        <button class="btn btn-primary-btn" style="background:#0FA66D;padding:8px 14px;font-size:12.5px;" onclick="alert('Feature: New course listing form opened. All submitted updates reflect instantly in the SkillOra catalog.')">+ Add Course</button>
+        <button class="btn btn-secondary-btn" style="padding:8px 14px;font-size:12.5px;" onclick="exportLeadsCsv()">📥 Export Leads (CSV)</button>
+      </div>
+    </div>
+
+    <!-- 4 Stats Counters -->
+    <div class="college-stats-grid">
+      <div class="stat-card-custom">
+        <div class="stat-ic stat-ic-green">📝</div>
+        <div class="stat-info">
+          <strong id="stat-total-leads">38</strong>
+          <span>Direct Seat Applications</span>
+        </div>
+      </div>
+
+      <div class="stat-card-custom">
+        <div class="stat-ic stat-ic-blue">🎓</div>
+        <div class="stat-info">
+          <strong>142</strong>
+          <span>Verified Student Enquiries</span>
+        </div>
+      </div>
+
+      <div class="stat-card-custom">
+        <div class="stat-ic stat-ic-orange">🪑</div>
+        <div class="stat-info">
+          <strong>62</strong>
+          <span>Intake Seats Remaining</span>
+        </div>
+      </div>
+
+      <div class="stat-card-custom">
+        <div class="stat-ic stat-ic-purple">⭐</div>
+        <div class="stat-info">
+          <strong>4.8 / 5.0</strong>
+          <span>Student Rating (Verified)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="portal-tab-bar">
+      <button class="p-tab-btn active" id="btn-tab-leads" onclick="showTab('leads', this)">
+        <span>📋</span> Direct Admission Leads & Seat Bookings (38)
+      </button>
+      <button class="p-tab-btn" id="btn-tab-courses" onclick="showTab('courses', this)">
+        <span>📚</span> Courses Offered & Seat Quotas (4)
+      </button>
+      <button class="p-tab-btn" id="btn-tab-profile" onclick="showTab('profile', this)">
+        <span>🏛️</span> Campus Accreditation & Facilities
+      </button>
+    </div>
+
+    <!-- TAB 1: ADMISSION LEADS -->
+    <section class="portal-pane-card" id="pane-leads">
+      <div class="pane-header-row">
+        <div>
+          <h2 class="pane-title">Direct Student Applications for 2026 Batch</h2>
+          <span class="pane-sub">Real-time candidate registrations verified with 10th/12th qualification & direct phone contact.</span>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <input type="text" placeholder="Search student name or phone..." class="auth-input" style="height:34px;font-size:12px;width:240px;" oninput="filterLeads(this.value)">
+        </div>
+      </div>
+
+      <div class="portal-table-wrap">
+        <table class="portal-table">
+          <thead>
+            <tr>
+              <th>App ID</th>
+              <th>Student Candidate</th>
+              <th>Qualification / Stream</th>
+              <th>Course Applied</th>
+              <th>Contact Phone</th>
+              <th>State</th>
+              <th>Applied Date</th>
+              <th>Admission Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="leads-table-body">
+            <tr>
+              <td><strong style="color:#087BFF;">#ADM-8091</strong></td>
+              <td><strong>Rajesh Kumar</strong></td>
+              <td>12th Science PCB (82%)</td>
+              <td>B.Sc Nursing</td>
+              <td>+91 9820012345</td>
+              <td>Maharashtra</td>
+              <td>18 Oct 2026</td>
+              <td><span class="pill-status pill-orange">Under Review</span></td>
+              <td>
+                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('ADM-8091', this.value)">
+                  <option value="Under Review" selected>Under Review</option>
+                  <option value="Seat Allotted">Seat Allotted</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Admitted">Admitted</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="color:#087BFF;">#ADM-8092</strong></td>
+              <td><strong>Pooja Deshmukh</strong></td>
+              <td>12th Any Stream (76%)</td>
+              <td>GNM (General Nursing)</td>
+              <td>+91 9845511223</td>
+              <td>Karnataka</td>
+              <td>17 Oct 2026</td>
+              <td><span class="pill-status pill-green">Seat Allotted</span></td>
+              <td>
+                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('ADM-8092', this.value)">
+                  <option value="Under Review">Under Review</option>
+                  <option value="Seat Allotted" selected>Seat Allotted</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Admitted">Admitted</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="color:#087BFF;">#ADM-8093</strong></td>
+              <td><strong>Amit Kumar Patel</strong></td>
+              <td>10+2 Intermediate (68%)</td>
+              <td>DMLT (Medical Lab)</td>
+              <td>+91 9723344556</td>
+              <td>Uttar Pradesh</td>
+              <td>17 Oct 2026</td>
+              <td><span class="pill-status pill-blue">Contacted</span></td>
+              <td>
+                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('ADM-8093', this.value)">
+                  <option value="Under Review">Under Review</option>
+                  <option value="Seat Allotted">Seat Allotted</option>
+                  <option value="Contacted" selected>Contacted</option>
+                  <option value="Admitted">Admitted</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="color:#087BFF;">#ADM-8094</strong></td>
+              <td><strong>Sneha Roy</strong></td>
+              <td>GNM Registered Nurse</td>
+              <td>Post Basic B.Sc Nursing</td>
+              <td>+91 9912233445</td>
+              <td>West Bengal</td>
+              <td>16 Oct 2026</td>
+              <td><span class="pill-status pill-green">Seat Allotted</span></td>
+              <td>
+                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('ADM-8094', this.value)">
+                  <option value="Under Review">Under Review</option>
+                  <option value="Seat Allotted" selected>Seat Allotted</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Admitted">Admitted</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2: COURSES & SEAT QUOTAS -->
+    <section class="portal-pane-card" id="pane-courses" style="display:none;">
+      <div class="pane-header-row">
+        <div>
+          <h2 class="pane-title">Active Program Offerings & Quotas</h2>
+          <span class="pane-sub">Manage available seat capacities, annual tuition fee structure, and admissions status.</span>
+        </div>
+        <button class="btn btn-primary-btn" style="background:#0FA66D;font-size:12.5px;padding:6px 12px;" onclick="alert('Open Course Editor')">+ Add Course Stream</button>
+      </div>
+
+      <div class="course-mgmt-grid">
+        <div class="course-mgmt-card">
+          <h4>B.Sc Nursing (Degree)</h4>
+          <p style="font-size:12px;color:#728DA9;margin-bottom:10px;">Duration: 4 Years • INC Approved</p>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
+            <span>Annual Tuition Fee:</span>
+            <strong style="color:#087BFF;">₹85,000 / Year</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:12px;">
+            <span>Total Intake Capacity:</span>
+            <strong>60 Seats (18 Remaining)</strong>
+          </div>
+          <span class="pill-status pill-green">Admissions Open</span>
+        </div>
+
+        <div class="course-mgmt-card">
+          <h4>GNM – General Nursing & Midwifery</h4>
+          <p style="font-size:12px;color:#728DA9;margin-bottom:10px;">Duration: 3 Years • Diploma</p>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
+            <span>Annual Tuition Fee:</span>
+            <strong style="color:#087BFF;">₹55,000 / Year</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:12px;">
+            <span>Total Intake Capacity:</span>
+            <strong>80 Seats (16 Remaining)</strong>
+          </div>
+          <span class="pill-status pill-green">Admissions Open</span>
+        </div>
+
+        <div class="course-mgmt-card">
+          <h4>Post Basic B.Sc Nursing</h4>
+          <p style="font-size:12px;color:#728DA9;margin-bottom:10px;">Duration: 2 Years • For GNM RNs</p>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
+            <span>Annual Tuition Fee:</span>
+            <strong style="color:#087BFF;">₹65,000 / Year</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:12px;">
+            <span>Total Intake Capacity:</span>
+            <strong>30 Seats (8 Remaining)</strong>
+          </div>
+          <span class="pill-status pill-green">Admissions Open</span>
+        </div>
+
+        <div class="course-mgmt-card">
+          <h4>DMLT – Medical Lab Technology</h4>
+          <p style="font-size:12px;color:#728DA9;margin-bottom:10px;">Duration: 2 Years • Paramedical</p>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
+            <span>Annual Tuition Fee:</span>
+            <strong style="color:#087BFF;">₹40,000 / Year</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:12px;">
+            <span>Total Intake Capacity:</span>
+            <strong>40 Seats (9 Remaining)</strong>
+          </div>
+          <span class="pill-status pill-green">Admissions Open</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: CAMPUS PROFILE & ACCREDITATION -->
+    <section class="portal-pane-card" id="pane-profile" style="display:none;">
+      <div class="pane-header-row">
+        <div>
+          <h2 class="pane-title">Institute Accreditation & Campus Profile</h2>
+          <span class="pane-sub">Verify your official statutory recognitions and campus infrastructure for prospective students.</span>
+        </div>
+        <button class="btn btn-primary-btn" style="background:#0FA66D;font-size:12.5px;padding:6px 12px;" onclick="alert('Profile changes saved successfully!')">Save Changes</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group-wrap">
+            <label>Accreditation Council Registration Number</label>
+            <input type="text" class="auth-input" value="INC-UP-2024-8891 (Indian Nursing Council)" readonly style="background:#F8FCFF;">
+          </div>
+          <div class="form-group-wrap">
+            <label>Affiliated University</label>
+            <input type="text" class="auth-input" value="Atal Bihari Vajpayee Medical University (ABVMU)">
+          </div>
+          <div class="form-group-wrap">
+            <label>Clinical Training Hospital Tie-Up</label>
+            <input type="text" class="auth-input" value="City Hospital & Research Centre (350 Beds In-House Facility)">
+          </div>
+          <div class="form-group-wrap">
+            <label>Hostel Facilities</label>
+            <input type="text" class="auth-input" value="Separate AC/Non-AC Hostels for Boys & Girls with 24x7 Security">
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Verified Campus Facility Photo</label>
+          <div style="border-radius:10px;overflow:hidden;border:1px solid #D6EAFB;height:220px;position:relative;">
+            <img src="assets/places/campus_nursing_1.jpg" alt="Campus Building" style="width:100%;height:100%;object-fit:cover;">
+            <span style="position:absolute;bottom:10px;left:10px;background:rgba(10,37,64,0.85);color:#FFFFFF;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;">📍 Verified Campus Building</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function showTab(tab, btn) {
+      document.getElementById('pane-leads').style.display = 'none';
+      document.getElementById('pane-courses').style.display = 'none';
+      document.getElementById('pane-profile').style.display = 'none';
+
+      document.querySelectorAll('.p-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.portal-nav-links a').forEach(a => a.classList.remove('active'));
+
+      if (tab === 'leads') {
+        document.getElementById('pane-leads').style.display = 'block';
+        document.getElementById('btn-tab-leads').classList.add('active');
+      } else if (tab === 'courses') {
+        document.getElementById('pane-courses').style.display = 'block';
+        document.getElementById('btn-tab-courses').classList.add('active');
+      } else if (tab === 'profile') {
+        document.getElementById('pane-profile').style.display = 'block';
+        document.getElementById('btn-tab-profile').classList.add('active');
+      }
+      if (btn) btn.classList.add('active');
+    }
+
+    function updateLeadStatus(refId, newStatus) {
+      alert(`Status for lead #${refId} updated to "${newStatus}". Candidate notified.`);
+    }
+
+    function filterLeads(query) {
+      const q = query.toLowerCase();
+      document.querySelectorAll('#leads-table-body tr').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    function exportLeadsCsv() {
+      alert('Downloading verified 2026 admission candidate leads in CSV format.');
+    }
+
+    function handleSignOut() {
+      if (confirm('Sign out of College Partner Portal?')) {
+        localStorage.removeItem('SKILLORA_COLLEGE_USER');
+        window.location.href = 'auth.html?role=college';
+      }
+    }
+
+    // Load College Session
+    window.onload = function() {
+      const raw = localStorage.getItem('SKILLORA_COLLEGE_USER');
+      if (!raw) {
+        alert("Please sign in or register your institutional account to access the College Partner Portal.");
+        window.location.href = "auth.html?role=college";
+        return;
+      }
+      try {
+        const col = JSON.parse(raw);
+        if (col.collegeName) {
+            document.getElementById('header-college-name').textContent = col.collegeName.split(' ')[0] + '...';
+            document.getElementById('disp-college-name').textContent = col.collegeName;
+          }
+          if (col.location) document.getElementById('disp-location').textContent = col.location;
+          if (col.principalName) document.getElementById('disp-principal').textContent = col.principalName;
+          if (col.accreditation) document.getElementById('disp-accreditation').textContent = col.accreditation;
+        } catch(e) {}
+      }
+    };
+  </script>
+</body>
+</html>

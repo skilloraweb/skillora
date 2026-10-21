@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Account & Career Dashboard | SkillOra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/auth_db.js"></script>
+  <style>
+    body {
+      background-color: #F0F4F8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .dash-container {
+      max-width: 1560px;
+      margin: 24px auto;
+      padding: 0 20px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+
+    /* Left Sidebar */
+    .dash-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .user-profile-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .user-avatar-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #087BFF 0%, #173C62 100%);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+      margin: 0 auto 12px auto;
+      box-shadow: 0 4px 14px rgba(8, 123, 255, 0.25);
+    }
+    .user-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+      margin-bottom: 2px;
+    }
+    .user-role-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #0FA66D;
+      background: #EDFDF5;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    .profile-strength-box {
+      background: #F8FCFF;
+      border: 1px solid #D6EAFB;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      text-align: left;
+    }
+    .strength-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-dark);
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: #E5F0F9;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      width: 85%;
+      height: 100%;
+      background: linear-gradient(90deg, #087BFF, #0FA66D);
+      border-radius: 4px;
+    }
+
+    /* Sidebar Navigation Menu */
+    .dash-nav-menu {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .dash-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-decoration: none;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .dash-nav-btn:hover {
+      background: #F0F5FA;
+      color: var(--color-primary-blue);
+    }
+    .dash-nav-btn.active {
+      background: #EDF8FF;
+      color: var(--color-primary-blue);
+      border-left: 3px solid var(--color-primary-blue);
+    }
+    .dash-nav-badge {
+      margin-left: auto;
+      background: #087BFF;
+      color: #FFFFFF;
+      font-size: 10.5px;
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    /* Main Content Area */
+    .dash-main-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .dash-section-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 24px 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .dash-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+    .dash-sec-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+    }
+    .dash-sec-sub {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Overview Stat Cards Grid */
+    .dash-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .stat-metric-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .stat-ic-blue { background: #EDF8FF; color: #087BFF; }
+    .stat-ic-green { background: #EDFDF5; color: #0FA66D; }
+    .stat-ic-orange { background: #FEF6EC; color: #FF922A; }
+    .stat-ic-purple { background: #F5EEFD; color: #7756C4; }
+
+    .stat-metric-info strong {
+      display: block;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-navy-dark);
+    }
+    .stat-metric-info span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Applications Table */
+    .dash-table-wrap {
+      overflow-x: auto;
+    }
+    .dash-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .dash-table th {
+      background: #F8FCFF;
+      color: var(--color-navy-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1.5px solid var(--border-light);
+    }
+    .dash-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #F0F5FA;
+      color: var(--text-dark);
+    }
+    .dash-table tr:hover {
+      background: #FAFCFE;
+    }
+    .status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+    .status-under-review { background: #FFF9E6; color: #B8860B; }
+    .status-assigned { background: #EDF8FF; color: #087BFF; }
+    .status-shortlisted { background: #EDFDF5; color: #0FA66D; }
+
+    /* Resume Upload Card */
+    .resume-upload-zone {
+      border: 2px dashed #AAD2FF;
+      border-radius: 10px;
+      padding: 32px 20px;
+      background: #F8FCFF;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-bottom: 18px;
+    }
+    .resume-upload-zone:hover {
+      background: #EDF8FF;
+      border-color: var(--color-primary-blue);
+    }
+    .resume-current-file {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: #F0F5FA;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* Form Fields */
+    .profile-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .p-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .p-field-group label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .p-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1.5px solid var(--border-input);
+      border-radius: 6px;
+      font-family: var(--font-family);
+      font-size: 13px;
+      outline: none;
+    }
+    .p-input:focus {
+      border-color: var(--color-primary-blue);
+    }
+
+    @media (max-width: 950px) {
+      .dash-container {
+        grid-template-columns: 1fr;
+      }
+      .dash-stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .profile-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="SkillOra Home">
+        <div class="logo-mark">
+          <svg class="logo-symbol" viewBox="0 0 38 38" fill="none">
+            <rect width="38" height="38" rx="8" fill="#087BFF"/>
+            <path d="M10 26L19 12L28 26H10Z" fill="#FFFFFF"/>
+            <circle cx="19" cy="18" r="3.5" fill="#FF922A"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-title">Skill<span class="highlight-orange">Ora</span></span>
+          <span class="logo-tagline">Learn • Skill • Build Your Future</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="jobs.html" class="nav-link">Find Jobs</a>
+        <a href="colleges.html" class="nav-link">Colleges & Admissions</a>
+        <a href="dashboard.html" class="nav-link" style="color:var(--color-primary-blue);font-weight:800;">My Dashboard</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="admin.html" class="btn btn-secondary-btn" style="padding:6px 14px;font-size:12.5px;text-decoration:none;">🛠️ Staff / Admin Portal</a>
+        <button class="btn btn-outline-login" onclick="handleSignOut()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard Container -->
+  <div class="dash-container">
+    
+    <!-- Left Column: User Profile Card & Navigation -->
+    <aside class="dash-sidebar">
+      
+      <!-- Profile Summary Card -->
+      <div class="user-profile-card">
+        <div class="user-avatar-circle" id="user-avatar-initials">SU</div>
+        <h2 class="user-name" id="user-name-display">Student User</h2>
+        <span class="user-role-badge">Verified Student Account</span>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:4px;" id="user-email-display">student@skillora.in</p>
+        <p style="font-size:12px;color:var(--text-muted);" id="user-phone-display">📱 Contact Verified</p>
+
+        <!-- Profile Strength Meter -->
+        <div class="profile-strength-box">
+          <div class="strength-label-row">
+            <span>Profile Completeness</span>
+            <span style="color:#0FA66D;">90%</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill"></div>
+          </div>
+          <div style="font-size:10.5px;color:var(--text-muted);margin-top:6px;">
+            ✔ Resume Attached • ✔ Contact Verified
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Navigation Menu -->
+      <nav class="dash-nav-menu">
+        <button class="dash-nav-btn active" onclick="switchDashTab('tab-overview', this)">
+          <span>📊</span>
+          <span>Overview & Stats</span>
+        </button>
+        <button class="dash-nav-btn" onclick="switchDashTab('tab-courses', this)">
+          <span>🎓</span>
+          <span>Course Applications</span>
+          <span class="dash-nav-badge" id="badge-course-count">0</span>
+        </button>
+        <button class="dash-nav-btn" onclick="switchDashTab('tab-jobs', this)">
+          <span>💼</span>
+          <span>Job Applications</span>
+          <span class="dash-nav-badge" id="badge-job-count">0</span>
+        </button>
+        <button class="dash-nav-btn" onclick="switchDashTab('tab-resume', this)">
+          <span>📄</span>
+          <span>Resume & Documents</span>
+        </button>
+        <button class="dash-nav-btn" onclick="switchDashTab('tab-profile', this)">
+          <span>👤</span>
+          <span>Edit Student Profile</span>
+        </button>
+      </nav>
+
+    </aside>
+
+    <!-- Right Column: Dynamic Main Pane -->
+    <main class="dash-main-pane">
+
+      <!-- =================================================================== -->
+      <!-- TAB 1: OVERVIEW & STATS                                             -->
+      <!-- =================================================================== -->
+      <div id="tab-overview" class="dash-tab-content">
+        
+        <!-- 4 Key Metrics -->
+        <div class="dash-stats-grid">
+          <div class="stat-metric-card">
+            <div class="stat-icon-circle stat-ic-blue">🎓</div>
+            <div class="stat-metric-info">
+              <strong id="stat-colleges-applied">2</strong>
+              <span>College Admissions</span>
+            </div>
+          </div>
+          <div class="stat-metric-card">
+            <div class="stat-icon-circle stat-ic-green">💼</div>
+            <div class="stat-metric-info">
+              <strong id="stat-jobs-applied">1</strong>
+              <span>Job Applications</span>
+            </div>
+          </div>
+          <div class="stat-metric-card">
+            <div class="stat-icon-circle stat-ic-orange">⏳</div>
+            <div class="stat-metric-info">
+              <strong>2 Hours</strong>
+              <span>Counselor SLA</span>
+            </div>
+          </div>
+          <div class="stat-metric-card">
+            <div class="stat-icon-circle stat-ic-purple">🛡️</div>
+            <div class="stat-metric-info">
+              <strong>Verified</strong>
+              <span>Student Status</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent College Applications Preview -->
+        <div class="dash-section-card" style="margin-bottom:20px;">
+          <div class="dash-section-header">
+            <div>
+              <h3 class="dash-sec-title">Recent College Admission Applications</h3>
+              <p class="dash-sec-sub">Track your seat reservation, counselor follow-ups, and verified fee details.</p>
+            </div>
+            <a href="colleges.html" class="btn btn-secondary-btn" style="text-decoration:none;font-size:12px;">+ Apply to Another College</a>
+          </div>
+
+          <div class="dash-table-wrap">
+            <table class="dash-table">
+              <thead>
+                <tr>
+                  <th>Ref ID</th>
+                  <th>Target College</th>
+                  <th>Course Applied</th>
+                  <th>Annual Fee</th>
+                  <th>Date</th>
+                  <th>Current Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="overview-admission-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Job Applications Preview -->
+        <div class="dash-section-card">
+          <div class="dash-section-header">
+            <div>
+              <h3 class="dash-sec-title">Recent Healthcare & Hospitality Job Applications</h3>
+              <p class="dash-sec-sub">Track recruiter shortlisting and walk-in interview calls.</p>
+            </div>
+            <a href="jobs.html" class="btn btn-secondary-btn" style="text-decoration:none;font-size:12px;">+ Browse Jobs</a>
+          </div>
+
+          <div class="dash-table-wrap">
+            <table class="dash-table">
+              <thead>
+                <tr>
+                  <th>Job Reference</th>
+                  <th>Role Applied</th>
+                  <th>Employer / Facility</th>
+                  <th>Salary Range</th>
+                  <th>Status</th>
+                  <th>Contact Recruiter</th>
+                </tr>
+              </thead>
+              <tbody id="overview-jobs-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 2: COURSE APPLICATIONS FULL VIEW                                -->
+      <!-- =================================================================== -->
+      <div id="tab-courses" class="dash-tab-content" style="display:none;">
+        <div class="dash-section-card">
+          <div class="dash-section-header">
+            <div>
+              <h3 class="dash-sec-title">All Course Admission Enquiries & Seat Locks</h3>
+              <p class="dash-sec-sub">All direct admissions submitted through SkillOra are guaranteed institutional counseling within 2 hours.</p>
+            </div>
+            <a href="colleges.html" class="btn btn-primary-submit" style="text-decoration:none;font-size:12.5px;">Browse 480+ Colleges →</a>
+          </div>
+
+          <div class="dash-table-wrap">
+            <table class="dash-table">
+              <thead>
+                <tr>
+                  <th>Ref ID</th>
+                  <th>College Name</th>
+                  <th>Location</th>
+                  <th>Course Name</th>
+                  <th>Fee / Yr</th>
+                  <th>Status</th>
+                  <th>Counselor Slip</th>
+                </tr>
+              </thead>
+              <tbody id="all-courses-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 3: JOB APPLICATIONS FULL VIEW                                   -->
+      <!-- =================================================================== -->
+      <div id="tab-jobs" class="dash-tab-content" style="display:none;">
+        <div class="dash-section-card">
+          <div class="dash-section-header">
+            <div>
+              <h3 class="dash-sec-title">My Healthcare & Hospitality Job Applications</h3>
+              <p class="dash-sec-sub">Direct applications submitted to verified hospital and hotel HR departments.</p>
+            </div>
+            <a href="jobs.html" class="btn btn-primary-submit" style="text-decoration:none;font-size:12.5px;">Search More Jobs →</a>
+          </div>
+
+          <div class="dash-table-wrap">
+            <table class="dash-table">
+              <thead>
+                <tr>
+                  <th>Application Ref</th>
+                  <th>Job Position</th>
+                  <th>Organization</th>
+                  <th>City / State</th>
+                  <th>Applied On</th>
+                  <th>Interview Status</th>
+                </tr>
+              </thead>
+              <tbody id="all-jobs-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 4: RESUME & DOCUMENTS MANAGER                                   -->
+      <!-- =================================================================== -->
+      <div id="tab-resume" class="dash-tab-content" style="display:none;">
+        <div class="dash-section-card">
+          <div class="dash-section-header">
+            <div>
+              <h3 class="dash-sec-title">Resume & Verification Documents</h3>
+              <p class="dash-sec-sub">Your uploaded resume is shared with verified hospital & hotel recruiters when you apply.</p>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Upload Box -->
+          <div class="resume-upload-zone" onclick="document.getElementById('resume-file-input').click()">
+            <input type="file" id="resume-file-input" style="display:none;" accept=".pdf,.doc,.docx" onchange="handleResumeFileSelected(this)">
+            <div style="font-size:32px;margin-bottom:6px;">📁</div>
+            <h4 style="font-size:15px;color:var(--color-navy-dark);margin-bottom:4px;">Click to Upload or Drag & Drop Resume</h4>
+            <p style="font-size:12px;color:var(--text-muted);">Supports PDF, DOC, DOCX up to 5 MB</p>
+          </div>
+
+          <!-- Upload Progress / Status Indicator -->
+          <div id="resume-upload-status" style="display:none;padding:12px 16px;background:#EBF5FF;border:1px solid #B9DAFB;border-radius:8px;margin-bottom:12px;font-size:12.5px;color:#087BFF;font-weight:700;">
+            ⏳ Uploading resume file directly to Supabase Cloud Storage...
+          </div>
+
+          <!-- 1. Real State when NO resume has been uploaded yet -->
+          <div id="resume-empty-state" style="background:#FFFDF5;border:1.5px dashed #F5C6CB;border-radius:10px;padding:24px 20px;text-align:center;margin-top:12px;">
+            <div style="font-size:36px;margin-bottom:6px;">⚠️</div>
+            <h4 style="font-size:15px;color:#721C24;margin-bottom:4px;font-weight:800;">No Resume Uploaded Yet</h4>
+            <p style="font-size:12.5px;color:#728DA9;margin-bottom:14px;max-width:540px;margin-left:auto;margin-right:auto;">
+              You have not uploaded a resume to your student account yet. Upload your PDF or DOCX file to Supabase Cloud Storage so hospital HRs and hotel recruiters can view your qualifications.
+            </p>
+            <button type="button" class="btn btn-primary-submit" style="padding:10px 22px;font-size:13px;" onclick="document.getElementById('resume-file-input').click()">
+              ⬆️ Upload Resume to Cloud Storage Now
+            </button>
+          </div>
+
+          <!-- 2. Real State when Resume IS uploaded to Supabase Cloud -->
+          <div id="resume-active-state" style="display:none;margin-top:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <h4 style="font-size:13.5px;color:var(--text-dark);font-weight:800;">Active Resume File (Stored in Supabase Cloud):</h4>
+              <span class="status-pill status-shortlisted">✔ Stored in Cloud</span>
+            </div>
+            <div class="resume-current-file">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:32px;">📄</div>
+                <div>
+                  <strong id="active-resume-name" style="font-size:14px;color:var(--color-navy-dark);"></strong>
+                  <div style="font-size:11.5px;color:#0FA66D;font-weight:700;margin-top:2px;" id="active-resume-date">
+                    Uploaded and secured on Supabase Cloud Storage
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <a id="btn-resume-preview" href="#" target="_blank" rel="noopener" class="btn btn-secondary-btn" style="padding:7px 14px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                  👁️ View / Download Cloud File
+                </a>
+                <button class="btn btn-primary-submit" style="padding:7px 14px;font-size:12px;" onclick="document.getElementById('resume-file-input').click()">Replace Resume</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 5: EDIT STUDENT PROFILE                                         -->
+      <!-- =================================================================== -->
+      <div id="tab-profile" class="dash-tab-content" style="display:none;">
+        <div class="dash-section-card">
+          <div class="dash-section-header">
+            <div>
+              <h3 class="dash-sec-title">Edit Student Profile & Career Preferences</h3>
+              <p class="dash-sec-sub">Update your personal details, educational qualifications, and target locations.</p>
+            </div>
+          </div>
+
+          <form onsubmit="event.preventDefault(); saveStudentProfile();">
+            <div class="profile-form-grid">
+              
+              <div class="p-field-group">
+                <label>Full Legal Name *</label>
+                <input type="text" id="edit-name" class="p-input" required>
+              </div>
+
+              <div class="p-field-group">
+                <label>Mobile Number *</label>
+                <input type="tel" id="edit-phone" class="p-input" required>
+              </div>
+
+              <div class="p-field-group">
+                <label>Email Address *</label>
+                <input type="email" id="edit-email" class="p-input" required>
+              </div>
+
+              <div class="p-field-group">
+                <label>Highest Qualification *</label>
+                <select id="edit-qualification" class="p-input">
+                  <option value="12th Pass">12th Standard Pass (Science/PCB/Arts/Commerce)</option>
+                  <option value="GNM / Diploma">GNM / Nursing / Hotel Mgmt Diploma</option>
+                  <option value="Graduate">Graduate (B.Sc / B.A / B.Com / BHM)</option>
+                  <option value="Post Graduate">Post Graduate (M.Sc / MBA)</option>
+                  <option value="10th Pass">10th Standard Pass</option>
+                </select>
+              </div>
+
+              <div class="p-field-group">
+                <label>Current City *</label>
+                <input type="text" id="edit-city" class="p-input" required>
+              </div>
+
+              <div class="p-field-group">
+                <label>Current State *</label>
+                <input type="text" id="edit-state" class="p-input" required>
+              </div>
+
+              <div class="p-field-group">
+                <label>Target Career Sector *</label>
+                <select id="edit-sector" class="p-input">
+                  <option value="Nursing & Healthcare">Nursing & Healthcare</option>
+                  <option value="Hospitality & Hotel Mgmt">Hospitality & Hotel Mgmt</option>
+                  <option value="Sales & Marketing">Sales & Marketing</option>
+                  <option value="Language & Grooming">Language & Grooming</option>
+                </select>
+              </div>
+
+              <div class="p-field-group">
+                <label>Preferred Study / Work Location</label>
+                <input type="text" id="edit-pref-loc" class="p-input" placeholder="e.g. Mumbai, Delhi NCR, or Pan-India">
+              </div>
+
+            </div>
+
+            <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;">
+              <button type="submit" class="btn btn-primary-submit">Save Profile Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- JavaScript for Student Dashboard State (Real Cloud & Offline Hybrid Engine) -->
+  <script>
+    async function loadStudentDashboard() {
+      // 1. Authenticated Student Session Check
+      let userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+      if (!userStr) {
+        window.location.href = "auth.html?role=student";
+        return;
+      }
+
+      let user = {};
+      try {
+        user = JSON.parse(userStr);
+      } catch (e) {
+        window.location.href = "auth.html?role=student";
+        return;
+      }
+
+      // Populate User Header Information
+      document.getElementById('user-name-display').textContent = user.name || "Student User";
+      document.getElementById('user-email-display').textContent = user.email || "";
+      document.getElementById('user-phone-display').textContent = user.phone ? `📱 +91 ${user.phone}` : "📱 Contact Provided";
+      
+      const initials = (user.name || "ST").split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      document.getElementById('user-avatar-initials').textContent = initials;
+
+      // 2. Real Resume State Handling (No fake placeholders)
+      const emptyState = document.getElementById('resume-empty-state');
+      const activeState = document.getElementById('resume-active-state');
+      const resumeNameEl = document.getElementById('active-resume-name');
+      const resumeDateEl = document.getElementById('active-resume-date');
+      const previewBtn = document.getElementById('btn-resume-preview');
+      const strengthVal = document.getElementById('profile-strength-val');
+      const strengthBar = document.getElementById('profile-strength-bar');
+
+      const hasResume = !!(user.resumeName && (user.resumeUrl || user.resumeDate));
+
+      if (hasResume) {
+        if (emptyState) emptyState.style.display = 'none';
+        if (activeState) activeState.style.display = 'block';
+        if (resumeNameEl) resumeNameEl.textContent = user.resumeName;
+        if (resumeDateEl) {
+          resumeDateEl.textContent = `✔ Uploaded on ${user.resumeDate || 'Recently'} • ${user.resumeSize || 'Verified'} • Stored on Supabase Storage`;
+        }
+        if (previewBtn) {
+          if (user.resumeUrl) {
+            previewBtn.href = user.resumeUrl;
+            previewBtn.style.display = 'inline-flex';
+          } else {
+            previewBtn.style.display = 'none';
+          }
+        }
+        if (strengthVal) strengthVal.textContent = '100%';
+        if (strengthBar) strengthBar.style.width = '100%';
+      } else {
+        if (emptyState) emptyState.style.display = 'block';
+        if (activeState) activeState.style.display = 'none';
+        if (strengthVal) strengthVal.textContent = '70%';
+        if (strengthBar) strengthBar.style.width = '70%';
+      }
+
+      // Populate Profile Edit Form
+      if (document.getElementById('edit-name')) document.getElementById('edit-name').value = user.name || "";
+      if (document.getElementById('edit-phone')) document.getElementById('edit-phone').value = user.phone || "";
+      if (document.getElementById('edit-email')) document.getElementById('edit-email').value = user.email || "";
+      if (document.getElementById('edit-city')) document.getElementById('edit-city').value = user.city || "Mumbai";
+      if (document.getElementById('edit-state')) document.getElementById('edit-state').value = user.state || "Maharashtra";
+      if (document.getElementById('edit-qualification')) document.getElementById('edit-qualification').value = user.qualification || "12th Pass";
+      if (document.getElementById('edit-sector')) document.getElementById('edit-sector').value = user.sector || "Nursing & Healthcare";
+
+      // 3. Load Real Applications from Supabase Cloud and Local Cache
+      await renderAdmissionsTables(user.email);
+      await renderJobsTables(user.email);
+    }
+
+    async function renderAdmissionsTables(userEmail) {
+      const overviewTbody = document.getElementById('overview-admission-table-body');
+      const allTbody = document.getElementById('all-courses-table-body');
+
+      let localAdmissions = [];
+      try {
+        localAdmissions = JSON.parse(localStorage.getItem('SKILLORA_MY_ADMISSIONS') || '[]');
+      } catch (e) { localAdmissions = []; }
+
+      // Fetch from Supabase Cloud
+      let cloudAdmissions = [];
+      if (window.SkillOraAuth && window.SkillOraAuth.fetchStudentCloudAdmissions && userEmail) {
+        try {
+          cloudAdmissions = await window.SkillOraAuth.fetchStudentCloudAdmissions(userEmail);
+        } catch (e) {}
+      }
+
+      // Merge Cloud & Local (mapping cloud fields to display fields)
+      const merged = [...localAdmissions];
+      cloudAdmissions.forEach(c => {
+        const ref = (c.counsellor_notes || '').replace('Ref: ', '').trim() || `SKL-CLOUD-${c.id}`;
+        if (!merged.some(m => (m.refId && m.refId === ref) || (m.courseName === c.course_name))) {
+          merged.push({
+            refId: ref,
+            collegeName: c.city ? `Partner College (${c.city})` : 'Verified Partner College',
+            collegeCity: c.city || 'State Campus',
+            collegeState: c.state || '',
+            courseName: c.course_name,
+            fee: 'Scholarship / Standard',
+            date: new Date(c.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+            status: c.status || 'Counselor Assigned',
+            statusClass: 'status-assigned'
+          });
+        }
+      });
+
+      if (merged.length === 0) {
+        const emptyHtml = `
+          <tr>
+            <td colspan="7" style="text-align:center;padding:36px 16px;color:var(--text-muted);">
+              <div style="font-size:32px;margin-bottom:8px;">🎓</div>
+              <strong style="color:var(--color-navy-dark);font-size:14px;">No Course Admission Applications Yet</strong>
+              <p style="font-size:12.5px;margin:6px 0 14px 0;">You have not applied to any colleges yet. Apply directly to verified nursing, hotel management, or corporate academies.</p>
+              <a href="colleges.html" class="btn btn-primary-submit" style="display:inline-block;padding:7px 16px;font-size:12px;text-decoration:none;">Explore 488+ Recognized Colleges →</a>
+            </td>
+          </tr>
+        `;
+        if (overviewTbody) overviewTbody.innerHTML = emptyHtml;
+        if (allTbody) allTbody.innerHTML = emptyHtml;
+        document.getElementById('stat-colleges-applied').textContent = '0';
+        document.getElementById('badge-course-count').textContent = '0';
+        return;
+      }
+
+      const rowsHtml = merged.map(adm => {
+        const ref = adm.refId || 'SKL-2026-ADM';
+        const col = adm.collegeName || adm.college || 'Verified College';
+        const loc = adm.collegeCity ? `${adm.collegeCity}, ${adm.collegeState || ''}` : (adm.location || 'Campus');
+        const crs = adm.courseName || adm.course || 'Degree Program';
+        const fee = adm.fee || '₹ 45,000 / Yr';
+        const dt = adm.date || 'Recent';
+        const st = adm.status || 'Counselor Assigned';
+        const stClass = adm.statusClass || 'status-assigned';
+
+        return `
+          <tr>
+            <td><strong style="color:#087BFF;">${ref}</strong></td>
+            <td style="font-weight:700;">${col} <span style="font-size:11px;color:var(--text-muted);display:block;">${loc}</span></td>
+            <td>${crs}</td>
+            <td style="font-weight:700;color:#0FA66D;">${fee}</td>
+            <td style="color:#728DA9;">${dt}</td>
+            <td><span class="status-pill ${stClass}">${st}</span></td>
+            <td>
+              <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Counselor Helpline: An authorized SkillOra academic counselor is assigned to your application (Helpline: 1800-890-SKILL, Ref: ${ref})')">📞 Call Counselor</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (overviewTbody) overviewTbody.innerHTML = rowsHtml;
+      if (allTbody) allTbody.innerHTML = rowsHtml;
+
+      document.getElementById('stat-colleges-applied').textContent = merged.length;
+      document.getElementById('badge-course-count').textContent = merged.length;
+    }
+
+    async function renderJobsTables(userEmail) {
+      const overviewTbody = document.getElementById('overview-jobs-table-body');
+      const allTbody = document.getElementById('all-jobs-table-body');
+
+      let localJobs = [];
+      try {
+        localJobs = JSON.parse(localStorage.getItem('SKILLORA_MY_JOBS') || '[]');
+      } catch (e) { localJobs = []; }
+
+      // Fetch from Supabase Cloud
+      let cloudJobs = [];
+      if (window.SkillOraAuth && window.SkillOraAuth.fetchStudentCloudJobs && userEmail) {
+        try {
+          cloudJobs = await window.SkillOraAuth.fetchStudentCloudJobs(userEmail);
+        } catch (e) {}
+      }
+
+      // Merge Cloud & Local
+      const merged = [...localJobs];
+      cloudJobs.forEach(cj => {
+        const refMatch = (cj.recruiter_notes || '').match(/Ref:\s*([^\s-]+)/);
+        const ref = refMatch ? refMatch[1] : `SKL-JOB-CLOUD-${cj.id}`;
+        if (!merged.some(m => (m.refId && m.refId === ref) || (m.role && cj.recruiter_notes && cj.recruiter_notes.includes(m.role)))) {
+          merged.push({
+            refId: ref,
+            role: cj.recruiter_notes ? cj.recruiter_notes.replace(/Ref:[^-]+-\s*/, '') : 'Verified Healthcare Opening',
+            company: 'Hospital / Hotel Hiring Board',
+            location: 'Assigned Hospital / Hotel',
+            salary: '₹ 18,000 - 35,000 / mo',
+            date: new Date(cj.applied_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+            status: cj.stage || 'Applied',
+            statusClass: 'status-under-review'
+          });
+        }
+      });
+
+      if (merged.length === 0) {
+        const emptyHtml = `
+          <tr>
+            <td colspan="6" style="text-align:center;padding:36px 16px;color:var(--text-muted);">
+              <div style="font-size:32px;margin-bottom:8px;">💼</div>
+              <strong style="color:var(--color-navy-dark);font-size:14px;">No Job Applications Submitted Yet</strong>
+              <p style="font-size:12.5px;margin:6px 0 14px 0;">You have not applied to any job openings yet. Browse verified openings across hospitals and luxury hotels.</p>
+              <a href="jobs.html" class="btn btn-primary-submit" style="display:inline-block;padding:7px 16px;font-size:12px;text-decoration:none;">Search Verified Hospital & Hotel Vacancies →</a>
+            </td>
+          </tr>
+        `;
+        if (overviewTbody) overviewTbody.innerHTML = emptyHtml;
+        if (allTbody) allTbody.innerHTML = emptyHtml;
+        document.getElementById('stat-jobs-applied').textContent = '0';
+        document.getElementById('badge-job-count').textContent = '0';
+        return;
+      }
+
+      const rowsHtml = merged.map(j => {
+        const ref = j.refId || 'SKL-JOB-2026';
+        const role = j.role || 'Healthcare / Hospitality Professional';
+        const comp = j.company || 'Verified Employer';
+        const loc = j.location || 'Pan-India';
+        const sal = j.salary || 'Standard Package';
+        const dt = j.date || 'Recent';
+        const st = j.status || 'Under Review';
+        const stClass = j.statusClass || 'status-under-review';
+
+        return `
+          <tr>
+            <td><strong style="color:#087BFF;">${ref}</strong></td>
+            <td style="font-weight:700;">${role}</td>
+            <td>${comp}</td>
+            <td>${sal}</td>
+            <td><span class="status-pill ${stClass}">${st}</span></td>
+            <td>
+              <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Recruiter Desk: Your application and cloud resume are logged with ${comp} HR. Direct interview rounds scheduled within 24h.')">💬 HR Desk</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (overviewTbody) overviewTbody.innerHTML = rowsHtml;
+      if (allTbody) allTbody.innerHTML = rowsHtml;
+
+      document.getElementById('stat-jobs-applied').textContent = merged.length;
+      document.getElementById('badge-job-count').textContent = merged.length;
+    }
+
+    function switchDashTab(tabId, btn) {
+      document.querySelectorAll('.dash-tab-content').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('.dash-nav-btn').forEach(b => b.classList.remove('active'));
+
+      const target = document.getElementById(tabId);
+      if (target) target.style.display = 'block';
+      if (btn) btn.classList.add('active');
+    }
+
+    // Real Supabase Cloud Storage Upload Handler
+    async function handleResumeFileSelected(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+
+      // Validate file size (max 5 MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File size exceeds 5 MB. Please select a smaller resume file.");
+        return;
+      }
+
+      let user = {};
+      try {
+        user = JSON.parse(localStorage.getItem('SKILLORA_CURRENT_USER') || '{}');
+      } catch (e) {}
+
+      const statusEl = document.getElementById('resume-upload-status');
+      if (statusEl) {
+        statusEl.style.display = 'block';
+        statusEl.innerHTML = `⏳ Uploading <strong>${file.name}</strong> (${Math.round(file.size / 1024)} KB) directly to Supabase Cloud Storage...`;
+      }
+
+      try {
+        const uploadRes = await window.SkillOraAuth.uploadResumeFile(file, user);
+        if (statusEl) statusEl.style.display = 'none';
+
+        if (uploadRes.success) {
+          alert(`Resume "${uploadRes.resumeName}" uploaded successfully to Supabase Cloud Storage!
+
+Your profile and recruiters will now be able to view your verified resume.`);
+          await loadStudentDashboard();
+        } else {
+          alert(`Upload failed: ${uploadRes.message || 'Please check your connection and try again.'}`);
+        }
+      } catch (err) {
+        if (statusEl) statusEl.style.display = 'none';
+        console.error("Resume Upload Error:", err);
+        alert("Failed to upload resume to cloud storage. Please try again.");
+      }
+    }
+
+    function saveStudentProfile() {
+      const name = document.getElementById('edit-name').value.trim();
+      const phone = document.getElementById('edit-phone').value.trim();
+      const email = document.getElementById('edit-email').value.trim();
+      const city = document.getElementById('edit-city').value.trim();
+      const state = document.getElementById('edit-state').value.trim();
+      const qual = document.getElementById('edit-qualification').value;
+      const sector = document.getElementById('edit-sector').value;
+
+      let current = {};
+      try { current = JSON.parse(localStorage.getItem('SKILLORA_CURRENT_USER') || '{}'); } catch(e){}
+
+      const updatedUser = {
+        ...current,
+        name: name || current.name,
+        phone: phone || current.phone,
+        email: email || current.email,
+        city,
+        state,
+        qualification: qual,
+        sector
+      };
+      localStorage.setItem('SKILLORA_CURRENT_USER', JSON.stringify(updatedUser));
+
+      // Synchronize with database
+      try {
+        const users = JSON.parse(localStorage.getItem('SKILLORA_DB_USERS') || '[]');
+        const idx = users.findIndex(u => (updatedUser.id && u.id === updatedUser.id) || (u.email === updatedUser.email));
+        if (idx !== -1) {
+          users[idx] = { ...users[idx], ...updatedUser };
+          localStorage.setItem('SKILLORA_DB_USERS', JSON.stringify(users));
+        }
+      } catch (e) {}
+
+      alert('Student profile updated successfully!');
+      loadStudentDashboard();
+    }
+
+    function handleSignOut() {
+      if (confirm('Are you sure you want to sign out from SkillOra?')) {
+        localStorage.removeItem('SKILLORA_CURRENT_USER');
+        window.location.href = 'auth.html';
+      }
+    }
+
+    window.onload = loadStudentDashboard;
+  </script>
+</body>
+</html>

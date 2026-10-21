@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Registration Portal (Student, College & Employer) | SkillOra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/auth_db.js"></script>
+  <style>
+    body {
+      background-color: #F0F5FA;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .auth-page-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .auth-card-container {
+      width: 100%;
+      max-width: 1040px;
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(13, 44, 75, 0.1);
+      border: 1px solid var(--border-light);
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      overflow: hidden;
+    }
+    .auth-side-banner {
+      background: linear-gradient(135deg, #0D2C4B 0%, #173C62 50%, #087BFF 100%);
+      color: #FFFFFF;
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .auth-side-banner::after {
+      content: "";
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .auth-banner-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #FFFFFF;
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .auth-banner-logo span { color: #FF922A; }
+    .auth-banner-title {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin: 22px 0 10px 0;
+    }
+    .auth-banner-sub {
+      font-size: 13.5px;
+      color: #CFE3F7;
+      line-height: 1.5;
+    }
+    .auth-feature-list {
+      list-style: none;
+      margin: 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 0;
+    }
+    .auth-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: #E2EFFB;
+    }
+    .auth-feature-icon {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .auth-stat-pill {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+    .auth-stat-box strong {
+      display: block;
+      font-size: 16px;
+      font-weight: 800;
+      color: #FFA5A5;
+    }
+    .auth-stat-box span {
+      font-size: 11px;
+      color: #A5BBD2;
+    }
+
+    /* Right Form Area */
+    .auth-form-side {
+      padding: 36px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .role-selector-tabs {
+      display: flex;
+      background: #F0F5FA;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      gap: 4px;
+    }
+    .role-tab-btn {
+      flex: 1;
+      padding: 10px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .role-tab-btn:hover {
+      color: var(--color-navy-dark);
+    }
+    .role-tab-btn.active {
+      background: #FFFFFF;
+      color: var(--color-primary-blue);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      font-weight: 800;
+    }
+    .auth-mode-toggle {
+      display: flex;
+      border-bottom: 2px solid var(--border-light);
+      margin-bottom: 20px;
+    }
+    .auth-mode-btn {
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all var(--transition-fast);
+    }
+    .auth-mode-btn.active {
+      color: var(--color-primary-blue);
+      border-bottom-color: var(--color-primary-blue);
+    }
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+    .form-group-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-group-wrap label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .auth-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px;
+      border: 1.5px solid var(--border-input);
+      border-radius: 8px;
+      font-family: var(--font-family);
+      font-size: 13.5px;
+      color: var(--text-dark);
+      outline: none;
+      background: #FFFFFF;
+      transition: border-color var(--transition-fast);
+      box-sizing: border-box;
+    }
+    .auth-input:focus {
+      border-color: var(--color-primary-blue);
+      box-shadow: 0 0 0 3px rgba(8, 123, 255, 0.12);
+    }
+    .auth-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .auth-btn-submit {
+      width: 100%;
+      height: 46px;
+      background: var(--color-primary-blue);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background var(--transition-fast);
+    }
+    .auth-btn-submit:hover {
+      background: var(--color-accent-blue);
+    }
+
+    /* Quick 1-Click Demo Logins */
+    .demo-login-box {
+      margin-top: 20px;
+      padding: 12px;
+      background: #EDF8FF;
+      border: 1px dashed #AAD2FF;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .demo-login-box p {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .demo-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+    .btn-demo-quick {
+      background: #FFFFFF;
+      border: 1px solid var(--color-primary-blue);
+      color: var(--color-primary-blue);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-demo-quick:hover {
+      background: var(--color-primary-blue);
+      color: #FFFFFF;
+    }
+    .btn-demo-college {
+      border-color: #0FA66D;
+      color: #0FA66D;
+    }
+    .btn-demo-college:hover {
+      background: #0FA66D;
+      color: #FFFFFF;
+    }
+    .btn-demo-employer {
+      border-color: #FF922A;
+      color: #FF922A;
+    }
+    .btn-demo-employer:hover {
+      background: #FF922A;
+      color: #FFFFFF;
+    }
+    .btn-demo-admin {
+      border-color: #173C62;
+      color: #173C62;
+    }
+    .btn-demo-admin:hover {
+      background: #173C62;
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 880px) {
+      .auth-card-container {
+        grid-template-columns: 1fr;
+      }
+      .auth-side-banner {
+        display: none;
+      }
+      .auth-form-side {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="SkillOra Home">
+        <div class="logo-mark">
+          <svg class="logo-symbol" viewBox="0 0 38 38" fill="none">
+            <rect width="38" height="38" rx="8" fill="#087BFF"/>
+            <path d="M10 26L19 12L28 26H10Z" fill="#FFFFFF"/>
+            <circle cx="19" cy="18" r="3.5" fill="#FF922A"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-title">Skill<span class="highlight-orange">Ora</span></span>
+          <span class="logo-tagline">Learn • Skill • Build Your Future</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="jobs.html" class="nav-link">Find Jobs</a>
+        <a href="colleges.html" class="nav-link">Colleges & Admissions</a>
+        <a href="dashboard.html" class="nav-link">Student Dashboard</a>
+        <a href="auth.html?role=student" class="nav-link" style="color:var(--color-primary-blue);font-weight:700;">Student Login / Sign Up</a>
+        <a href="employer-portal.html" class="nav-link">Employer Portal</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="index.html" class="btn btn-secondary-btn" style="padding:6px 14px;font-size:13px;text-decoration:none;">← Back to Home</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Auth Page Content -->
+  <main class="auth-page-wrap">
+    <div class="auth-card-container">
+      
+      <!-- Left Visual Side Banner (Dynamic per Role) -->
+      <div class="auth-side-banner" id="auth-side-banner">
+        <div>
+          <div class="auth-banner-logo">
+            Skill<span>Ora</span>
+          </div>
+          <h2 class="auth-banner-title" id="banner-title">Build Your Future in Healthcare & Hospitality</h2>
+          <p class="auth-banner-sub" id="banner-sub">India’s verified career gateway connecting students with recognized colleges, direct admissions, and healthcare/hospitality job vacancies.</p>
+
+          <ul class="auth-feature-list" id="banner-features">
+            <li class="auth-feature-item">
+              <span class="auth-feature-icon">✔</span>
+              <span>1-Click Applications with your verified digital student profile & resume.</span>
+            </li>
+            <li class="auth-feature-item">
+              <span class="auth-feature-icon">✔</span>
+              <span>Direct admission counseling & seat allotment across 488+ recognized colleges.</span>
+            </li>
+            <li class="auth-feature-item">
+              <span class="auth-feature-icon">✔</span>
+              <span>Verified hospital & luxury hotel job hiring with no recruitment charges.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="auth-stat-pill" id="banner-stats">
+          <div class="auth-stat-box">
+            <strong>488+</strong>
+            <span>Accredited Institutes</span>
+          </div>
+          <div class="auth-stat-box">
+            <strong>1,450+</strong>
+            <span>Verified Vacancies</span>
+          </div>
+          <div class="auth-stat-box">
+            <strong>100%</strong>
+            <span>Seat Guarantee</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Form Box -->
+      <div class="auth-form-side">
+        
+        <!-- 3-Role Switcher Tabs -->
+        <div class="role-selector-tabs" role="tablist">
+          <button class="role-tab-btn active" id="role-btn-student" onclick="switchRole('student')">
+            <span>🎓</span> Student User
+          </button>
+          <button class="role-tab-btn" id="role-btn-college" onclick="switchRole('college')">
+            <span>🏫</span> College User
+          </button>
+          <button class="role-tab-btn" id="role-btn-employer" onclick="switchRole('employer')">
+            <span>💼</span> Job User / HR
+          </button>
+        </div>
+
+        <!-- Mode Toggle (Sign In vs Sign Up) -->
+        <div class="auth-mode-toggle">
+          <button class="auth-mode-btn active" id="btn-mode-signin" onclick="setAuthMode('signin')">Sign In</button>
+          <button class="auth-mode-btn" id="btn-mode-signup" onclick="setAuthMode('signup')">Create Free Account</button>
+        </div>
+
+        <!-- Dynamic Feedback Message Banner -->
+        <div id="auth-alert-box" style="display:none;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.45;margin-bottom:16px;"></div>
+
+        <!-- ================================================================= -->
+        <!-- 1. SIGN IN FORM (Adapts based on Selected Role)                  -->
+        <!-- ================================================================= -->
+        <form class="auth-form" id="form-signin" onsubmit="event.preventDefault(); handleSignIn();">
+          <div class="form-group-wrap">
+            <label for="signin-identifier" id="lbl-signin-identifier">Mobile Number or Email Address *</label>
+            <input type="text" id="signin-identifier" class="auth-input" placeholder="e.g. 9876543210 or student@gmail.com" required>
+          </div>
+
+          <div class="form-group-wrap">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <label for="signin-password">Password *</label>
+              <a href="javascript:void(0)" onclick="alert('Password reset link will be sent to your registered mobile/email.')" style="font-size:11.5px;color:var(--color-primary-blue);text-decoration:none;">Forgot?</a>
+            </div>
+            <input type="password" id="signin-password" class="auth-input" placeholder="Enter your password" required>
+          </div>
+
+          <button type="submit" class="auth-btn-submit" id="btn-signin-submit">Sign In to Student Dashboard →</button>
+        </form>
+
+        <!-- ================================================================= -->
+        <!-- 2A. STUDENT SIGN UP FORM                                          -->
+        <!-- ================================================================= -->
+        <form class="auth-form" id="form-signup-student" style="display:none;" onsubmit="event.preventDefault(); handleStudentSignUp();">
+          <div class="form-group-wrap">
+            <label for="student-name">Student Full Name *</label>
+            <input type="text" id="student-name" class="auth-input" placeholder="e.g. Rajesh Kumar" required>
+          </div>
+
+          <div class="auth-row-2">
+            <div class="form-group-wrap">
+              <label for="student-phone">10-Digit Mobile *</label>
+              <input type="tel" id="student-phone" class="auth-input" placeholder="e.g. 9820012345" pattern="[0-9]{10}" required>
+            </div>
+            <div class="form-group-wrap">
+              <label for="student-email">Email Address *</label>
+              <input type="email" id="student-email" class="auth-input" placeholder="student@gmail.com" required>
+            </div>
+          </div>
+
+          <div class="auth-row-2">
+            <div class="form-group-wrap">
+              <label for="student-qualification">Highest Qualification *</label>
+              <select id="student-qualification" class="auth-input" required>
+                <option value="12th PCB (Science)">12th Standard PCB (Science)</option>
+                <option value="12th Pass (Any)">12th Standard (Commerce/Arts)</option>
+                <option value="GNM / Nursing Diploma">GNM / Nursing Diploma</option>
+                <option value="Graduate (B.Sc / BHM)">Graduate (B.Sc / BHM / Any)</option>
+                <option value="10th Pass">10th Standard Pass</option>
+                <option value="Post Graduate">Post Graduate / M.Sc</option>
+              </select>
+            </div>
+
+            <div class="form-group-wrap">
+              <label for="student-sector">Target Sector *</label>
+              <select id="student-sector" class="auth-input" required>
+                <option value="Nursing & Healthcare">Nursing & Healthcare</option>
+                <option value="Hospitality & Hotel Mgmt">Hospitality & Hotel Mgmt</option>
+                <option value="Sales & Marketing">Sales & Marketing</option>
+                <option value="Language & Grooming">Language & Grooming</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-wrap">
+            <label for="student-password">Create Password *</label>
+            <input type="password" id="student-password" class="auth-input" placeholder="Minimum 6 characters" minlength="6" required>
+          </div>
+
+          <button type="submit" class="auth-btn-submit" id="btn-student-submit">Create Student Account & Open Dashboard →</button>
+        </form>
+
+        <!-- ================================================================= -->
+        <!-- 2B. COLLEGE USER SIGN UP FORM                                     -->
+        <!-- ================================================================= -->
+        <form class="auth-form" id="form-signup-college" style="display:none;" onsubmit="event.preventDefault(); handleCollegeSignUp();">
+          <div class="form-group-wrap">
+            <label for="college-name">College / University Name *</label>
+            <input type="text" id="college-name" class="auth-input" placeholder="e.g. Sunrise Institute of Nursing & Paramedical" required>
+          </div>
+
+          <div class="auth-row-2">
+            <div class="form-group-wrap">
+              <label for="college-principal">Dean / Principal / Director Name *</label>
+              <input type="text" id="college-principal" class="auth-input" placeholder="e.g. Dr. R. Sharma" required>
+            </div>
+            <div class="form-group-wrap">
+              <label for="college-email">Official Institute Email *</label>
+              <input type="email" id="college-email" class="auth-input" placeholder="admissions@sunrisenursing.edu.in" required>
+            </div>
+          </div>
+
+          <div class="auth-row-2">
+            <div class="form-group-wrap">
+              <label for="college-phone">Official Contact Phone *</label>
+              <input type="tel" id="college-phone" class="auth-input" placeholder="e.g. 9811223344" required>
+            </div>
+            <div class="form-group-wrap">
+              <label for="college-location">State & City *</label>
+              <input type="text" id="college-location" class="auth-input" placeholder="e.g. Lucknow, Uttar Pradesh" required>
+            </div>
+          </div>
+
+          <div class="auth-row-2">
+            <div class="form-group-wrap">
+              <label for="college-accreditation">Statutory Accreditation *</label>
+              <select id="college-accreditation" class="auth-input" required>
+                <option value="INC & State Nursing Council">INC & State Nursing Council Approved</option>
+                <option value="AICTE / UGC Recognized">AICTE / UGC Recognized</option>
+                <option value="NCHMCT (Hotel Mgmt)">NCHMCT (National Hotel Council)</option>
+                <option value="State Paramedical Council">State Paramedical Council</option>
+              </select>
+            </div>
+            <div class="form-group-wrap">
+              <label for="college-stream">Primary Intake Stream *</label>
+              <select id="college-stream" class="auth-input" required>
+                <option value="Nursing & Healthcare">Nursing (B.Sc & GNM)</option>
+                <option value="Hospitality & Hotel Mgmt">Hospitality & Culinary Arts</option>
+                <option value="Paramedical & Allied Health">Paramedical & Allied Health</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-wrap">
+            <label for="college-password">Create Portal Password *</label>
+            <input type="password" id="college-password" class="auth-input" placeholder="Minimum 6 characters" minlength="6" required>
+          </div>
+
+          <button type="submit" class="auth-btn-submit" style="background:#0FA66D;">Register Institute & Open College Portal →</button>
+        </form>
+
+        <!-- ================================================================= -->
+        <!-- 2C. JOB USER / EMPLOYER SIGN UP FORM                              -->
+        <!-- ================================================================= -->
+        <form class="auth-form" id="form-signup-employer" style="display:none;" onsubmit="event.preventDefault(); handleEmployerSignUp();">
+          <div class="form-group-wrap">
+            <label for="employer-org-name">Hospital / Hotel / Company Name *</label>
+            <input type="text" id="employer-org-name" class="auth-input" placeholder="e.g. City Hospital & Research Centre / Taj Vivanta" required>
+          </div>
+
+          <div class="auth-row-2">
+            <div class="form-group-wrap">
+              <label for="employer-hr-name">HR / Recruiter Name *</label>
+              <input type="text" id="employer-hr-name" class="auth-input" placeholder="e.g. Priya Nair (HR Head)" required>
+            </div>
+            <div class="form-group-wrap">
+              <label for="employer-email">Work Email *</label>
+              <input type="email" id="employer-email" class="auth-input" placeholder="hr@cityhospital.org" required>
+            </div>
+          </div>
+
+          <div class="auth-row-2">
+            <div class="form-group-wrap">
+              <label for="employer-phone">HR Contact Number *</label>
+              <input type="tel" id="employer-phone" class="auth-input" placeholder="e.g. 9871100223" required>
+            </div>
+            <div class="form-group-wrap">
+              <label for="employer-location">City & State *</label>
+              <input type="text" id="employer-location" class="auth-input" placeholder="e.g. Lucknow, Uttar Pradesh" required>
+            </div>
+          </div>
+
+          <div class="auth-row-2">
+            <div class="form-group-wrap">
+              <label for="employer-type">Organization Sector *</label>
+              <select id="employer-type" class="auth-input" required>
+                <option value="Multi-Specialty Hospital">Multi-Specialty Hospital</option>
+                <option value="Luxury Hotel / Resort">Luxury Hotel / Resort</option>
+                <option value="Diagnostic Lab / Clinic">Diagnostic Lab / Clinic</option>
+                <option value="Corporate Healthcare Provider">Corporate Healthcare Provider</option>
+              </select>
+            </div>
+            <div class="form-group-wrap">
+              <label for="employer-roles">Key Roles to Hire *</label>
+              <select id="employer-roles" class="auth-input" required>
+                <option value="Staff Nurse & ICU In-charge">Staff Nurse & ICU In-charge</option>
+                <option value="Hotel Front Desk & F&B">Hotel Front Desk & F&B</option>
+                <option value="Lab & Paramedical Techs">Lab & Paramedical Techs</option>
+                <option value="Sales & Patient Coordinators">Sales & Patient Coordinators</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-wrap">
+            <label for="employer-password">Create Recruiter Password *</label>
+            <input type="password" id="employer-password" class="auth-input" placeholder="Minimum 6 characters" minlength="6" required>
+          </div>
+
+          <button type="submit" class="auth-btn-submit" style="background:#FF922A;">Register Employer & Open Hiring Portal →</button>
+        </form>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Script for Multi-Role Authentication & Navigation -->
+  <script>
+    let CURRENT_ROLE = 'student'; // 'student' | 'college' | 'employer'
+    let CURRENT_MODE = 'signin';  // 'signin' | 'signup'
+
+    const ROLE_METADATA = {
+      student: {
+        title: "Build Your Future in Healthcare & Hospitality",
+        sub: "India’s verified career gateway connecting students with recognized colleges, direct admissions, and healthcare/hospitality job vacancies.",
+        features: [
+          "1-Click Applications with your verified digital student profile & resume.",
+          "Direct admission counseling & seat allotment across 488+ recognized colleges.",
+          "Verified hospital & luxury hotel job hiring with no recruitment charges."
+        ],
+        statBox1: { val: "488+", lbl: "Accredited Institutes" },
+        statBox2: { val: "1,450+", lbl: "Verified Vacancies" },
+        statBox3: { val: "100%", lbl: "Seat Guarantee" },
+        idLabel: "Mobile Number or Email Address *",
+        idPlaceholder: "e.g. 9876543210 or student@gmail.com",
+        submitText: "Sign In to Student Dashboard →",
+        portalUrl: "dashboard.html"
+      },
+      college: {
+        title: "Direct Admission Counseling & Seat Management",
+        sub: "Empowering 488+ recognized colleges to list verified courses, manage seat intake quotas, and receive pre-screened student admission applications.",
+        features: [
+          "Real-time intake tracking: B.Sc Nursing, GNM, and Hotel Management batches.",
+          "Direct student leads with 12th marks, stream, and phone number.",
+          "INC, AICTE & State Council accreditation badge display on SkillOra directory."
+        ],
+        statBox1: { val: "100k+", lbl: "Active Students" },
+        statBox2: { val: "18+", lbl: "States Covered" },
+        statBox3: { val: "Zero", lbl: "Listing Fees" },
+        idLabel: "Official Institute Email or College Phone *",
+        idPlaceholder: "e.g. admissions@sunrisenursing.edu.in",
+        submitText: "Sign In to College Partner Portal →",
+        portalUrl: "college-portal.html"
+      },
+      employer: {
+        title: "Hire Verified Healthcare & Hospitality Talent",
+        sub: "Direct access to pre-screened nursing graduates, hotel associates, and certified professionals ready for immediate joining with verified resumes.",
+        features: [
+          "Post hospital and hotel job vacancies with zero commission charges.",
+          "Review digital student profiles with 1-click verified resume download.",
+          "Shortlist candidates and schedule direct walk-in interviews."
+        ],
+        statBox1: { val: "12,000+", lbl: "Registered Nurses" },
+        statBox2: { val: "48 Hrs", lbl: "Avg. Hiring Time" },
+        statBox3: { val: "Verified", lbl: "Candidate Resumes" },
+        idLabel: "Official Work Email or HR Phone *",
+        idPlaceholder: "e.g. hr@cityhospital.org",
+        submitText: "Sign In to Employer Hiring Portal →",
+        portalUrl: "employer-portal.html"
+      }
+    };
+
+    function switchRole(role) {
+      CURRENT_ROLE = role;
+      
+      // Update role buttons
+      document.querySelectorAll('.role-tab-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`role-btn-${role}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Update Side Banner Content
+      const meta = ROLE_METADATA[role];
+      document.getElementById('banner-title').textContent = meta.title;
+      document.getElementById('banner-sub').textContent = meta.sub;
+      
+      const featList = document.getElementById('banner-features');
+      featList.innerHTML = meta.features.map(f => `
+        <li class="auth-feature-item">
+          <span class="auth-feature-icon">✔</span>
+          <span>${f}</span>
+        </li>
+      `).join('');
+
+      const statBox = document.getElementById('banner-stats');
+      statBox.innerHTML = `
+        <div class="auth-stat-box"><strong>${meta.statBox1.val}</strong><span>${meta.statBox1.lbl}</span></div>
+        <div class="auth-stat-box"><strong>${meta.statBox2.val}</strong><span>${meta.statBox2.lbl}</span></div>
+        <div class="auth-stat-box"><strong>${meta.statBox3.val}</strong><span>${meta.statBox3.lbl}</span></div>
+      `;
+
+      // Update Sign In placeholders & label
+      document.getElementById('lbl-signin-identifier').textContent = meta.idLabel;
+      document.getElementById('signin-identifier').placeholder = meta.idPlaceholder;
+      document.getElementById('btn-signin-submit').textContent = meta.submitText;
+
+      // Adjust forms visibility according to current mode
+      updateFormsDisplay();
+    }
+
+    function setAuthMode(mode) {
+      CURRENT_MODE = mode;
+      const signInBtn = document.getElementById('btn-mode-signin');
+      const signUpBtn = document.getElementById('btn-mode-signup');
+
+      if (mode === 'signup') {
+        signInBtn.classList.remove('active');
+        signUpBtn.classList.add('active');
+      } else {
+        signUpBtn.classList.remove('active');
+        signInBtn.classList.add('active');
+      }
+
+      updateFormsDisplay();
+    }
+
+    function updateFormsDisplay() {
+      const signInForm = document.getElementById('form-signin');
+      const studentSignUp = document.getElementById('form-signup-student');
+      const collegeSignUp = document.getElementById('form-signup-college');
+      const employerSignUp = document.getElementById('form-signup-employer');
+
+      // Hide all first
+      signInForm.style.display = 'none';
+      studentSignUp.style.display = 'none';
+      collegeSignUp.style.display = 'none';
+      employerSignUp.style.display = 'none';
+
+      if (CURRENT_MODE === 'signin') {
+        signInForm.style.display = 'flex';
+      } else {
+        if (CURRENT_ROLE === 'student') {
+          studentSignUp.style.display = 'flex';
+        } else if (CURRENT_ROLE === 'college') {
+          collegeSignUp.style.display = 'flex';
+        } else if (CURRENT_ROLE === 'employer') {
+          employerSignUp.style.display = 'flex';
+        }
+      }
+    }
+
+    /* Feedback Alert Helper */
+    function showAuthAlert(message, isSuccess = false) {
+      const box = document.getElementById('auth-alert-box');
+      if (!box) return;
+      box.style.display = 'block';
+      box.style.background = isSuccess ? '#E8F8F0' : '#FDEDEC';
+      box.style.color = isSuccess ? '#0E7A53' : '#C0392B';
+      box.style.border = `1px solid ${isSuccess ? '#B7EBD4' : '#FADBD8'}`;
+      box.innerHTML = `<strong>${isSuccess ? '✔ Success:' : '⚠ Notice:'}</strong> ${message}`;
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function clearAuthAlert() {
+      const box = document.getElementById('auth-alert-box');
+      if (box) box.style.display = 'none';
+    }
+
+    /* 1. Genuine Sign In Handler (Authenticates with Hashed Password) */
+    async function handleSignIn() {
+      clearAuthAlert();
+      const identifier = document.getElementById('signin-identifier').value.trim();
+      const password = document.getElementById('signin-password').value;
+      const submitBtn = document.getElementById('btn-signin-submit');
+
+      if (!identifier || !password) {
+        showAuthAlert('Please enter both your registered Email/Mobile and Password.');
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Verifying Credentials...';
+      }
+
+      try {
+        const res = await SkillOraAuth.authenticateUser(identifier, password, CURRENT_ROLE);
+        if (!res.success) {
+          showAuthAlert(res.message, false);
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = ROLE_METADATA[CURRENT_ROLE].submitText;
+          }
+          return;
+        }
+
+        showAuthAlert(`Signed in successfully as ${res.user.name}! Redirecting...`, true);
+
+        // Check if there was a pending apply action
+        const pendingRaw = sessionStorage.getItem('SKILLORA_PENDING_APPLY');
+        if (pendingRaw) {
+          try {
+            const pending = JSON.parse(pendingRaw);
+            sessionStorage.removeItem('SKILLORA_PENDING_APPLY');
+            if (pending.type === 'course') {
+              window.location.href = `index.html?openApply=true&collegeId=${pending.collegeId || ''}&courseName=${encodeURIComponent(pending.courseName || '')}`;
+              return;
+            } else if (pending.type === 'job') {
+              window.location.href = `jobs.html?applyJob=${pending.jobId || ''}`;
+              return;
+            }
+          } catch (e) {}
+        }
+
+        // Check redirect query param
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get('redirect');
+        if (redirect === 'colleges') {
+          window.location.href = 'colleges.html';
+          return;
+        } else if (redirect === 'jobs') {
+          window.location.href = 'jobs.html';
+          return;
+        }
+
+        // Standard role destinations
+        setTimeout(() => {
+          if (CURRENT_ROLE === 'student') window.location.href = 'dashboard.html';
+          else if (CURRENT_ROLE === 'college') window.location.href = 'college-portal.html';
+          else if (CURRENT_ROLE === 'employer') window.location.href = 'employer-portal.html';
+        }, 600);
+
+      } catch (err) {
+        showAuthAlert('An error occurred during sign in. Please try again.');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = ROLE_METADATA[CURRENT_ROLE].submitText;
+        }
+      }
+    }
+
+    /* 2. Genuine Student Sign Up Handler */
+    async function handleStudentSignUp() {
+      clearAuthAlert();
+      const name = document.getElementById('student-name').value.trim();
+      const phone = document.getElementById('student-phone').value.trim();
+      const email = document.getElementById('student-email').value.trim();
+      const qualification = document.getElementById('student-qualification').value;
+      const sector = document.getElementById('student-sector').value;
+      const password = document.getElementById('student-password').value;
+
+      const submitBtn = document.getElementById('btn-student-submit');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Securing Credentials & Creating Account...';
+      }
+
+      const res = await SkillOraAuth.registerUser({
+        role: 'student',
+        name,
+        phone,
+        email,
+        password,
+        qualification,
+        sector
+      });
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Student Account & Open Dashboard →';
+      }
+
+      if (!res.success) {
+        showAuthAlert(res.message, false);
+        return;
+      }
+
+      // Success: Show message, switch to Sign In mode, pre-fill identifier
+      showAuthAlert('Account created successfully with secure credentials! Please sign in with your password to continue.', true);
+      document.getElementById('form-signup-student').reset();
+      setAuthMode('signin');
+      document.getElementById('signin-identifier').value = email || phone;
+      document.getElementById('signin-password').value = '';
+      document.getElementById('signin-password').focus();
+    }
+
+    /* 3. Genuine College Sign Up Handler */
+    async function handleCollegeSignUp() {
+      clearAuthAlert();
+      const collegeName = document.getElementById('college-name').value.trim();
+      const principalName = document.getElementById('college-principal').value.trim();
+      const email = document.getElementById('college-email').value.trim();
+      const phone = document.getElementById('college-phone').value.trim();
+      const location = document.getElementById('college-location').value.trim();
+      const accreditation = document.getElementById('college-accreditation').value;
+      const stream = document.getElementById('college-stream').value;
+      const password = document.getElementById('college-password').value;
+
+      const res = await SkillOraAuth.registerUser({
+        role: 'college',
+        name: collegeName,
+        phone,
+        email,
+        password,
+        city: location.split(',')[0] || location,
+        state: location.split(',')[1] || '',
+        extra: { principalName, accreditation, stream, collegeName }
+      });
+
+      if (!res.success) {
+        showAuthAlert(res.message, false);
+        return;
+      }
+
+      showAuthAlert('College institutional account registered! Please sign in with your password.', true);
+      document.getElementById('form-signup-college').reset();
+      setAuthMode('signin');
+      document.getElementById('signin-identifier').value = email || phone;
+      document.getElementById('signin-password').value = '';
+      document.getElementById('signin-password').focus();
+    }
+
+    /* 4. Genuine Employer Sign Up Handler */
+    async function handleEmployerSignUp() {
+      clearAuthAlert();
+      const orgName = document.getElementById('employer-org-name').value.trim();
+      const hrName = document.getElementById('employer-hr-name').value.trim();
+      const email = document.getElementById('employer-email').value.trim();
+      const phone = document.getElementById('employer-phone').value.trim();
+      const location = document.getElementById('employer-location').value.trim();
+      const orgType = document.getElementById('employer-type').value;
+      const roles = document.getElementById('employer-roles').value;
+      const password = document.getElementById('employer-password').value;
+
+      const res = await SkillOraAuth.registerUser({
+        role: 'employer',
+        name: orgName,
+        phone,
+        email,
+        password,
+        city: location.split(',')[0] || location,
+        state: location.split(',')[1] || '',
+        extra: { hrName, orgType, roles, orgName }
+      });
+
+      if (!res.success) {
+        showAuthAlert(res.message, false);
+        return;
+      }
+
+      showAuthAlert('Employer recruiter account registered! Please sign in with your password.', true);
+      document.getElementById('form-signup-employer').reset();
+      setAuthMode('signin');
+      document.getElementById('signin-identifier').value = email || phone;
+      document.getElementById('signin-password').value = '';
+      document.getElementById('signin-password').focus();
+    }
+
+    // Auto-detect URL parameter (e.g., auth.html?role=college or ?role=employer or ?redirect=apply)
+    window.onload = function() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedRole = params.get('role');
+      if (requestedRole === 'college' || requestedRole === 'institute') {
+        switchRole('college');
+      } else if (requestedRole === 'employer' || requestedRole === 'job') {
+        switchRole('employer');
+      } else {
+        switchRole('student');
+      }
+
+      if (params.get('mode') === 'signup') {
+        setAuthMode('signup');
+      }
+
+      if (params.get('redirect') === 'apply') {
+        const title = params.get('title') || 'this opportunity';
+        showAuthAlert(`Please Sign In or Create a free Student Account to apply for ${decodeURIComponent(title)} and lock your admission/interview slot.`);
+      }
+    };
+  </script>
+</body>
+</html>
