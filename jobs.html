@@ -161,12 +161,65 @@
       padding: 4px 10px;
       border-radius: 6px;
     }
-    @media (max-width: 850px) {
+    @media (max-width: 900px) {
+      .navbar {
+        height: auto;
+        padding: 10px 14px;
+        min-height: 60px;
+      }
+      .nav-menu {
+        display: none;
+      }
+      .nav-actions {
+        gap: 8px;
+      }
+      .btn-outline-login {
+        font-size: 11.5px;
+        padding: 0 10px;
+        height: 34px;
+      }
+      .jobs-hero-bar {
+        padding: 24px 14px 20px 14px;
+      }
+      .jobs-hero-bar h1 {
+        font-size: 22px;
+      }
+      .jobs-hero-bar p {
+        font-size: 13px;
+        margin-bottom: 14px;
+      }
+      .jobs-search-box {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+      }
+      .j-search-btn {
+        height: 42px;
+        border-radius: 6px;
+      }
       .jobs-layout {
         grid-template-columns: 1fr;
+        padding: 0 14px;
+        gap: 16px;
+        margin: 16px auto;
       }
       .full-job-card {
         grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+      }
+      .f-job-img-box {
+        width: 100%;
+        height: 160px;
+      }
+      .f-job-meta-row {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .sector-tab-strip {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
       }
     }
   </style>
@@ -198,11 +251,38 @@
       </nav>
 
       <div class="nav-actions">
-        <a href="auth.html?role=student" class="btn btn-outline-login" id="nav-auth-btn">Student Login / Sign Up</a>
+        <a href="auth.html?role=student" class="btn btn-outline-login" id="nav-auth-btn">Student Login</a>
         <a href="admin.html" class="btn btn-secondary-btn" style="text-decoration:none;font-size:12.5px;">Admin Portal</a>
+        <button class="mobile-toggle-btn" id="mobile-toggle" aria-label="Open mobile menu" style="display:flex;">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </header>
+
+  <!-- Mobile Slide-Out Drawer Navigation -->
+  <div class="mobile-nav-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="mobile-nav-backdrop" id="mobile-backdrop"></div>
+    <div class="mobile-nav-pane">
+      <div class="mobile-nav-header">
+        <div class="brand-logo" style="width:auto;">
+          <span class="logo-title" style="font-size:20px;">Skill<span class="highlight-orange">Ora</span></span>
+        </div>
+        <button class="mobile-drawer-close" id="mobile-drawer-close" aria-label="Close menu">&times;</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="index.html" class="mob-link"><span>🏠</span> Home</a>
+        <a href="jobs.html" class="mob-link active"><span>💼</span> Find Jobs</a>
+        <a href="colleges.html" class="mob-link"><span>🎓</span> Colleges & Admissions</a>
+        <a href="dashboard.html" class="mob-link"><span>👤</span> Student Dashboard</a>
+        <div class="mob-divider"></div>
+        <a href="auth.html?role=student" class="mob-link mob-highlight"><span>🔐</span> Student Login / Sign Up</a>
+        <a href="college-portal.html" class="mob-link"><span>🏫</span> College Partner Portal</a>
+        <a href="employer-portal.html" class="mob-link"><span>🏨</span> Hospital & Hotel HR Portal</a>
+        <a href="admin.html" class="mob-link mob-admin-link"><span>🛡️</span> Admin Console</a>
+      </div>
+    </div>
+  </div>
 
   <!-- Hero Header for Jobs Tab -->
   <div class="jobs-page-header">
@@ -293,7 +373,7 @@
   </div>
 
   <script>
-    const ALL_JOBS = [
+    const BASE_JOBS = [
       {
         id: 1,
         title: "Staff Nurse (GNM / B.Sc)",
@@ -373,6 +453,15 @@
         description: "B2B client engagement, corporate health checkup tie-ups, and corporate medical camp coordination across Mumbai corporate offices."
       }
     ];
+
+    let ALL_JOBS = [...BASE_JOBS];
+    try {
+      const customJobs = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_JOBS') || '[]');
+      if (customJobs.length > 0) {
+        ALL_JOBS = [...customJobs, ...BASE_JOBS];
+        ALL_JOBS = Array.from(new Map(ALL_JOBS.map(j => [j.id, j])).values());
+      }
+    } catch(e) {}
 
     let CURRENT_SECTOR_FILTER = "All";
 
@@ -608,6 +697,24 @@
         console.error('URL param parsing error in jobs:', e);
       }
     };
+    // Mobile Drawer Handlers
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const mobileBackdrop = document.getElementById('mobile-backdrop');
+    const mobileClose = document.getElementById('mobile-drawer-close');
+
+    if (mobileToggle) mobileToggle.addEventListener('click', () => {
+      mobileDrawer.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    if (mobileBackdrop) mobileBackdrop.addEventListener('click', () => {
+      mobileDrawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+    if (mobileClose) mobileClose.addEventListener('click', () => {
+      mobileDrawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
   </script>
 </body>
 </html>

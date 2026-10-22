@@ -316,13 +316,67 @@
     }
 
     @media (max-width: 950px) {
+      .navbar {
+        height: auto;
+        padding: 10px 14px;
+        min-height: 60px;
+      }
+      .nav-menu {
+        display: none;
+      }
+      .nav-actions {
+        gap: 8px;
+      }
       .dash-container {
         grid-template-columns: 1fr;
+        padding: 14px;
+        margin: 14px auto;
+        gap: 16px;
+      }
+      .dash-sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 8px;
+        gap: 8px;
+        white-space: nowrap;
+      }
+      .dash-nav-btn {
+        width: auto;
+        flex-shrink: 0;
+        padding: 8px 12px;
+        font-size: 12px;
+        border-radius: 20px;
+        background: #F8FCFF;
+        border: 1px solid #E5F0F9;
+      }
+      .dash-nav-btn.active {
+        border-left: 1px solid #087BFF;
+        background: #087BFF;
+        color: #FFFFFF;
+      }
+      .dash-nav-btn.active .dash-nav-badge {
+        background: #FFFFFF;
+        color: #087BFF;
       }
       .dash-stats-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 10px;
       }
       .profile-form-grid {
+        grid-template-columns: 1fr;
+      }
+      .dash-section-card {
+        padding: 16px 12px;
+      }
+      .section-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+    @media (max-width: 480px) {
+      .dash-stats-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -1071,6 +1125,24 @@ Your profile and recruiters will now be able to view your verified resume.`);
     }
 
     window.onload = loadStudentDashboard;
+    // Mobile Drawer Handlers
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const mobileBackdrop = document.getElementById('mobile-backdrop');
+    const mobileClose = document.getElementById('mobile-drawer-close');
+
+    if (mobileToggle) mobileToggle.addEventListener('click', () => {
+      mobileDrawer.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    if (mobileBackdrop) mobileBackdrop.addEventListener('click', () => {
+      mobileDrawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+    if (mobileClose) mobileClose.addEventListener('click', () => {
+      mobileDrawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
   </script>
 </body>
 </html>

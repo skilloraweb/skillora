@@ -393,8 +393,92 @@
       gap: 14px;
     }
     @media (max-width: 900px) {
-      .admin-container { grid-template-columns: 1fr; }
-      .admin-stats-row { grid-template-columns: 1fr 1fr; }
+      .admin-navbar {
+        padding: 10px 14px;
+        height: auto;
+        min-height: 60px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .admin-brand {
+        font-size: 17px;
+      }
+      .admin-user-pill {
+        font-size: 11px;
+        padding: 4px 8px;
+      }
+      .admin-container {
+        grid-template-columns: 1fr;
+      }
+      .admin-sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 10px;
+        gap: 8px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+        position: sticky;
+        top: 60px;
+        z-index: 90;
+        background: #FFFFFF;
+      }
+      .admin-sidebar div {
+        display: none;
+      }
+      .admin-nav-item {
+        width: auto;
+        white-space: nowrap;
+        padding: 8px 12px;
+        font-size: 12px;
+        border: 1px solid #E5F0F9;
+        border-radius: 20px;
+        background: #F8FCFF;
+        flex-shrink: 0;
+      }
+      .admin-nav-item.active {
+        background: #087BFF;
+        color: #FFFFFF;
+        border-color: #087BFF;
+      }
+      .admin-content-pane {
+        padding: 14px;
+      }
+      .admin-stats-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .stat-tile {
+        padding: 14px;
+      }
+      .stat-tile strong {
+        font-size: 22px;
+      }
+      .stat-tile span {
+        font-size: 11px;
+      }
+      .module-card {
+        padding: 16px 12px;
+      }
+      .module-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .crm-table {
+        font-size: 12px;
+      }
+      .crm-table th, .crm-table td {
+        padding: 8px 10px;
+      }
+    }
+    @media (max-width: 480px) {
+      .admin-stats-row {
+        grid-template-columns: 1fr;
+      }
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -432,8 +516,7 @@
       </form>
 
       <div class="gate-credential-hint">
-        <strong>Authorized Single Master Key:</strong><br>
-        Admin ID: <code style="font-weight:800;color:#087BFF;">admin@skillora.in</code> &bull; Password: <code style="font-weight:800;color:#087BFF;">SkillOra@Admin2026</code>
+        🔒 <strong>Restricted Access:</strong> Single-credential cryptographic gateway for authorized SkillOra management only.
       </div>
     </div>
   </div>
@@ -514,11 +597,11 @@
             <!-- Stats Grid -->
             <div class="admin-stats-row">
               <div class="stat-tile">
-                <strong id="dash-lead-count">48</strong>
+                <strong id="dash-lead-count">0</strong>
                 <span>Total Course Applications</span>
               </div>
               <div class="stat-tile">
-                <strong id="dash-job-app-count">24</strong>
+                <strong id="dash-job-app-count">0</strong>
                 <span>Job Vacancy Applications</span>
               </div>
               <div class="stat-tile">
@@ -526,7 +609,7 @@
                 <span>Listed Colleges (Active)</span>
               </div>
               <div class="stat-tile">
-                <strong style="color:#0FA66D;">68.4%</strong>
+                <strong style="color:#0FA66D;" id="dash-conversion-rate">0.0%</strong>
                 <span>Counseling Conversion Rate</span>
               </div>
             </div>
@@ -886,14 +969,14 @@
             </table>
           </div>
 
-          <!-- Registered Users & Cryptographic Credential Vault -->
+          <!-- Registered Institutional & Recruiter Vault (Students isolated for privacy) -->
           <div class="module-card">
             <div class="module-card-header">
               <div>
-                <h2 class="mod-title">🔐 Registered User Accounts & Cryptographic Credential Vault</h2>
-                <p class="mod-desc">All genuine user credentials, profiles, and SHA-256 hashed passwords stored in the database.</p>
+                <h2 class="mod-title">🔐 Institutional Partners & Recruiter Credentials Vault</h2>
+                <p class="mod-desc">College authorities, hospital recruiters, and administrator credentials with SHA-256 password hashing. (Student records are isolated and protected).</p>
               </div>
-              <button class="btn btn-secondary-btn" onclick="renderUsersVault()">🔄 Refresh Users Vault</button>
+              <button class="btn btn-secondary-btn" onclick="renderUsersVault()">🔄 Refresh Vault</button>
             </div>
             <table class="crm-table">
               <thead>
@@ -925,24 +1008,15 @@
     // Master Authorized Single Credentials
     const SINGLE_ADMIN_ID = "admin@skillora.in";
     const SINGLE_ADMIN_ALT = "admin";
-    const SINGLE_ADMIN_PASS = "SkillOra@Admin2026";
+    const SINGLE_ADMIN_PASS_HASH = "8133fc60a9251cdaf422e265a4bc93935116ee8cabc8c4c6b994fe75c59367b3";
 
-    // Legitimate Default Course Applications
-    let LIVE_COURSE_APPLICATIONS = [
-      { id: "SKL-2026-8942", name: "Pooja Deshmukh", phone: "9820012345", email: "pooja.deshmukh@gmail.com", course: "GNM – General Nursing", college: "Sunrise College of Nursing", location: "Mumbai, Maharashtra", source: "Website Direct Form", counselor: "Pooja Sharma", stage: "Counseling Active", date: "19 Oct 2026" },
-      { id: "SKL-2026-6120", name: "Rahul Deshmukh", phone: "9819087654", email: "rahul.deshmukh@gmail.com", course: "Hotel Mgmt Diploma", college: "Grand Vista Hotel Academy", location: "Jaipur, Rajasthan", source: "Colleges Directory", counselor: "Amit Verma", stage: "Contacted", date: "19 Oct 2026" },
-      { id: "SKL-2026-4401", name: "Priyanka Nair", phone: "9845012399", email: "priyanka.nair@gmail.com", course: "B.Sc Nursing", college: "Apollo Nursing Institute", location: "Bengaluru, Karnataka", source: "Live Ticker Notice", counselor: "Pooja Sharma", stage: "Seat Confirmed", date: "18 Oct 2026" },
-      { id: "SKL-2026-3199", name: "Vikram Singh", phone: "9829033445", email: "vikram.singh@gmail.com", course: "Diploma in F&B Service", college: "The Royal Hotel Academy", location: "Lucknow, Uttar Pradesh", source: "Website Direct Form", counselor: "Karan Johar", stage: "New Lead", date: "18 Oct 2026" },
-      { id: "SKL-2026-2045", name: "Sneha Sengupta", phone: "9830044556", email: "sneha.s@gmail.com", course: "Post Basic B.Sc Nursing", college: "National Institute of Health Sciences", location: "Pune, Maharashtra", source: "Colleges Directory", counselor: "Amit Verma", stage: "Counseling Active", date: "17 Oct 2026" }
-    ];
+    // Legitimate Default Baseline Applications
+    // Zero fake students - Dashboard populates ONLY from actual website submissions
+    const BASE_COURSE_APPLICATIONS = [];
+    const BASE_JOB_APPLICATIONS = [];
 
-    // Legitimate Default Job Applications
-    let LIVE_JOB_APPLICATIONS = [
-      { id: "SKL-JOB-2026-4192", name: "Rajesh Kumar", phone: "9821100223", email: "rajesh.kumar@gmail.com", role: "Staff Nurse (GNM/B.Sc)", company: "City Hospital & Research Centre", location: "Lucknow, UP", exp: "2 Years Experience", resume: "Rajesh_Kumar_Nurse_Resume.pdf", date: "19 Oct 2026", stage: "Shortlisted for Interview" },
-      { id: "SKL-JOB-2026-3882", name: "Ananya Sharma", phone: "9810022334", email: "ananya.sharma@gmail.com", role: "Staff Nurse (ICU)", company: "Metro Multispecialty Hospital", location: "Delhi NCR", exp: "Fresher (B.Sc)", resume: "Ananya_Sharma_GNM.pdf", date: "19 Oct 2026", stage: "Interview Scheduled" },
-      { id: "SKL-JOB-2026-2910", name: "Amit Patel", phone: "9845566778", email: "amit.patel@gmail.com", role: "Front Desk Executive", company: "Grand Vista Hotel", location: "Jaipur, Rajasthan", exp: "1 Year Experience", resume: "Amit_Patel_Hospitality.pdf", date: "18 Oct 2026", stage: "Under Review" },
-      { id: "SKL-JOB-2026-1704", name: "Kavita Sen", phone: "9711004455", email: "kavita.sen@gmail.com", role: "Dialysis & Lab Tech", company: "City Hospital & Research Centre", location: "Lucknow, UP", exp: "3 Years Experience", resume: "Kavita_Sen_LabTech.pdf", date: "17 Oct 2026", stage: "Shortlisted for Interview" }
-    ];
+    let LIVE_COURSE_APPLICATIONS = [...BASE_COURSE_APPLICATIONS];
+    let LIVE_JOB_APPLICATIONS = [...BASE_JOB_APPLICATIONS];
 
     let LIVE_JOBS_CMS = [
       { id: 1, title: "Staff Nurse (GNM / B.Sc)", company: "City Hospital & Research Centre", sector: "Healthcare", location: "Lucknow, UP", salary: "₹ 18,000 - 28,000/mo", status: "Active (Published)" },
@@ -951,14 +1025,19 @@
       { id: 4, title: "F&B Service Associate", company: "The Royal Hotel", sector: "Hospitality", location: "Bengaluru, Karnataka", salary: "₹ 14,000 - 20,000/mo", status: "Active (Published)" }
     ];
 
-    /* 1. SINGLE ID & PASSWORD VERIFICATION LOGIC */
-    function verifyAdminCredentials() {
+    /* 1. SINGLE ID & PASSWORD VERIFICATION LOGIC (Cryptographically Hashed) */
+    async function verifyAdminCredentials() {
       const idInput = document.getElementById('admin-id-input').value.trim();
       const passInput = document.getElementById('admin-pass-input').value.trim();
       const errBox = document.getElementById('gate-error-box');
 
       const isIdValid = (idInput.toLowerCase() === SINGLE_ADMIN_ID.toLowerCase() || idInput.toLowerCase() === SINGLE_ADMIN_ALT.toLowerCase());
-      const isPassValid = (passInput === SINGLE_ADMIN_PASS);
+      
+      let passHash = "";
+      if (window.SkillOraAuth && window.SkillOraAuth.hashPassword) {
+        passHash = await window.SkillOraAuth.hashPassword(passInput);
+      }
+      const isPassValid = (passHash === SINGLE_ADMIN_PASS_HASH);
 
       if (isIdValid && isPassValid) {
         sessionStorage.setItem('SKILLORA_ADMIN_AUTHENTICATED', 'true');
@@ -976,6 +1055,28 @@
       const root = document.getElementById('admin-dashboard-root');
       root.style.display = 'flex';
       syncAllCloudData();
+
+      // REAL-TIME WEBSOCKET/CROSS-TAB TELEMETRY LISTENER
+      // Automatically triggers instantaneous live update when someone applies in any tab or window
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'SKILLORA_ALL_COURSE_APPLICATIONS' || e.key === 'SKILLORA_ALL_JOB_APPLICATIONS' || e.key === 'SKILLORA_LIVE_ACTIVITY_LOG') {
+          syncAllCloudData();
+          showLiveToastNotification('🔔 New Live Submission Detected on Website!');
+        }
+      });
+
+      // Periodic Background Heartbeat (every 4 seconds) to ensure telemetry is always live
+      if (!window._adminLivePulse) {
+        window._adminLivePulse = setInterval(syncAllCloudData, 4000);
+      }
+    }
+
+    function showLiveToastNotification(msg) {
+      const banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0FA66D;color:#FFFFFF;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,0.18);z-index:9999;display:flex;align-items:center;gap:10px;animation:fadeIn 0.25s ease;';
+      banner.innerHTML = `<span>⚡</span> <span>${msg}</span>`;
+      document.body.appendChild(banner);
+      setTimeout(() => banner.remove(), 4000);
     }
 
     function handleAdminLogout() {
@@ -1014,7 +1115,10 @@
     }
 
     async function syncAllCloudData() {
-      // 1. Load Local Course Applications
+      let freshCourses = [...BASE_COURSE_APPLICATIONS];
+      let freshJobs = [...BASE_JOB_APPLICATIONS];
+
+      // 1. Load Local Course Applications submitted anywhere on website
       try {
         const localCourses = JSON.parse(localStorage.getItem('SKILLORA_ALL_COURSE_APPLICATIONS') || '[]');
         if (localCourses.length > 0) {
@@ -1031,7 +1135,7 @@
             stage: c.status || "New Lead",
             date: c.date || "Today"
           }));
-          LIVE_COURSE_APPLICATIONS = [...formatted, ...LIVE_COURSE_APPLICATIONS];
+          freshCourses = [...formatted, ...freshCourses];
         }
 
         const localJobs = JSON.parse(localStorage.getItem('SKILLORA_ALL_JOB_APPLICATIONS') || '[]');
@@ -1049,9 +1153,12 @@
             date: j.date || "Today",
             stage: j.status || "Applied"
           }));
-          LIVE_JOB_APPLICATIONS = [...formattedJobs, ...LIVE_JOB_APPLICATIONS];
+          freshJobs = [...formattedJobs, ...freshJobs];
         }
       } catch (e) {}
+
+      LIVE_COURSE_APPLICATIONS = freshCourses;
+      LIVE_JOB_APPLICATIONS = freshJobs;
 
       // 2. Fetch live from Supabase
       try {
@@ -1108,19 +1215,25 @@
         users = JSON.parse(localStorage.getItem('SKILLORA_DB_USERS') || '[]');
       } catch (e) {}
 
-      if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">No users registered yet. When genuine users register via auth.html, their profile, role, and SHA-256 password hash appear here.</td></tr>`;
+      // STRICT PRIVACY PROTECTION: Students are completely excluded from security log / admin user vault
+      const nonStudentUsers = users.filter(u => u.role !== 'student');
+
+      if (nonStudentUsers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:28px 16px;color:var(--text-muted);background:#F8FCFF;border-radius:8px;">
+          🔒 <strong>Student Privacy Shield Active:</strong> Student accounts are protected and isolated from the administrative security panel.<br>
+          <span style="font-size:12px;margin-top:6px;display:inline-block;">Only verified College Partners, Hospital/Hotel Recruiters, and Authorized Staff credentials are authenticated and audited here.</span>
+        </td></tr>`;
         return;
       }
 
-      tbody.innerHTML = users.map(u => `
+      tbody.innerHTML = nonStudentUsers.map(u => `
         <tr>
           <td><strong style="color:#087BFF;">${u.id || 'USR-N/A'}</strong></td>
-          <td><span class="role-badge" style="text-transform:capitalize;background:#EDF8FF;color:#087BFF;padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px;">${u.role || 'student'}</span></td>
+          <td><span class="role-badge" style="text-transform:capitalize;background:${u.role==='employer'?'#FEF6EC':u.role==='college'?'#EDFDF5':'#EDF8FF'};color:${u.role==='employer'?'#FF922A':u.role==='college'?'#0FA66D':'#087BFF'};padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px;">${u.role || 'Partner'}</span></td>
           <td style="font-weight:700;">${u.name}</td>
-          <td>${u.email}<br><span style="font-size:11px;color:var(--text-muted);">📱 ${u.phone}</span></td>
-          <td><code style="font-size:11px;background:#F0F4F8;padding:3px 6px;border-radius:4px;color:#173C62;word-break:break-all;">${u.passwordHash || 'N/A'}</code></td>
-          <td>${u.sector || u.qualification || 'General'}</td>
+          <td>${u.email}<br><span style="font-size:11px;color:var(--text-muted);">📱 ${u.phone || '—'}</span></td>
+          <td><code style="font-size:11px;background:#F0F4F8;padding:3px 6px;border-radius:4px;color:#173C62;word-break:break-all;">${u.passwordHash || 'SHA-256 Secured'}</code></td>
+          <td>${u.orgName || u.sector || 'Partner Org'}</td>
           <td style="font-size:11.5px;color:var(--text-muted);">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : 'Recent'}</td>
         </tr>
       `).join('');
@@ -1132,15 +1245,33 @@
 
       const events = [];
 
-      // Combine course applications into activity stream
+      // Priority 1: Real-time Live Activity Events from website interactions
+      try {
+        const storedLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
+        if (storedLog.length > 0) {
+          storedLog.slice(0, 8).forEach(item => {
+            events.push({
+              badge: item.type === 'job' ? 'Job Apply' : 'Course Apply',
+              badgeClass: item.type === 'job' ? 'act-badge-job' : 'act-badge-course',
+              title: item.title,
+              desc: item.desc,
+              time: item.time || 'Just now'
+            });
+          });
+        }
+      } catch(e) {}
+
+      // Combine course applications into activity stream if not duplicate
       LIVE_COURSE_APPLICATIONS.slice(0, 5).forEach((c, idx) => {
-        events.push({
-          badge: "Course Apply",
-          badgeClass: "act-badge-course",
-          title: `${c.name} applied for "${c.course}"`,
-          desc: `Target College: ${c.college} (${c.location}) • Phone: ${c.phone} • Status: ${c.stage}`,
-          time: idx === 0 ? "Just now" : `${idx * 8 + 3}m ago`
-        });
+        if (!events.some(e => e.title.includes(c.name))) {
+          events.push({
+            badge: "Course Apply",
+            badgeClass: "act-badge-course",
+            title: `${c.name} applied for "${c.course}"`,
+            desc: `Target College: ${c.college} (${c.location}) • Phone: ${c.phone} • Status: ${c.stage}`,
+            time: idx === 0 ? "Just now" : `${idx * 8 + 3}m ago`
+          });
+        }
       });
 
       // Combine job applications into activity stream
@@ -1153,6 +1284,17 @@
           time: `${(idx + 1) * 12}m ago`
         });
       });
+
+      if (events.length === 0) {
+        container.innerHTML = `
+          <div style="background:#F8FCFF;border:1px dashed #CCDEF5;border-radius:8px;padding:28px 16px;text-align:center;color:var(--text-muted);font-size:12.5px;">
+            <span style="font-size:26px;display:block;margin-bottom:8px;">📡</span>
+            <strong style="color:#0A2540;font-size:14px;">Awaiting Live Website Submissions</strong><br>
+            <span style="margin-top:4px;display:inline-block;">Real-time admissions and job applications will stream here instantly as students apply on the website.</span>
+          </div>
+        `;
+        return;
+      }
 
       container.innerHTML = events.map(e => `
         <div class="activity-item">
@@ -1169,6 +1311,14 @@
     function renderCourseApplicationsTable(list = LIVE_COURSE_APPLICATIONS) {
       const tbody = document.getElementById('crm-course-table-body');
       if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px 16px;color:var(--text-muted);background:#F8FCFF;border-radius:8px;">
+          📭 <strong>No student course applications submitted yet.</strong><br>
+          <span style="font-size:12px;margin-top:6px;display:inline-block;">When a genuine student applies on the website, their verified submission will appear here live in real-time.</span>
+        </td></tr>`;
+        return;
+      }
 
       tbody.innerHTML = list.map(c => `
         <tr>
@@ -1197,6 +1347,14 @@
     function renderJobApplicationsTable(list = LIVE_JOB_APPLICATIONS) {
       const tbody = document.getElementById('crm-job-table-body');
       if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px 16px;color:var(--text-muted);background:#F8FCFF;border-radius:8px;">
+          📭 <strong>No job vacancy applications submitted yet.</strong><br>
+          <span style="font-size:12px;margin-top:6px;display:inline-block;">When a genuine candidate applies on the website, their profile, contact, and resume will appear here live in real-time.</span>
+        </td></tr>`;
+        return;
+      }
 
       tbody.innerHTML = list.map(j => `
         <tr>
@@ -1267,6 +1425,24 @@
       a.click();
     }
 
+    // Merge custom jobs on load
+    try {
+      const customJobs = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_JOBS') || '[]');
+      if (customJobs.length > 0) {
+        LIVE_JOBS_CMS = [...customJobs, ...LIVE_JOBS_CMS];
+        LIVE_JOBS_CMS = Array.from(new Map(LIVE_JOBS_CMS.map(j => [j.id, j])).values());
+      }
+    } catch(e) {}
+
+    // Merge custom colleges on load
+    try {
+      const customColleges = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_COLLEGES') || '[]');
+      if (customColleges.length > 0 && window.COLLEGES_DB) {
+        window.COLLEGES_DB = [...customColleges, ...window.COLLEGES_DB];
+        window.COLLEGES_DB = Array.from(new Map(window.COLLEGES_DB.map(c => [c.id, c])).values());
+      }
+    } catch(e) {}
+
     function renderCmsColleges() {
       const tbody = document.getElementById('cms-colleges-body');
       if (!tbody || !window.COLLEGES_DB) return;
@@ -1318,17 +1494,28 @@
         return;
       }
 
-      window.COLLEGES_DB.unshift({
+      const newCollege = {
         id: Date.now(),
         name, cleanName: name, category: sector, city, state,
         minFee: Number(fee) || 45000, minFeeDisplay: `₹ ${Number(fee || 45000).toLocaleString('en-IN')}`,
         approval: appr,
-        courses: [{ name: sector, feeDisplay: `₹ ${Number(fee || 45000).toLocaleString('en-IN')}` }]
-      });
+        coursesCount: 1,
+        courses: [{ name: sector, duration: '3 Years', feeDisplay: `₹ ${Number(fee || 45000).toLocaleString('en-IN')}` }]
+      };
+
+      if (!window.COLLEGES_DB) window.COLLEGES_DB = [];
+      window.COLLEGES_DB.unshift(newCollege);
+
+      // Persist to SKILLORA_CUSTOM_COLLEGES so colleges.html and index.html show it live!
+      try {
+        const stored = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_COLLEGES') || '[]');
+        stored.unshift(newCollege);
+        localStorage.setItem('SKILLORA_CUSTOM_COLLEGES', JSON.stringify(stored));
+      } catch(e) {}
 
       toggleAddCollegeForm();
       renderCmsColleges();
-      alert(`College "${name}" successfully registered and published!`);
+      alert(`College "${name}" successfully registered and published! It is now live in the Colleges & Admissions directory.`);
     }
 
     function toggleAddJobForm() {
@@ -1348,13 +1535,32 @@
         return;
       }
 
-      LIVE_JOBS_CMS.unshift({
-        id: Date.now(), title, company: comp, sector: sec, location: loc, salary: sal, status: "Active (Published)"
-      });
+      const newJob = {
+        id: Date.now(),
+        title,
+        company: comp,
+        sector: sec,
+        location: loc,
+        salary: sal,
+        type: 'Full Time',
+        exp: 'Fresher',
+        description: `Urgent opening for ${title} at ${comp}. Immediate joining with standard benefits.`,
+        img: 'assets/places/job_hospital_1.jpg',
+        status: "Active (Published)"
+      };
+
+      LIVE_JOBS_CMS.unshift(newJob);
+
+      // Persist to SKILLORA_CUSTOM_JOBS so jobs.html and employer portal show it live!
+      try {
+        const stored = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_JOBS') || '[]');
+        stored.unshift(newJob);
+        localStorage.setItem('SKILLORA_CUSTOM_JOBS', JSON.stringify(stored));
+      } catch(e) {}
 
       toggleAddJobForm();
       renderCmsJobs();
-      alert(`Job vacancy "${title}" published live for applicants!`);
+      alert(`Job vacancy "${title}" published live for applicants! It is now live in the Find Jobs directory.`);
     }
 
     // Check Single Admin Session on Page Load

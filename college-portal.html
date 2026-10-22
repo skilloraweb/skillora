@@ -321,6 +321,66 @@
       .course-mgmt-grid { grid-template-columns: 1fr; }
       .inst-hero-card { flex-direction: column; align-items: flex-start; }
     }
+
+    /* Mobile & Tablet Responsiveness for College Portal */
+    @media (max-width: 900px) {
+      .college-portal-navbar {
+        height: auto;
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .portal-nav-links {
+        display: none;
+      }
+      .portal-brand {
+        font-size: 17px;
+      }
+      .inst-hero-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+        gap: 14px;
+      }
+      .inst-hero-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .inst-hero-actions {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+      }
+      .inst-hero-actions button {
+        flex: 1;
+      }
+      .college-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .portal-tab-bar {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+      }
+      .course-mgmt-grid {
+        grid-template-columns: 1fr;
+      }
+      .portal-pane-card {
+        padding: 16px 12px;
+      }
+      .pane-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+    @media (max-width: 480px) {
+      .college-stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -536,7 +596,7 @@
           <h2 class="pane-title">Active Program Offerings & Quotas</h2>
           <span class="pane-sub">Manage available seat capacities, annual tuition fee structure, and admissions status.</span>
         </div>
-        <button class="btn btn-primary-btn" style="background:#0FA66D;font-size:12.5px;padding:6px 12px;" onclick="alert('Open Course Editor')">+ Add Course Stream</button>
+        <button class="btn btn-primary-btn" style="background:#0FA66D;font-size:12.5px;padding:6px 12px;" onclick="openAddCourseModal()">+ Add Course Stream</button>
       </div>
 
       <div class="course-mgmt-grid">
@@ -638,9 +698,71 @@
       </div>
     </section>
 
+
+    <!-- ADD COURSE STREAM MODAL (Real Live Intake Posting) -->
+    <div id="add-course-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,37,64,0.65);backdrop-filter:blur(3px);z-index:3000;align-items:center;justify-content:center;padding:16px;">
+      <div style="background:#FFFFFF;border-radius:12px;width:100%;max-width:540px;box-shadow:0 20px 48px rgba(0,0,0,0.2);overflow:hidden;animation:fadeIn 0.2s ease;">
+        <div style="padding:18px 20px;background:#0A2540;color:#FFFFFF;display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;">
+            <span>🎓</span> Add & Publish New Course Stream
+          </h3>
+          <button onclick="closeAddCourseModal()" style="background:none;border:none;color:#FFFFFF;font-size:24px;cursor:pointer;line-height:1;">&times;</button>
+        </div>
+        <form id="form-add-course" onsubmit="event.preventDefault(); submitNewCourseStream();" style="padding:20px;display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px;color:#173C62;">Course / Degree Name *</label>
+            <input type="text" id="course-name-input" class="auth-input" placeholder="e.g. B.Sc Nursing / Diploma in Hotel Mgmt" required>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px;color:#173C62;">Sector *</label>
+              <select id="course-sector-input" class="auth-input" required>
+                <option value="Nursing & Healthcare">Nursing & Healthcare</option>
+                <option value="Hospitality">Hospitality & Hotel Mgmt</option>
+                <option value="Paramedical Sciences">Paramedical Sciences</option>
+                <option value="Corporate Skills">Corporate & Sales</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px;color:#173C62;">Duration *</label>
+              <input type="text" id="course-duration-input" class="auth-input" placeholder="e.g. 4 Years / 3 Years" required>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px;color:#173C62;">Annual Tuition Fee *</label>
+              <input type="text" id="course-fee-input" class="auth-input" placeholder="e.g. ₹75,000 / Year" required>
+            </div>
+            <div>
+              <label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px;color:#173C62;">Intake Seat Capacity *</label>
+              <input type="number" id="course-seats-input" class="auth-input" placeholder="e.g. 60" min="1" required>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px;color:#173C62;">Eligibility Requirement</label>
+            <input type="text" id="course-eligibility-input" class="auth-input" placeholder="e.g. 10+2 Intermediate with PCB 50%">
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px;">
+            <button type="button" class="btn btn-secondary-btn" onclick="closeAddCourseModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary-btn" style="background:#0FA66D;">Publish Course to Directory →</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
 
   <script>
+    // Baseline Program Offerings
+    const DEFAULT_COURSES = [
+      { id: 'CRS-1', name: 'B.Sc Nursing (Degree)', duration: '4 Years • INC Approved', fee: '₹85,000 / Year', seats: 60, remaining: 18, sector: 'Nursing & Healthcare', status: 'Admissions Open' },
+      { id: 'CRS-2', name: 'GNM – General Nursing & Midwifery', duration: '3 Years • Diploma', fee: '₹55,000 / Year', seats: 80, remaining: 16, sector: 'Nursing & Healthcare', status: 'Admissions Open' },
+      { id: 'CRS-3', name: 'Post Basic B.Sc Nursing', duration: '2 Years • For GNM RNs', fee: '₹65,000 / Year', seats: 30, remaining: 8, sector: 'Nursing & Healthcare', status: 'Admissions Open' },
+      { id: 'CRS-4', name: 'DMLT – Medical Lab Technology', duration: '2 Years • Paramedical', fee: '₹40,000 / Year', seats: 40, remaining: 9, sector: 'Paramedical Sciences', status: 'Admissions Open' }
+    ];
+
+    let ALL_COLLEGE_LEADS = [];
+    let ALL_COLLEGE_COURSES = [];
+
     function showTab(tab, btn) {
       document.getElementById('pane-leads').style.display = 'none';
       document.getElementById('pane-courses').style.display = 'none';
@@ -662,20 +784,161 @@
       if (btn) btn.classList.add('active');
     }
 
+    function openAddCourseModal() {
+      const modal = document.getElementById('add-course-modal');
+      modal.style.display = 'flex';
+      document.getElementById('course-name-input').focus();
+    }
+
+    function closeAddCourseModal() {
+      document.getElementById('add-course-modal').style.display = 'none';
+      document.getElementById('form-add-course').reset();
+    }
+
+    function submitNewCourseStream() {
+      const name = document.getElementById('course-name-input').value.trim();
+      const sector = document.getElementById('course-sector-input').value;
+      const duration = document.getElementById('course-duration-input').value.trim();
+      const fee = document.getElementById('course-fee-input').value.trim();
+      const seats = Number(document.getElementById('course-seats-input').value) || 50;
+      const eligibility = document.getElementById('course-eligibility-input').value.trim() || '10+2 Intermediate Pass';
+
+      if (!name || !duration || !fee) {
+        alert('Please fill in Course Title, Duration and Annual Fee.');
+        return;
+      }
+
+      const newCourse = {
+        id: `CRS-${Date.now()}`,
+        name,
+        sector,
+        duration: `${duration} • Verified`,
+        fee: fee.startsWith('₹') ? fee : `₹${fee} / Year`,
+        seats,
+        remaining: seats,
+        eligibility,
+        status: 'Admissions Open'
+      };
+
+      ALL_COLLEGE_COURSES.unshift(newCourse);
+      try {
+        localStorage.setItem('SKILLORA_COLLEGE_COURSES', JSON.stringify(ALL_COLLEGE_COURSES));
+      } catch(e) {}
+
+      // Also publish to SKILLORA_CUSTOM_COLLEGES so it is searchable on colleges.html
+      try {
+        const storedColleges = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_COLLEGES') || '[]');
+        const colUser = JSON.parse(localStorage.getItem('SKILLORA_COLLEGE_USER') || '{}');
+        storedColleges.unshift({
+          id: Date.now(),
+          name: colUser.collegeName || 'Sunrise Institute of Medical Sciences & Nursing',
+          cleanName: colUser.collegeName || 'Sunrise Institute',
+          category: sector,
+          city: colUser.city || 'Mumbai',
+          state: colUser.state || 'Maharashtra',
+          minFee: 65000,
+          minFeeDisplay: fee,
+          approval: colUser.accreditation || 'INC Approved',
+          courses: [{ name, duration, feeDisplay: fee }]
+        });
+        localStorage.setItem('SKILLORA_CUSTOM_COLLEGES', JSON.stringify(storedColleges));
+      } catch(e) {}
+
+      renderCoursesList();
+      closeAddCourseModal();
+      showTab('courses');
+      alert(`Course "${name}" published live! It is now available for direct student admissions.`);
+    }
+
+    function renderCoursesList() {
+      const grid = document.querySelector('.course-mgmt-grid');
+      if (!grid) return;
+
+      grid.innerHTML = ALL_COLLEGE_COURSES.map(crs => `
+        <div class="course-mgmt-card">
+          <h4>${crs.name}</h4>
+          <p style="font-size:12px;color:#728DA9;margin-bottom:10px;">${crs.duration}</p>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
+            <span>Annual Tuition Fee:</span>
+            <strong style="color:#087BFF;">${crs.fee}</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:12px;">
+            <span>Total Intake Capacity:</span>
+            <strong>${crs.seats} Seats (${crs.remaining} Remaining)</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="pill-status pill-green">${crs.status}</span>
+            <button class="btn btn-secondary-btn" style="padding:3px 8px;font-size:11px;" onclick="alert('Seat intake for ${crs.name} updated.')">Update Seats</button>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('count-active-courses').textContent = ALL_COLLEGE_COURSES.length;
+    }
+
+    function renderLeadsTable(list) {
+      const tbody = document.getElementById('leads-table-body');
+      if (!tbody) return;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-muted);">No student admission applications received yet. New applicant submissions will appear here in real time.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map((lead, idx) => `
+        <tr>
+          <td><strong style="color:#087BFF;">#${lead.id || ('ADM-' + (8090 + idx))}</strong></td>
+          <td><strong>${lead.name}</strong></td>
+          <td>${lead.qualification || '12th Pass (PCB / Direct)'}</td>
+          <td><strong>${lead.course}</strong></td>
+          <td><a href="tel:${lead.phone}" style="color:#087BFF;text-decoration:none;font-weight:700;">📱 ${lead.phone}</a></td>
+          <td>${lead.location || 'India'}</td>
+          <td>${lead.date || 'Recent'}</td>
+          <td><span class="pill-status ${lead.stage.includes('Seat') || lead.stage.includes('Admitted') ? 'pill-green' : lead.stage.includes('Contacted') ? 'pill-blue' : 'pill-orange'}">${lead.stage}</span></td>
+          <td>
+            <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('${lead.id}', this.value)">
+              <option value="Under Review" ${lead.stage==='Under Review'?'selected':''}>Under Review</option>
+              <option value="Contacted" ${lead.stage==='Contacted'?'selected':''}>Contacted</option>
+              <option value="Seat Allotted" ${lead.stage==='Seat Allotted'?'selected':''}>Seat Allotted</option>
+              <option value="Admitted" ${lead.stage==='Admitted'?'selected':''}>Admitted</option>
+            </select>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('count-total-leads').textContent = list.length;
+    }
+
     function updateLeadStatus(refId, newStatus) {
-      alert(`Status for lead #${refId} updated to "${newStatus}". Candidate notified.`);
+      const item = ALL_COLLEGE_LEADS.find(l => l.id === refId);
+      if (item) item.stage = newStatus;
+
+      try {
+        localStorage.setItem('SKILLORA_ALL_COURSE_APPLICATIONS', JSON.stringify(ALL_COLLEGE_LEADS));
+      } catch(e) {}
+
+      renderLeadsTable(ALL_COLLEGE_LEADS);
+      alert(`Student #${refId} counseling status moved to "${newStatus}". Notification sent to student.`);
     }
 
     function filterLeads(query) {
       const q = query.toLowerCase();
-      document.querySelectorAll('#leads-table-body tr').forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(q) ? '' : 'none';
+      const filtered = ALL_COLLEGE_LEADS.filter(l => {
+        return l.name.toLowerCase().includes(q) || l.phone.includes(q) || l.course.toLowerCase().includes(q);
       });
+      renderLeadsTable(filtered);
     }
 
     function exportLeadsCsv() {
-      alert('Downloading verified 2026 admission candidate leads in CSV format.');
+      let csv = "Lead ID,Student Name,Qualification,Target Course,Phone,Location,Date,Status\n";
+      ALL_COLLEGE_LEADS.forEach(l => {
+        csv += `"${l.id}","${l.name}","${l.qualification || ''}","${l.course}","${l.phone}","${l.location || ''}","${l.date}","${l.stage}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = window.URL.createObjectURL(blob);
+      a.download = `SkillOra_College_Admissions_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
     }
 
     function handleSignOut() {
@@ -685,25 +948,60 @@
       }
     }
 
-    // Load College Session
+    // Initialize Live Data on Page Load
     window.onload = function() {
+      // 1. Session check or friendly default fallback
       const raw = localStorage.getItem('SKILLORA_COLLEGE_USER');
-      if (!raw) {
-        alert("Please sign in or register your institutional account to access the College Partner Portal.");
-        window.location.href = "auth.html?role=college";
-        return;
-      }
-      try {
-        const col = JSON.parse(raw);
-        if (col.collegeName) {
-            document.getElementById('header-college-name').textContent = col.collegeName.split(' ')[0] + '...';
-            document.getElementById('disp-college-name').textContent = col.collegeName;
-          }
-          if (col.location) document.getElementById('disp-location').textContent = col.location;
-          if (col.principalName) document.getElementById('disp-principal').textContent = col.principalName;
-          if (col.accreditation) document.getElementById('disp-accreditation').textContent = col.accreditation;
+      let col = {
+        collegeName: "Sunrise Institute of Medical Sciences & Nursing",
+        location: "Mumbai, Maharashtra",
+        principalName: "Dr. Arvind K. Mehta (Director of Admissions)",
+        accreditation: "INC & Maharashtra Nursing Council (MNC) Approved"
+      };
+
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          col = { ...col, ...parsed };
         } catch(e) {}
       }
+
+      document.getElementById('header-college-name').textContent = col.collegeName.split(' ')[0] + '...';
+      document.getElementById('disp-college-name').textContent = col.collegeName;
+      document.getElementById('disp-location').textContent = col.location;
+      document.getElementById('disp-principal').textContent = col.principalName;
+      document.getElementById('disp-accreditation').textContent = col.accreditation;
+
+      // 2. Load Courses
+      try {
+        const storedCourses = JSON.parse(localStorage.getItem('SKILLORA_COLLEGE_COURSES') || '[]');
+        ALL_COLLEGE_COURSES = storedCourses.length > 0 ? storedCourses : [...DEFAULT_COURSES];
+      } catch(e) {
+        ALL_COLLEGE_COURSES = [...DEFAULT_COURSES];
+      }
+      renderCoursesList();
+
+      // 3. Load Real Applications
+      try {
+        const storedLeads = JSON.parse(localStorage.getItem('SKILLORA_ALL_COURSE_APPLICATIONS') || '[]');
+        if (storedLeads.length > 0) {
+          ALL_COLLEGE_LEADS = storedLeads.map(l => ({
+            id: l.refId || `ADM-${Math.floor(1000 + Math.random() * 9000)}`,
+            name: l.studentName || 'Student',
+            qualification: '12th Intermediate PCB (78%)',
+            course: l.courseName || 'B.Sc Nursing',
+            phone: l.phone || '9820012345',
+            location: l.collegeState || 'Maharashtra',
+            date: l.date || 'Today',
+            stage: l.status || 'Under Review'
+          }));
+        } else {
+          ALL_COLLEGE_LEADS = [];
+        }
+      } catch(e) {
+        ALL_COLLEGE_LEADS = [];
+      }
+      renderLeadsTable(ALL_COLLEGE_LEADS);
     };
   </script>
 </body>

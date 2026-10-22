@@ -303,14 +303,36 @@
     }
 
     @media (max-width: 880px) {
+      .navbar {
+        height: auto;
+        padding: 10px 14px;
+        min-height: 60px;
+      }
+      .nav-menu {
+        display: none;
+      }
       .auth-card-container {
         grid-template-columns: 1fr;
+        margin: 16px auto;
+        border-radius: 12px;
       }
       .auth-side-banner {
         display: none;
       }
       .auth-form-side {
-        padding: 24px;
+        padding: 20px 16px;
+      }
+    }
+    @media (max-width: 480px) {
+      .auth-form-side {
+        padding: 16px 12px;
+      }
+      .auth-header-block h1 {
+        font-size: 20px;
+      }
+      .role-tab-btn {
+        padding: 8px 6px;
+        font-size: 11px;
       }
     }
   </style>

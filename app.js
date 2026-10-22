@@ -199,6 +199,15 @@ function initDatabase() {
     ALL_COLLEGES = FALLBACK_SEED;
   }
 
+  // Merge custom colleges from Admin and College Partner Portals
+  try {
+    const customColleges = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_COLLEGES') || '[]');
+    if (customColleges.length > 0) {
+      ALL_COLLEGES = [...customColleges, ...ALL_COLLEGES];
+      ALL_COLLEGES = Array.from(new Map(ALL_COLLEGES.map(c => [c.id, c])).values());
+    }
+  } catch(e) {}
+
   CURRENT_FILTERED = [...ALL_COLLEGES];
   CURRENT_PAGE = 1;
 
@@ -1654,23 +1663,26 @@ function initKeyboardListeners() {
   });
 
   const mobileToggle = document.getElementById('mobile-toggle');
-  if (mobileToggle) {
+  const mobileDrawer = document.getElementById('mobile-drawer');
+  const mobileBackdrop = document.getElementById('mobile-backdrop');
+  const mobileClose = document.getElementById('mobile-drawer-close');
+
+  if (mobileToggle && mobileDrawer) {
     mobileToggle.addEventListener('click', () => {
-      const menu = document.querySelector('.nav-menu');
-      if (menu) {
-        const isVisible = menu.style.display === 'flex';
-        menu.style.display = isVisible ? 'none' : 'flex';
-        if (!isVisible) {
-          menu.style.flexDirection = 'column';
-          menu.style.position = 'absolute';
-          menu.style.top = '70px';
-          menu.style.left = '0';
-          menu.style.width = '100%';
-          menu.style.background = '#FFFFFF';
-          menu.style.padding = '20px';
-          menu.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
-        }
-      }
+      mobileDrawer.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  if (mobileBackdrop && mobileDrawer) {
+    mobileBackdrop.addEventListener('click', () => {
+      mobileDrawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  }
+  if (mobileClose && mobileDrawer) {
+    mobileClose.addEventListener('click', () => {
+      mobileDrawer.classList.remove('open');
+      document.body.style.overflow = '';
     });
   }
 }

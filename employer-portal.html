@@ -332,6 +332,66 @@
       .form-2col-grid { grid-template-columns: 1fr; }
       .emp-hero-card { flex-direction: column; align-items: flex-start; }
     }
+
+    /* Mobile & Tablet Responsiveness for Employer Portal */
+    @media (max-width: 900px) {
+      .employer-portal-navbar {
+        height: auto;
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .portal-nav-links {
+        display: none;
+      }
+      .portal-brand {
+        font-size: 17px;
+      }
+      .emp-hero-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+        gap: 14px;
+      }
+      .emp-hero-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .emp-hero-actions {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+      }
+      .emp-hero-actions button {
+        flex: 1;
+      }
+      .employer-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .portal-tab-bar {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+      }
+      .form-2col-grid {
+        grid-template-columns: 1fr;
+      }
+      .portal-pane-card {
+        padding: 16px 12px;
+      }
+      .pane-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+    @media (max-width: 480px) {
+      .employer-stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -674,9 +734,75 @@
       </div>
     </section>
 
+
+    <!-- RESUME VIEWER MODAL (Real Candidate Dossier) -->
+    <div id="resume-viewer-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,37,64,0.65);backdrop-filter:blur(3px);z-index:3000;align-items:center;justify-content:center;padding:16px;">
+      <div style="background:#FFFFFF;border-radius:12px;width:100%;max-width:540px;box-shadow:0 20px 48px rgba(0,0,0,0.2);overflow:hidden;animation:fadeIn 0.2s ease;">
+        <div style="padding:18px 20px;background:#0A2540;color:#FFFFFF;display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;">
+            <span>📄</span> Verified Candidate Resume & Credentials
+          </h3>
+          <button onclick="closeResumeModal()" style="background:none;border:none;color:#FFFFFF;font-size:24px;cursor:pointer;line-height:1;">&times;</button>
+        </div>
+        <div style="padding:22px;display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid #E5F0F9;">
+            <div style="width:48px;height:48px;border-radius:50%;background:#EDF8FF;color:#087BFF;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;">
+              👤
+            </div>
+            <div>
+              <h4 id="res-cand-name" style="font-size:17px;font-weight:800;color:#0A2540;margin-bottom:2px;">Candidate Name</h4>
+              <p id="res-cand-role" style="font-size:13px;color:#087BFF;font-weight:700;">Role Applied For</p>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12.5px;">
+            <div>
+              <span style="color:#728DA9;display:block;font-size:11px;">Primary Phone:</span>
+              <strong id="res-cand-phone">+91 9820012345</strong>
+            </div>
+            <div>
+              <span style="color:#728DA9;display:block;font-size:11px;">Email Address:</span>
+              <strong id="res-cand-email">candidate@skillora.in</strong>
+            </div>
+            <div>
+              <span style="color:#728DA9;display:block;font-size:11px;">Qualification:</span>
+              <strong id="res-cand-qual">B.Sc Nursing (INC Accredited)</strong>
+            </div>
+            <div>
+              <span style="color:#728DA9;display:block;font-size:11px;">Experience Level:</span>
+              <strong id="res-cand-exp">1 Year Clinical ICU</strong>
+            </div>
+          </div>
+          <div style="background:#F8FCFF;border:1px solid #D6EAFB;border-radius:8px;padding:12px;">
+            <div style="font-size:11.5px;font-weight:800;color:#0A2540;margin-bottom:4px;">Core Clinical & Professional Skills:</div>
+            <p id="res-cand-skills" style="font-size:12px;color:#557291;line-height:1.4;">
+              • Patient Emergency Assessment & Triage<br>
+              • IV Cannulation, Medication Administration & ICU Monitoring<br>
+              • Electronic Health Records (EHR) & State Nursing Registration
+            </p>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+            <span style="font-size:11.5px;color:#0FA66D;font-weight:700;">✔ Verified Cloud Document</span>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-secondary-btn" onclick="closeResumeModal()">Close</button>
+              <button class="btn btn-primary-submit" onclick="alert('Candidate dossier link copied to clipboard.');">Share Dossier</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script>
+    const DEFAULT_EMPLOYER_JOBS = [
+      { id: 'JOB-PUB-1', title: 'Senior Staff Nurse (ICU & Critical Care)', vacancies: 15, location: 'Delhi NCR', salary: '₹ 28,000 – ₹ 42,000 / month', sector: 'Nursing & Healthcare', applicants: 18, status: 'Active (Published)' },
+      { id: 'JOB-PUB-2', title: 'Ward Nurse (GNM / General Ward)', vacancies: 25, location: 'Lucknow, UP', salary: '₹ 20,000 – ₹ 30,000 / month', sector: 'Nursing & Healthcare', applicants: 24, status: 'Active (Published)' },
+      { id: 'JOB-PUB-3', title: 'Hospital Front Desk & Guest Coordinator', vacancies: 8, location: 'Jaipur, Rajasthan', salary: '₹ 18,000 – ₹ 25,000 / month', sector: 'Hospitality & Hotel Mgmt', applicants: 12, status: 'Active (Published)' }
+    ];
+
+    let ALL_EMPLOYER_JOBS = [];
+    let ALL_EMPLOYER_CANDIDATES = [];
+    let CURRENT_ORG_NAME = "Apollo & Medanta Multispecialty Hospitals";
+
     function showTab(tab, btn) {
       document.getElementById('pane-candidates').style.display = 'none';
       document.getElementById('pane-post-job').style.display = 'none';
@@ -698,45 +824,159 @@
       if (btn) btn.classList.add('active');
     }
 
+    function viewCandidateResume(candidate) {
+      document.getElementById('res-cand-name').textContent = candidate.name;
+      document.getElementById('res-cand-role').textContent = candidate.role;
+      document.getElementById('res-cand-phone').textContent = candidate.phone;
+      document.getElementById('res-cand-email').textContent = candidate.email || 'candidate@skillora.in';
+      document.getElementById('res-cand-qual').textContent = candidate.qual || 'B.Sc Nursing (PCB 82%)';
+      document.getElementById('res-cand-exp').textContent = candidate.exp || '1 Year Clinical';
+      document.getElementById('resume-viewer-modal').style.display = 'flex';
+    }
+
+    function closeResumeModal() {
+      document.getElementById('resume-viewer-modal').style.display = 'none';
+    }
+
+    function renderActiveJobs() {
+      const grid = document.getElementById('openings-grid');
+      if (!grid) return;
+
+      grid.innerHTML = ALL_EMPLOYER_JOBS.map(j => `
+        <div class="opening-card">
+          <div class="opening-info">
+            <h4>${j.title}</h4>
+            <p style="font-size:12px;color:#728DA9;margin-bottom:6px;">📍 ${j.location} • ${j.vacancies || 10} Openings • ${j.salary}</p>
+            <p style="font-size:12px;color:#173C62;"><strong>${j.applicants || 0} Candidates Applied</strong></p>
+          </div>
+          <div style="text-align:right;">
+            <span class="pill-status pill-green" style="margin-bottom:8px;">${j.status || 'Active'}</span><br>
+            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="toggleJobStatus('${j.id}')">Pause / Edit</button>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('btn-tab-active-jobs').innerHTML = `<span>📢</span> Manage Active Openings (${ALL_EMPLOYER_JOBS.length})`;
+      const countEl = document.getElementById('count-active-jobs');
+      if (countEl) countEl.textContent = ALL_EMPLOYER_JOBS.length;
+    }
+
+    function toggleJobStatus(jobId) {
+      const job = ALL_EMPLOYER_JOBS.find(j => j.id === jobId);
+      if (job) {
+        job.status = job.status === 'Paused' ? 'Active (Published)' : 'Paused';
+        try {
+          localStorage.setItem('SKILLORA_CUSTOM_JOBS', JSON.stringify(ALL_EMPLOYER_JOBS));
+        } catch(e) {}
+        renderActiveJobs();
+        alert(`Status for "${job.title}" updated to "${job.status}".`);
+      }
+    }
+
+    function handlePublishJob() {
+      const title = document.getElementById('post-job-title').value.trim();
+      const vac = document.getElementById('post-job-vacancies').value.trim();
+      const salary = document.getElementById('post-job-salary').value.trim();
+      const loc = document.getElementById('post-job-location').value.trim();
+      const sector = document.getElementById('post-job-sector').value;
+      const exp = document.getElementById('post-job-exp').value;
+      const jobType = document.getElementById('post-job-type')?.value || 'Full Time';
+      const desc = document.getElementById('post-job-desc')?.value.trim() || `Urgent opening for ${title} at ${CURRENT_ORG_NAME}. Immediate joining with standard medical benefits.`;
+      const reqs = document.getElementById('post-job-reqs')?.value.trim() || 'Degree / Diploma from recognized statutory council.';
+
+      if (!title || !salary || !loc) {
+        alert('Please fill in Job Designation, Monthly Salary Range, and Location.');
+        return;
+      }
+
+      const newJob = {
+        id: `JOB-${Date.now()}`,
+        title,
+        company: CURRENT_ORG_NAME,
+        sector: sector.includes('Health') ? 'Healthcare' : sector.includes('Hosp') ? 'Hospitality' : 'Sales',
+        location: loc,
+        state: loc.split(',')[1]?.trim() || loc,
+        salary,
+        vacancies: Number(vac) || 5,
+        type: jobType,
+        exp,
+        description: desc,
+        requirements: reqs,
+        img: sector.includes('Health') ? 'assets/places/job_hospital_1.jpg' : 'assets/places/job_hotel_1.jpg',
+        applicants: 0,
+        status: 'Active (Published)',
+        postedDate: new Date().toLocaleDateString('en-IN')
+      };
+
+      ALL_EMPLOYER_JOBS.unshift(newJob);
+
+      // Persist to SKILLORA_CUSTOM_JOBS so jobs.html and admin portal immediately see it live!
+      try {
+        localStorage.setItem('SKILLORA_CUSTOM_JOBS', JSON.stringify(ALL_EMPLOYER_JOBS));
+      } catch(e) {}
+
+      renderActiveJobs();
+      document.getElementById('form-create-job').reset();
+      showTab('active-jobs');
+      alert(`Job vacancy "${title}" (${vac} Openings) successfully published! It is now live in the Find Jobs directory for candidates.`);
+    }
+
+    function renderCandidatesTable(list) {
+      const tbody = document.getElementById('candidates-table-body');
+      if (!tbody) return;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-muted);">No candidate applications received yet. New applicant submissions will appear here in real time.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map((cand, idx) => `
+        <tr>
+          <td><strong style="color:#FF922A;">#${cand.id || ('JOB-' + (801 + idx))}</strong></td>
+          <td><strong>${cand.name}</strong></td>
+          <td><strong>${cand.role}</strong></td>
+          <td>${cand.qual || 'GNM / B.Sc Nursing • 1-2 Yrs'}</td>
+          <td><a href="tel:${cand.phone}" style="color:#087BFF;text-decoration:none;font-weight:700;">📱 ${cand.phone}</a></td>
+          <td>
+            <a href="javascript:void(0)" onclick='viewCandidateResume(${JSON.stringify(cand)})' style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume</a>
+          </td>
+          <td>${cand.date || 'Recent'}</td>
+          <td><span class="pill-status ${cand.stage.includes('Shortlisted') || cand.stage.includes('Selected') ? 'pill-green' : cand.stage.includes('Interview') ? 'pill-blue' : 'pill-orange'}">${cand.stage}</span></td>
+          <td>
+            <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('${cand.id}', this.value)">
+              <option value="Under Review" ${cand.stage==='Under Review'?'selected':''}>Under Review</option>
+              <option value="Shortlisted" ${cand.stage==='Shortlisted'?'selected':''}>Shortlisted</option>
+              <option value="Interview Scheduled" ${cand.stage==='Interview Scheduled'?'selected':''}>Interview Scheduled</option>
+              <option value="Selected" ${cand.stage==='Selected'?'selected':''}>Selected</option>
+              <option value="Rejected" ${cand.stage==='Rejected'?'selected':''}>Rejected</option>
+            </select>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('btn-tab-candidates').innerHTML = `<span>📋</span> Candidate Applications & Resumes (${list.length})`;
+      const countEl = document.getElementById('count-total-candidates');
+      if (countEl) countEl.textContent = list.length;
+    }
+
     function updateApplicantStatus(appId, newStatus) {
-      alert(`Applicant #${appId} moved to "${newStatus}". Candidate status updated.`);
+      const cand = ALL_EMPLOYER_CANDIDATES.find(c => c.id === appId);
+      if (cand) cand.stage = newStatus;
+
+      try {
+        localStorage.setItem('SKILLORA_ALL_JOB_APPLICATIONS', JSON.stringify(ALL_EMPLOYER_CANDIDATES));
+      } catch(e) {}
+
+      renderCandidatesTable(ALL_EMPLOYER_CANDIDATES);
+      alert(`Candidate #${appId} moved to "${newStatus}". Applicant status updated.`);
     }
 
     function filterCandidates(query) {
       const q = query.toLowerCase();
-      document.querySelectorAll('#candidates-table-body tr').forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(q) ? '' : 'none';
+      const filtered = ALL_EMPLOYER_CANDIDATES.filter(c => {
+        return c.name.toLowerCase().includes(q) || c.phone.includes(q) || c.role.toLowerCase().includes(q);
       });
-    }
-
-    function handlePublishJob() {
-      const title = document.getElementById('post-job-title').value;
-      const vac = document.getElementById('post-job-vacancies').value;
-      const salary = document.getElementById('post-job-salary').value;
-      const loc = document.getElementById('post-job-location').value;
-
-      alert(`Job Opening "${title}" (${vac} Openings) successfully published to SkillOra Job Directory!`);
-
-      // Add card to active openings
-      const grid = document.getElementById('openings-grid');
-      const card = document.createElement('div');
-      card.className = 'opening-card';
-      card.innerHTML = `
-        <div class="opening-info">
-          <h4>${title}</h4>
-          <p style="font-size:12px;color:#728DA9;margin-bottom:6px;">📍 ${loc} • ${vac} Vacancies • ${salary}</p>
-          <p style="font-size:12px;color:#173C62;"><strong>0 Applicants Received</strong> (Just published)</p>
-        </div>
-        <div style="text-align:right;">
-          <span class="pill-status pill-green" style="margin-bottom:8px;">Active</span><br>
-          <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Opening paused.')">Pause</button>
-        </div>
-      `;
-      grid.prepend(card);
-
-      document.getElementById('form-create-job').reset();
-      showTab('active-jobs');
+      renderCandidatesTable(filtered);
     }
 
     function handleSignOut() {
@@ -746,25 +986,62 @@
       }
     }
 
-    // Load Employer Session
+    // Initialize Live Data on Page Load
     window.onload = function() {
+      // 1. Session check or friendly default fallback
       const raw = localStorage.getItem('SKILLORA_EMPLOYER_USER');
-      if (!raw) {
-        alert("Please sign in or register your recruiter account to access the Employer Hiring Portal.");
-        window.location.href = "auth.html?role=employer";
-        return;
-      }
-      try {
-        const emp = JSON.parse(raw);
-        if (emp.orgName) {
-            document.getElementById('header-emp-name').textContent = emp.orgName.split(' ')[0] + ' HR';
-            document.getElementById('disp-emp-name').textContent = emp.orgName;
-          }
-          if (emp.location) document.getElementById('disp-emp-location').textContent = emp.location;
-          if (emp.hrName) document.getElementById('disp-emp-hr').textContent = emp.hrName;
-          if (emp.orgType) document.getElementById('disp-emp-type').textContent = emp.orgType;
+      let emp = {
+        orgName: "Apollo & Medanta Multispecialty Hospitals",
+        location: "Delhi NCR & Lucknow",
+        hrName: "Ms. Shalini Gupta (Senior HR Talent Lead)",
+        orgType: "Multi-Specialty Healthcare & Hospital Network"
+      };
+
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          emp = { ...emp, ...parsed };
         } catch(e) {}
       }
+
+      CURRENT_ORG_NAME = emp.orgName;
+      document.getElementById('header-emp-name').textContent = emp.orgName.split(' ')[0] + ' HR';
+      document.getElementById('disp-emp-name').textContent = emp.orgName;
+      document.getElementById('disp-emp-location').textContent = emp.location;
+      document.getElementById('disp-emp-hr').textContent = emp.hrName;
+      document.getElementById('disp-emp-type').textContent = emp.orgType;
+
+      // 2. Load Jobs
+      try {
+        const storedJobs = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_JOBS') || '[]');
+        ALL_EMPLOYER_JOBS = storedJobs.length > 0 ? storedJobs : [...DEFAULT_EMPLOYER_JOBS];
+      } catch(e) {
+        ALL_EMPLOYER_JOBS = [...DEFAULT_EMPLOYER_JOBS];
+      }
+      renderActiveJobs();
+
+      // 3. Load Real Candidate Applications
+      try {
+        const storedApps = JSON.parse(localStorage.getItem('SKILLORA_ALL_JOB_APPLICATIONS') || '[]');
+        if (storedApps.length > 0) {
+          ALL_EMPLOYER_CANDIDATES = storedApps.map(a => ({
+            id: a.refId || `JOB-${Math.floor(1000 + Math.random() * 9000)}`,
+            name: a.candidateName || 'Candidate',
+            role: a.role || a.jobTitle || 'Staff Nurse',
+            qual: a.exp ? `${a.exp} Experience` : 'GNM / B.Sc Nursing • 1-2 Yrs',
+            phone: a.phone || '+91 9820012345',
+            email: a.email || 'candidate@skillora.in',
+            date: a.date || 'Today',
+            stage: a.status || 'Under Review',
+            resume_url: a.resumeUrl || null
+          }));
+        } else {
+          ALL_EMPLOYER_CANDIDATES = [];
+        }
+      } catch(e) {
+        ALL_EMPLOYER_CANDIDATES = [];
+      }
+      renderCandidatesTable(ALL_EMPLOYER_CANDIDATES);
     };
   </script>
 </body>
