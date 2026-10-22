@@ -140,8 +140,8 @@ const NOTICES_DATA = [
       <p style="margin-bottom:12px;"><strong>Helpline Advisory:</strong> SkillOra has activated dedicated financial assistance desks to guide students seeking zero-interest EMI financing, state post-matric scholarships, and institutional fee waivers.</p>
       <div style="background:#F3F9FE;padding:12px;border-radius:6px;margin-bottom:12px;">
         <ul style="padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;">
-          <li><strong>Toll-Free Helpline:</strong> 1800-890-SKILL (9:00 AM - 8:00 PM IST)</li>
-          <li><strong>WhatsApp Guidance:</strong> +91 98200 12345</li>
+          <li><strong>Toll-Free Helpline:</strong> +91 0000000000 (9:00 AM - 8:00 PM IST)</li>
+          <li><strong>WhatsApp Guidance:</strong> +91 0000000000</li>
           <li><strong>Partner Banks:</strong> HDFC Credila, SBI Scholar Loans, Propelld Education Financing.</li>
         </ul>
       </div>
@@ -1081,7 +1081,7 @@ function downloadApplicationSlip() {
         <div class="stamp">✔ DIRECT SEAT APPLICATION REGISTERED</div>
       </div>
       <div class="footer">
-        SkillOra Institutional Admissions Network • BKC, Mumbai • 1800-890-SKILL • support@skillora.in
+        SkillOra Institutional Admissions Network • V3S Mall, Nirman Vihar, Delhi • +91 0000000000 • support@skillora.in
       </div>
       <script>
         window.onload = function() { window.print(); }
@@ -1489,18 +1489,36 @@ function openInfoModal(type) {
       html: `
         <p style="margin-bottom:10px;"><strong>SkillOra</strong> is India’s premier unified career readiness ecosystem, bringing high-quality vocational education, verified healthcare & hospitality colleges, and genuine employment opportunities into one trusted digital hub.</p>
         <p style="margin-bottom:10px;">Founded with the mission to bridge the skill gap between aspiring learners and top-tier healthcare facilities, luxury hotels, and modern tech enterprises, SkillOra empowers over 50,000 students annually across 23 states in India.</p>
-        <p><strong>Headquarters:</strong> SkillOra Towers, BKC, Mumbai • Branch offices in New Delhi, Bengaluru, and Jaipur.</p>
+        <p><strong>Corporate Office:</strong> V3S Mall, Nirman Vihar, Delhi - 110092</p>
       `
     },
     contact: {
-      title: "Contact SkillOra Support",
+      title: "Contact SkillOra Support & Corporate Office",
       html: `
-        <p style="margin-bottom:10px;">We are here to assist learners, institutes, and corporate employers 7 days a week.</p>
-        <div style="background:#F3F9FE;padding:12px;border-radius:6px;font-size:12.5px;display:flex;flex-direction:column;gap:6px;">
-          <div>📞 <strong>Student Helpline:</strong> 1800-890-SKILL (Toll Free, 9 AM - 8 PM IST)</div>
-          <div>✉️ <strong>General Inquiries:</strong> support@skillora.in</div>
-          <div>🏢 <strong>Institute Partnerships:</strong> admissions@skillora.in</div>
-          <div>💬 <strong>WhatsApp Helpline:</strong> +91 98200 12345</div>
+        <p style="margin-bottom:12px;color:var(--text-dark);">We are here to assist learners, educational institutes, and corporate employers 7 days a week.</p>
+        <div style="background:#F3F9FE;padding:12px 14px;border-radius:8px;font-size:12.5px;display:flex;flex-direction:column;gap:8px;border:1px solid #D5E8FA;margin-bottom:14px;">
+          <div>📍 <strong>Corporate Office:</strong> V3S Mall, Nirman Vihar, Delhi - 110092</div>
+          <div>📞 <strong>Student Helpline:</strong> +91 0000000000 (Toll Free, 9 AM - 8 PM IST)</div>
+          <div>✉️ <strong>General Inquiries:</strong> support@skilloraindia.com</div>
+          <div>🏫 <strong>Institute Partnerships:</strong> admissions@skilloraindia.com</div>
+          <div>💬 <strong>WhatsApp Helpline:</strong> +91 0000000000</div>
+        </div>
+        <div>
+          <div style="font-size:12.5px;font-weight:700;color:var(--text-dark);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+            <span>🗺️ Location Map (V3S Mall, Nirman Vihar, Delhi)</span>
+            <a href="https://maps.google.com/?q=V3S+Mall+Nirman+Vihar+Delhi" target="_blank" rel="noopener" style="font-size:11.5px;color:#087BFF;text-decoration:none;font-weight:600;">Open Map ↗</a>
+          </div>
+          <div style="border-radius:8px;overflow:hidden;border:1px solid #DCE6F1;background:#EBF2F7;">
+            <iframe 
+              src="https://maps.google.com/maps?q=V3S+Mall+Nirman+Vihar+Delhi&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+              width="100%" 
+              height="220" 
+              style="border:0;display:block;" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
         </div>
       `
     },

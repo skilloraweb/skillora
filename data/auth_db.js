@@ -249,14 +249,8 @@
             lastLogin: new Date().toISOString()
           };
 
-          // Store in corresponding role session
-          if (role === 'student') {
-            localStorage.setItem('SKILLORA_CURRENT_USER', JSON.stringify(sessionUser));
-          } else if (role === 'college') {
-            localStorage.setItem('SKILLORA_COLLEGE_USER', JSON.stringify(sessionUser));
-          } else if (role === 'employer') {
-            localStorage.setItem('SKILLORA_EMPLOYER_USER', JSON.stringify(sessionUser));
-          }
+          // Store in corresponding role session exclusively (Single Active Role)
+          setExclusiveSession(role, sessionUser);
 
           // Sync into local cache
           const localUsers = getDbUsers();
@@ -308,13 +302,9 @@
       lastLogin: new Date().toISOString()
     };
 
-    if (role === 'student') {
-      localStorage.setItem('SKILLORA_CURRENT_USER', JSON.stringify(sessionUser));
-    } else if (role === 'college') {
-      localStorage.setItem('SKILLORA_COLLEGE_USER', JSON.stringify({ ...sessionUser, ...user.extra }));
-    } else if (role === 'employer') {
-      localStorage.setItem('SKILLORA_EMPLOYER_USER', JSON.stringify({ ...sessionUser, ...user.extra }));
-    }
+    // Store in corresponding role session exclusively (Single Active Role)
+    const finalUser = (role === 'student') ? sessionUser : { ...sessionUser, ...user.extra };
+    setExclusiveSession(role, finalUser);
 
     return { success: true, message: `Welcome back, ${user.name}!`, user: sessionUser };
   }
@@ -521,8 +511,41 @@
     }
   }
 
-  // Get Active Session
+  // Exclusive Session Manager (Enforces 1 Active Role per Browser Session)
+  function setExclusiveSession(role, userObject) {
+    // Purge other role sessions completely to prevent simultaneous multi-role login
+    localStorage.removeItem('SKILLORA_CURRENT_USER');
+    localStorage.removeItem('SKILLORA_COLLEGE_USER');
+    localStorage.removeItem('SKILLORA_EMPLOYER_USER');
+
+    localStorage.setItem('SKILLORA_ACTIVE_ROLE', role);
+    if (role === 'student') {
+      localStorage.setItem('SKILLORA_CURRENT_USER', JSON.stringify(userObject));
+    } else if (role === 'college') {
+      localStorage.setItem('SKILLORA_COLLEGE_USER', JSON.stringify(userObject));
+    } else if (role === 'employer') {
+      localStorage.setItem('SKILLORA_EMPLOYER_USER', JSON.stringify(userObject));
+    }
+  }
+
+  // Get Current Active Role ('student', 'college', 'employer', or null)
+  function getActiveRole() {
+    const active = localStorage.getItem('SKILLORA_ACTIVE_ROLE');
+    if (active) return active;
+    if (localStorage.getItem('SKILLORA_CURRENT_USER')) return 'student';
+    if (localStorage.getItem('SKILLORA_COLLEGE_USER')) return 'college';
+    if (localStorage.getItem('SKILLORA_EMPLOYER_USER')) return 'employer';
+    return null;
+  }
+
+  // Get Active Session for Role
   function getCurrentUser(role = 'student') {
+    // If checking a role that is NOT the currently active role, return null
+    const activeRole = getActiveRole();
+    if (activeRole && activeRole !== role) {
+      return null;
+    }
+
     let key = 'SKILLORA_CURRENT_USER';
     if (role === 'college') key = 'SKILLORA_COLLEGE_USER';
     if (role === 'employer') key = 'SKILLORA_EMPLOYER_USER';
@@ -535,11 +558,46 @@
     }
   }
 
-  // Sign Out
-  function signOut(role = 'student') {
+  // Sign Out (Clears Role & Active Session Flag)
+  function signOut(role) {
+    if (!role || role === 'all') {
+      localStorage.removeItem('SKILLORA_CURRENT_USER');
+      localStorage.removeItem('SKILLORA_COLLEGE_USER');
+      localStorage.removeItem('SKILLORA_EMPLOYER_USER');
+      localStorage.removeItem('SKILLORA_ACTIVE_ROLE');
+      return;
+    }
     if (role === 'student') localStorage.removeItem('SKILLORA_CURRENT_USER');
     if (role === 'college') localStorage.removeItem('SKILLORA_COLLEGE_USER');
     if (role === 'employer') localStorage.removeItem('SKILLORA_EMPLOYER_USER');
+    if (localStorage.getItem('SKILLORA_ACTIVE_ROLE') === role) {
+      localStorage.removeItem('SKILLORA_ACTIVE_ROLE');
+    }
+  }
+
+  // Enforce Single Active Role Gatekeeper for Protected Pages
+  function enforceExclusiveRole(requiredRole) {
+    const activeRole = getActiveRole();
+    const roleLabels = {
+      student: 'Student',
+      college: 'College Partner',
+      employer: 'Hospital / Hotel HR Recruiter'
+    };
+
+    if (activeRole && activeRole !== requiredRole) {
+      const currentLabel = roleLabels[activeRole] || activeRole;
+      const targetLabel = roleLabels[requiredRole] || requiredRole;
+      alert(`Active Session Notice:\n\nYou are currently signed in as a ${currentLabel}.\n\nIn SkillOra, a user can only be active as one account type at a time per browser tab. To access the ${targetLabel} portal, please sign in with your ${targetLabel} account.\n\nSwitching to sign in screen...`);
+      window.location.href = `auth.html?role=${requiredRole}`;
+      return false;
+    }
+
+    const user = getCurrentUser(requiredRole);
+    if (!user) {
+      window.location.href = `auth.html?role=${requiredRole}`;
+      return false;
+    }
+    return true;
   }
 
   // Gatekeeper helper for Apply Actions
@@ -578,7 +636,10 @@
     getCurrentUser,
     signOut,
     requireLoginToApply,
-    getSupabaseKey
+    getSupabaseKey,
+    setExclusiveSession,
+    getActiveRole,
+    enforceExclusiveRole
   };
 
 })(window);

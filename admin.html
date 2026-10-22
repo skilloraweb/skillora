@@ -310,6 +310,7 @@
     }
     .act-badge-course { background: #EDFDF5; color: #0FA66D; border: 1px solid #B8EED4; }
     .act-badge-job { background: #EDF8FF; color: #087BFF; border: 1px solid #BEDCFA; }
+    .act-badge-inquiry { background: #FFF4E5; color: #D97706; border: 1px solid #FCD34D; }
     .activity-content {
       flex: 1;
     }
@@ -605,12 +606,12 @@
                 <span>Job Vacancy Applications</span>
               </div>
               <div class="stat-tile">
-                <strong>488</strong>
-                <span>Listed Colleges (Active)</span>
+                <strong id="dash-inquiries-count" style="color:#087BFF;">0</strong>
+                <span>Contact Web Messages</span>
               </div>
               <div class="stat-tile">
-                <strong style="color:#0FA66D;" id="dash-conversion-rate">0.0%</strong>
-                <span>Counseling Conversion Rate</span>
+                <strong>488</strong>
+                <span>Listed Colleges (Active)</span>
               </div>
             </div>
 
@@ -648,10 +649,13 @@
             <!-- Sub Tabs: Course Admissions vs Job Applications -->
             <div class="crm-sub-tabs">
               <button class="crm-sub-tab-btn active" id="btn-sub-courses" onclick="switchCrmSubTab('courses', this)">
-                🎓 Course Admission Applications (<span id="count-course-apps">0</span>)
+                🎓 Course Applications (<span id="count-course-apps">0</span>)
               </button>
               <button class="crm-sub-tab-btn" id="btn-sub-jobs" onclick="switchCrmSubTab('jobs', this)">
-                💼 Job Vacancy Applications (<span id="count-job-apps">0</span>)
+                💼 Job Applications (<span id="count-job-apps">0</span>)
+              </button>
+              <button class="crm-sub-tab-btn" id="btn-sub-inquiries" onclick="switchCrmSubTab('inquiries', this)">
+                💬 Contact Page Messages (<span id="count-contact-inquiries">0</span>)
               </button>
             </div>
 
@@ -708,6 +712,28 @@
                 </thead>
                 <tbody id="crm-job-table-body">
                   <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table 3: Contact Page Messages & Inquiries -->
+            <div id="crm-inquiries-view" style="display:none;overflow-x:auto;">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>Ref ID</th>
+                    <th>Sender Name</th>
+                    <th>Phone</th>
+                    <th>Email Address</th>
+                    <th>Inquiry Topic</th>
+                    <th style="min-width:240px;">Message Content</th>
+                    <th>Received Timestamp</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="crm-inquiries-table-body">
+                  <!-- Dynamically populated from SKILLORA_CONTACT_INQUIRIES -->
                 </tbody>
               </table>
             </div>
@@ -937,61 +963,30 @@
         </section>
 
         <!-- =================================================================== -->
-        <!-- MODULE 8: SECURITY & AUDIT TRAIL                                    -->
+        <!-- MODULE 8: SECURITY & AUDIT TRAIL (STRICTLY ADMIN LOGINS ONLY)       -->
         <!-- =================================================================== -->
         <section id="mod-security" class="admin-module-section" style="display:none;">
           <div class="module-card">
             <div class="module-card-header">
               <div>
-                <h2 class="mod-title">8. Security, RBAC & Audit Logs</h2>
-                <p class="mod-desc">Authentication logs, master single-key verification, and permission enforcement.</p>
+                <h2 class="mod-title">8. Administrator Access & Security Audit Logs</h2>
+                <p class="mod-desc">Cryptographic authentication trail of every administrator login session. (Strictly isolated: external student, college, and recruiter accounts are completely excluded).</p>
               </div>
+              <button class="btn btn-secondary-btn" onclick="renderSecurityAudit()">🔄 Refresh Audit Trail</button>
             </div>
             <table class="crm-table">
               <thead>
                 <tr>
-                  <th>Timestamp</th>
+                  <th>Log ID</th>
+                  <th>Login Timestamp (Original)</th>
                   <th>Admin Identity</th>
-                  <th>Access Type</th>
-                  <th>IP Address</th>
-                  <th>Status</th>
+                  <th>Authentication Protocol</th>
+                  <th>Client Device / Node</th>
+                  <th>Verification Status</th>
                 </tr>
               </thead>
               <tbody id="security-audit-body">
-                <tr>
-                  <td>19 Oct 2026, 18:10:22</td>
-                  <td><strong>admin@skillora.in</strong></td>
-                  <td>Master Single-Key Authentication</td>
-                  <td>127.0.0.1 (Local Verified)</td>
-                  <td><strong style="color:#0FA66D;">✔ Authorized Access</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Registered Institutional & Recruiter Vault (Students isolated for privacy) -->
-          <div class="module-card">
-            <div class="module-card-header">
-              <div>
-                <h2 class="mod-title">🔐 Institutional Partners & Recruiter Credentials Vault</h2>
-                <p class="mod-desc">College authorities, hospital recruiters, and administrator credentials with SHA-256 password hashing. (Student records are isolated and protected).</p>
-              </div>
-              <button class="btn btn-secondary-btn" onclick="renderUsersVault()">🔄 Refresh Vault</button>
-            </div>
-            <table class="crm-table">
-              <thead>
-                <tr>
-                  <th>User ID</th>
-                  <th>Role</th>
-                  <th>Full Name</th>
-                  <th>Contact (Email / Mobile)</th>
-                  <th>SHA-256 Password Hash</th>
-                  <th>Sector / Stream</th>
-                  <th>Registered At</th>
-                </tr>
-              </thead>
-              <tbody id="users-vault-body">
-                <!-- Dynamically populated from SKILLORA_DB_USERS -->
+                <!-- Dynamically populated from SKILLORA_ADMIN_LOGIN_LOGS -->
               </tbody>
             </table>
           </div>
@@ -1017,6 +1012,7 @@
 
     let LIVE_COURSE_APPLICATIONS = [...BASE_COURSE_APPLICATIONS];
     let LIVE_JOB_APPLICATIONS = [...BASE_JOB_APPLICATIONS];
+    let LIVE_CONTACT_INQUIRIES = [];
 
     let LIVE_JOBS_CMS = [
       { id: 1, title: "Staff Nurse (GNM / B.Sc)", company: "City Hospital & Research Centre", sector: "Healthcare", location: "Lucknow, UP", salary: "₹ 18,000 - 28,000/mo", status: "Active (Published)" },
@@ -1042,6 +1038,23 @@
       if (isIdValid && isPassValid) {
         sessionStorage.setItem('SKILLORA_ADMIN_AUTHENTICATED', 'true');
         errBox.style.display = 'none';
+
+        // Record real administrator login session
+        try {
+          const logs = JSON.parse(localStorage.getItem('SKILLORA_ADMIN_LOGIN_LOGS') || '[]');
+          const now = new Date();
+          const logItem = {
+            id: 'ADM-' + Date.now().toString(36).toUpperCase(),
+            timestamp: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }),
+            adminId: idInput || SINGLE_ADMIN_ID,
+            authMethod: 'SHA-256 Master Cryptographic Key',
+            device: (navigator.userAgent.includes('Chrome') ? 'Google Chrome' : 'Web Browser') + ' (Admin Workstation)',
+            status: '✔ Authorized Access'
+          };
+          logs.unshift(logItem);
+          localStorage.setItem('SKILLORA_ADMIN_LOGIN_LOGS', JSON.stringify(logs));
+        } catch(e) {}
+
         unlockAdminConsole();
       } else {
         errBox.style.display = 'block';
@@ -1059,7 +1072,7 @@
       // REAL-TIME WEBSOCKET/CROSS-TAB TELEMETRY LISTENER
       // Automatically triggers instantaneous live update when someone applies in any tab or window
       window.addEventListener('storage', (e) => {
-        if (e.key === 'SKILLORA_ALL_COURSE_APPLICATIONS' || e.key === 'SKILLORA_ALL_JOB_APPLICATIONS' || e.key === 'SKILLORA_LIVE_ACTIVITY_LOG') {
+        if (e.key === 'SKILLORA_ALL_COURSE_APPLICATIONS' || e.key === 'SKILLORA_ALL_JOB_APPLICATIONS' || e.key === 'SKILLORA_CONTACT_INQUIRIES' || e.key === 'SKILLORA_LIVE_ACTIVITY_LOG') {
           syncAllCloudData();
           showLiveToastNotification('🔔 New Live Submission Detected on Website!');
         }
@@ -1102,15 +1115,23 @@
     function switchCrmSubTab(tab, btn) {
       document.getElementById('btn-sub-courses').classList.remove('active');
       document.getElementById('btn-sub-jobs').classList.remove('active');
+      const inqBtn = document.getElementById('btn-sub-inquiries');
+      if (inqBtn) inqBtn.classList.remove('active');
+
       document.getElementById('crm-courses-view').style.display = 'none';
       document.getElementById('crm-jobs-view').style.display = 'none';
+      const inqView = document.getElementById('crm-inquiries-view');
+      if (inqView) inqView.style.display = 'none';
 
       if (tab === 'courses') {
         document.getElementById('btn-sub-courses').classList.add('active');
         document.getElementById('crm-courses-view').style.display = 'block';
-      } else {
+      } else if (tab === 'jobs') {
         document.getElementById('btn-sub-jobs').classList.add('active');
         document.getElementById('crm-jobs-view').style.display = 'block';
+      } else if (tab === 'inquiries') {
+        if (inqBtn) inqBtn.classList.add('active');
+        if (inqView) inqView.style.display = 'block';
       }
     }
 
@@ -1193,17 +1214,30 @@
       LIVE_COURSE_APPLICATIONS = Array.from(new Map(LIVE_COURSE_APPLICATIONS.map(item => [item.id, item])).values());
       LIVE_JOB_APPLICATIONS = Array.from(new Map(LIVE_JOB_APPLICATIONS.map(item => [item.id, item])).values());
 
+      // 3. Load Contact Page Inquiries
+      try {
+        LIVE_CONTACT_INQUIRIES = JSON.parse(localStorage.getItem('SKILLORA_CONTACT_INQUIRIES') || '[]');
+      } catch(e) {
+        LIVE_CONTACT_INQUIRIES = [];
+      }
+
       renderActivityFeed();
       renderCourseApplicationsTable();
       renderJobApplicationsTable();
+      renderInquiriesTable();
+      renderSecurityAudit();
       renderCmsColleges();
       renderCmsJobs();
-      renderUsersVault();
 
       document.getElementById('dash-lead-count').textContent = LIVE_COURSE_APPLICATIONS.length;
       document.getElementById('dash-job-app-count').textContent = LIVE_JOB_APPLICATIONS.length;
       document.getElementById('count-course-apps').textContent = LIVE_COURSE_APPLICATIONS.length;
       document.getElementById('count-job-apps').textContent = LIVE_JOB_APPLICATIONS.length;
+      
+      const countInq = document.getElementById('count-contact-inquiries');
+      if (countInq) countInq.textContent = LIVE_CONTACT_INQUIRIES.length;
+      const dashInq = document.getElementById('dash-inquiries-count');
+      if (dashInq) dashInq.textContent = LIVE_CONTACT_INQUIRIES.length;
     }
 
     function renderUsersVault() {
@@ -1251,8 +1285,8 @@
         if (storedLog.length > 0) {
           storedLog.slice(0, 8).forEach(item => {
             events.push({
-              badge: item.type === 'job' ? 'Job Apply' : 'Course Apply',
-              badgeClass: item.type === 'job' ? 'act-badge-job' : 'act-badge-course',
+              badge: item.type === 'job' ? 'Job Apply' : (item.type === 'inquiry' ? 'Web Message' : 'Course Apply'),
+              badgeClass: item.type === 'job' ? 'act-badge-job' : (item.type === 'inquiry' ? 'act-badge-inquiry' : 'act-badge-course'),
               title: item.title,
               desc: item.desc,
               time: item.time || 'Just now'
@@ -1283,6 +1317,19 @@
           desc: `Employer: ${j.company} (${j.location}) • Phone: ${j.phone} • Stage: ${j.stage}`,
           time: `${(idx + 1) * 12}m ago`
         });
+      });
+
+      // Combine contact page inquiries into activity stream
+      (LIVE_CONTACT_INQUIRIES || []).slice(0, 4).forEach((inq) => {
+        if (!events.some(e => e.title && e.title.includes(inq.name))) {
+          events.push({
+            badge: "Web Message",
+            badgeClass: "act-badge-inquiry",
+            title: `💬 ${inq.name} sent message: "${inq.topic}"`,
+            desc: `Phone: ${inq.phone} • Email: ${inq.email} • "${(inq.message || '').slice(0, 65)}..."`,
+            time: inq.dateFormatted || "Recent"
+          });
+        }
       });
 
       if (events.length === 0) {
@@ -1382,6 +1429,84 @@
         </tr>
       `).join('');
     }
+
+    /* ==========================================================================
+       CONTACT PAGE MESSAGES & INQUIRIES RENDERER
+       ========================================================================== */
+    function renderInquiriesTable() {
+      const tbody = document.getElementById('crm-inquiries-table-body');
+      if (!tbody) return;
+
+      if (!LIVE_CONTACT_INQUIRIES || LIVE_CONTACT_INQUIRIES.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:28px 16px;color:var(--text-muted);background:#F8FCFF;border-radius:8px;">
+          💬 <strong>No Contact Messages Received Yet:</strong><br>
+          <span style="font-size:12px;margin-top:6px;display:inline-block;">When a visitor submits the "Send Us a Message" form on the Contact page, their message, phone, and email will appear here live with original timestamp and also forward to <strong>skillora.web@gmail.com</strong>.</span>
+        </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = LIVE_CONTACT_INQUIRIES.map((inq, idx) => `
+        <tr>
+          <td><strong style="color:#087BFF;">#${inq.id || ('MSG-' + idx)}</strong></td>
+          <td><strong>${inq.name || 'Anonymous'}</strong></td>
+          <td><a href="tel:${inq.phone}" style="color:#087BFF;font-weight:700;text-decoration:none;">📞 ${inq.phone || '—'}</a></td>
+          <td><a href="mailto:${inq.email}" style="color:#55708E;text-decoration:none;">✉️ ${inq.email || '—'}</a></td>
+          <td><span class="pill-category">${inq.topic || 'General Support'}</span></td>
+          <td style="max-width:260px;font-size:12.5px;color:var(--text-dark);">
+            <div style="white-space:pre-wrap;line-height:1.4;background:#F9FBFC;padding:6px 10px;border-radius:6px;border:1px solid #EBF2F7;">${inq.message || '—'}</div>
+          </td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">${inq.dateFormatted || (inq.timestamp ? new Date(inq.timestamp).toLocaleString('en-IN') : 'Recent')}</td>
+          <td><span class="pill-status ${inq.status === 'Resolved' ? 'pill-green' : 'pill-orange'}">${inq.status || 'New Inquiry'}</span></td>
+          <td>
+            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="toggleInquiryResolved('${inq.id}')">
+              ${inq.status === 'Resolved' ? 'Reopen' : '✔ Resolve'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleInquiryResolved(id) {
+      const item = LIVE_CONTACT_INQUIRIES.find(i => i.id === id);
+      if (item) {
+        item.status = (item.status === 'Resolved') ? 'New Inquiry' : 'Resolved';
+        localStorage.setItem('SKILLORA_CONTACT_INQUIRIES', JSON.stringify(LIVE_CONTACT_INQUIRIES));
+        renderInquiriesTable();
+      }
+    }
+
+    /* ==========================================================================
+       SECURITY & AUDIT TRAIL RENDERER (ADMIN LOGINS STRICTLY ONLY)
+       ========================================================================== */
+    function renderSecurityAudit() {
+      const tbody = document.getElementById('security-audit-body');
+      if (!tbody) return;
+
+      let logs = [];
+      try {
+        logs = JSON.parse(localStorage.getItem('SKILLORA_ADMIN_LOGIN_LOGS') || '[]');
+      } catch (e) {}
+
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px 16px;color:var(--text-muted);background:#F8FCFF;border-radius:8px;">
+          🔒 <strong>No Admin Login Sessions Recorded Yet.</strong><br>
+          <span style="font-size:12px;margin-top:6px;display:inline-block;">Every authorized administrator login is verified cryptographically and logged here with its authentic timestamp.</span>
+        </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = logs.map(l => `
+        <tr>
+          <td><strong style="color:#087BFF;">#${l.id || 'ADM-AUTH'}</strong></td>
+          <td style="font-weight:700;color:var(--text-dark);">${l.timestamp}</td>
+          <td><strong>${l.adminId}</strong></td>
+          <td style="font-size:12.5px;color:#55708E;">${l.authMethod || 'SHA-256 Master Key'}</td>
+          <td style="font-size:12px;color:var(--text-muted);">${l.device || 'Verified Admin Node'}</td>
+          <td><strong style="color:#0FA66D;">${l.status || '✔ Authorized Access'}</strong></td>
+        </tr>
+      `).join('');
+    }
+
 
     function filterApplications() {
       const q = (document.getElementById('crm-search')?.value || '').toLowerCase();

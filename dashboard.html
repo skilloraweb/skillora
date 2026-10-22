@@ -409,7 +409,7 @@
       </nav>
 
       <div class="nav-actions">
-        <a href="admin.html" class="btn btn-secondary-btn" style="padding:6px 14px;font-size:12.5px;text-decoration:none;">🛠️ Staff / Admin Portal</a>
+        <a href="admin.html" target="_blank" rel="noopener" class="btn btn-secondary-btn" style="padding:6px 14px;font-size:12.5px;text-decoration:none;">🛠️ Staff / Admin Portal</a>
         <button class="btn btn-outline-login" onclick="handleSignOut()">Sign Out</button>
       </div>
     </div>
@@ -786,7 +786,18 @@
   <!-- JavaScript for Student Dashboard State (Real Cloud & Offline Hybrid Engine) -->
   <script>
     async function loadStudentDashboard() {
-      // 1. Authenticated Student Session Check
+      // 1. Authenticated Student Session Check (Single Active Role Enforced)
+      const activeRole = (window.SkillOraAuth && window.SkillOraAuth.getActiveRole) 
+        ? window.SkillOraAuth.getActiveRole() 
+        : localStorage.getItem('SKILLORA_ACTIVE_ROLE');
+      
+      if (activeRole && activeRole !== 'student') {
+        const titles = { college: 'College Partner', employer: 'Hospital / Hotel HR Recruiter' };
+        alert(`Active Session Notice:\n\nYou are currently logged in as a ${titles[activeRole] || activeRole}.\n\nSkillOra only allows one active account type at a time per browser tab. To access the Student Dashboard, please sign in with your Student account.`);
+        window.location.href = "auth.html?role=student";
+        return;
+      }
+
       let userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
       if (!userStr) {
         window.location.href = "auth.html?role=student";
@@ -931,7 +942,7 @@
             <td style="color:#728DA9;">${dt}</td>
             <td><span class="status-pill ${stClass}">${st}</span></td>
             <td>
-              <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Counselor Helpline: An authorized SkillOra academic counselor is assigned to your application (Helpline: 1800-890-SKILL, Ref: ${ref})')">📞 Call Counselor</button>
+              <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Counselor Helpline: An authorized SkillOra academic counselor is assigned to your application (Helpline: +91 0000000000, Ref: ${ref})')">📞 Call Counselor</button>
             </td>
           </tr>
         `;
@@ -1119,7 +1130,7 @@ Your profile and recruiters will now be able to view your verified resume.`);
 
     function handleSignOut() {
       if (confirm('Are you sure you want to sign out from SkillOra?')) {
-        localStorage.removeItem('SKILLORA_CURRENT_USER');
+        if (window.SkillOraAuth && window.SkillOraAuth.signOut) { SkillOraAuth.signOut('student'); } else { localStorage.removeItem('SKILLORA_CURRENT_USER'); localStorage.removeItem('SKILLORA_ACTIVE_ROLE'); }
         window.location.href = 'auth.html';
       }
     }

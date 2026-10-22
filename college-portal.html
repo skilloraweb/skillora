@@ -513,75 +513,8 @@
           </thead>
           <tbody id="leads-table-body">
             <tr>
-              <td><strong style="color:#087BFF;">#ADM-8091</strong></td>
-              <td><strong>Rajesh Kumar</strong></td>
-              <td>12th Science PCB (82%)</td>
-              <td>B.Sc Nursing</td>
-              <td>+91 9820012345</td>
-              <td>Maharashtra</td>
-              <td>18 Oct 2026</td>
-              <td><span class="pill-status pill-orange">Under Review</span></td>
-              <td>
-                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('ADM-8091', this.value)">
-                  <option value="Under Review" selected>Under Review</option>
-                  <option value="Seat Allotted">Seat Allotted</option>
-                  <option value="Contacted">Contacted</option>
-                  <option value="Admitted">Admitted</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td><strong style="color:#087BFF;">#ADM-8092</strong></td>
-              <td><strong>Pooja Deshmukh</strong></td>
-              <td>12th Any Stream (76%)</td>
-              <td>GNM (General Nursing)</td>
-              <td>+91 9845511223</td>
-              <td>Karnataka</td>
-              <td>17 Oct 2026</td>
-              <td><span class="pill-status pill-green">Seat Allotted</span></td>
-              <td>
-                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('ADM-8092', this.value)">
-                  <option value="Under Review">Under Review</option>
-                  <option value="Seat Allotted" selected>Seat Allotted</option>
-                  <option value="Contacted">Contacted</option>
-                  <option value="Admitted">Admitted</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td><strong style="color:#087BFF;">#ADM-8093</strong></td>
-              <td><strong>Amit Kumar Patel</strong></td>
-              <td>10+2 Intermediate (68%)</td>
-              <td>DMLT (Medical Lab)</td>
-              <td>+91 9723344556</td>
-              <td>Uttar Pradesh</td>
-              <td>17 Oct 2026</td>
-              <td><span class="pill-status pill-blue">Contacted</span></td>
-              <td>
-                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('ADM-8093', this.value)">
-                  <option value="Under Review">Under Review</option>
-                  <option value="Seat Allotted">Seat Allotted</option>
-                  <option value="Contacted" selected>Contacted</option>
-                  <option value="Admitted">Admitted</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td><strong style="color:#087BFF;">#ADM-8094</strong></td>
-              <td><strong>Sneha Roy</strong></td>
-              <td>GNM Registered Nurse</td>
-              <td>Post Basic B.Sc Nursing</td>
-              <td>+91 9912233445</td>
-              <td>West Bengal</td>
-              <td>16 Oct 2026</td>
-              <td><span class="pill-status pill-green">Seat Allotted</span></td>
-              <td>
-                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('ADM-8094', this.value)">
-                  <option value="Under Review">Under Review</option>
-                  <option value="Seat Allotted" selected>Seat Allotted</option>
-                  <option value="Contacted">Contacted</option>
-                  <option value="Admitted">Admitted</option>
-                </select>
+              <td colspan="9" style="text-align:center;padding:28px 16px;color:var(--text-muted);background:#F8FCFF;">
+                No student admission applications received yet. Real applicant submissions will appear here live with original timestamps.
               </td>
             </tr>
           </tbody>
@@ -943,15 +876,32 @@
 
     function handleSignOut() {
       if (confirm('Sign out of College Partner Portal?')) {
-        localStorage.removeItem('SKILLORA_COLLEGE_USER');
+        if (window.SkillOraAuth && window.SkillOraAuth.signOut) { SkillOraAuth.signOut('college'); } else { localStorage.removeItem('SKILLORA_COLLEGE_USER'); localStorage.removeItem('SKILLORA_ACTIVE_ROLE'); }
         window.location.href = 'auth.html?role=college';
       }
     }
 
-    // Initialize Live Data on Page Load
+    // Initialize Live Data on Page Load (Single Active Role Enforced)
     window.onload = function() {
-      // 1. Session check or friendly default fallback
+      // 1. Single Active Role Check & Authorized Session Check
+      const activeRole = (window.SkillOraAuth && window.SkillOraAuth.getActiveRole) 
+        ? window.SkillOraAuth.getActiveRole() 
+        : localStorage.getItem('SKILLORA_ACTIVE_ROLE');
+
+      if (activeRole && activeRole !== 'college') {
+        const titles = { student: 'Student', employer: 'Hospital / Hotel HR Recruiter' };
+        alert(`Active Session Notice:\n\nYou are currently logged in as a ${titles[activeRole] || activeRole}.\n\nCollege Partner Portal requires an authorized College Partner account. Please sign in to your Institute account.`);
+        window.location.href = "auth.html?role=college";
+        return;
+      }
+
       const raw = localStorage.getItem('SKILLORA_COLLEGE_USER');
+      if (!raw) {
+        alert("Please sign in with your College Partner credentials to access this portal.");
+        window.location.href = "auth.html?role=college";
+        return;
+      }
+
       let col = {
         collegeName: "Sunrise Institute of Medical Sciences & Nursing",
         location: "Mumbai, Maharashtra",
@@ -959,12 +909,10 @@
         accreditation: "INC & Maharashtra Nursing Council (MNC) Approved"
       };
 
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          col = { ...col, ...parsed };
-        } catch(e) {}
-      }
+      try {
+        const parsed = JSON.parse(raw);
+        col = { ...col, ...parsed };
+      } catch(e) {}
 
       document.getElementById('header-college-name').textContent = col.collegeName.split(' ')[0] + '...';
       document.getElementById('disp-college-name').textContent = col.collegeName;
@@ -990,7 +938,7 @@
             name: l.studentName || 'Student',
             qualification: '12th Intermediate PCB (78%)',
             course: l.courseName || 'B.Sc Nursing',
-            phone: l.phone || '9820012345',
+            phone: l.phone || '0000000000',
             location: l.collegeState || 'Maharashtra',
             date: l.date || 'Today',
             stage: l.status || 'Under Review'

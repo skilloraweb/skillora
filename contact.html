@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us & Office Location | SkillOra India</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/auth_db.js"></script>
+  <style>
+    body {
+      background-color: #F0F4F8;
+      font-family: var(--font-family, 'Arimo', sans-serif);
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark, #0A2540);
+      overflow-x: hidden;
+    }
+
+    .contact-hero-bar {
+      background: linear-gradient(135deg, #0A2540 0%, #173C62 100%);
+      color: #FFFFFF;
+      padding: 44px 20px 36px 20px;
+      text-align: center;
+    }
+    .contact-hero-bar h1 {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+    .contact-hero-bar p {
+      font-size: 15px;
+      color: #CFE3F7;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .contact-layout {
+      max-width: 1240px;
+      margin: 32px auto 48px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .contact-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid #DCE6F1;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+      padding: 28px 24px;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #EBF2F7;
+    }
+    .card-title-row h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-dark, #0A2540);
+      margin: 0;
+    }
+
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .info-icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #F0F7FF;
+      color: #087BFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      border: 1px solid #D2E7FF;
+    }
+    .info-text-group strong {
+      display: block;
+      color: #0A2540;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    .info-text-group span, .info-text-group a {
+      color: #55708E;
+      text-decoration: none;
+    }
+    .info-text-group a:hover {
+      color: #087BFF;
+      text-decoration: underline;
+    }
+
+    .map-container {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #DCE6F1;
+      background: #EBF2F7;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .map-container iframe {
+      display: block;
+      width: 100%;
+      height: 280px;
+      border: 0;
+    }
+    .map-action-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Contact Form */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .form-group-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group-wrap label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0A2540;
+    }
+    .form-control-input {
+      height: 44px;
+      border: 1px solid #CFDFED;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #0A2540;
+      outline: none;
+      transition: all 0.2s ease;
+      background: #FFFFFF;
+    }
+    .form-control-input:focus {
+      border-color: #087BFF;
+      box-shadow: 0 0 0 3px rgba(8, 123, 255, 0.15);
+    }
+    textarea.form-control-input {
+      height: 110px;
+      padding: 12px 14px;
+      resize: vertical;
+    }
+    .form-row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .btn-contact-submit {
+      background: #087BFF;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      height: 46px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      margin-top: 6px;
+    }
+    .btn-contact-submit:hover {
+      background: #0066d6;
+      box-shadow: 0 4px 14px rgba(8, 123, 255, 0.25);
+    }
+
+    #form-feedback-alert {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        height: auto;
+        padding: 10px 14px;
+        min-height: 58px;
+      }
+      .nav-menu { display: none; }
+      .contact-hero-bar {
+        padding: 30px 16px 24px 16px;
+      }
+      .contact-hero-bar h1 {
+        font-size: 24px;
+      }
+      .contact-layout {
+        grid-template-columns: 1fr;
+        padding: 0 14px;
+        gap: 20px;
+        margin: 20px auto 36px auto;
+      }
+      .form-row-2col {
+        grid-template-columns: 1fr;
+      }
+      .contact-card {
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Portal Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="SkillOra Home">
+        <div class="logo-mark">
+          <svg class="logo-symbol" viewBox="0 0 38 38" fill="none">
+            <rect width="38" height="38" rx="8" fill="#087BFF"/>
+            <path d="M10 26L19 12L28 26H10Z" fill="#FFFFFF"/>
+            <circle cx="19" cy="18" r="3.5" fill="#FF922A"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-title">Skill<span class="highlight-orange">Ora</span></span>
+          <span class="logo-tagline">Learn • Skill • Build Your Future</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="colleges.html" class="nav-link">Colleges & Admissions</a>
+        <a href="jobs.html" class="nav-link">Find Jobs</a>
+        <a href="contact.html" class="nav-link" style="color:var(--color-primary-blue, #087BFF);font-weight:800;">Contact</a>
+        <a href="admin.html" target="_blank" rel="noopener" class="nav-link">Admin Portal</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="auth.html?role=student" class="btn btn-outline-login" id="nav-auth-btn">Student Login</a>
+        <a href="auth.html?role=institute" class="btn btn-primary-join" style="text-decoration:none;">Join as Partner</a>
+        <button class="mobile-toggle-btn" id="mobile-toggle" aria-label="Open mobile menu" style="display:flex;">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Slide-Out Drawer Navigation -->
+  <div class="mobile-nav-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="mobile-nav-backdrop" id="mobile-backdrop"></div>
+    <div class="mobile-nav-pane">
+      <div class="mobile-nav-header">
+        <div class="brand-logo" style="width:auto;">
+          <div class="logo-mark" style="width:32px;height:32px;">
+            <svg class="logo-symbol" viewBox="0 0 38 38" fill="none">
+              <rect width="38" height="38" rx="8" fill="#087BFF"/>
+              <path d="M10 26L19 12L28 26H10Z" fill="#FFFFFF"/>
+              <circle cx="19" cy="18" r="3.5" fill="#FF922A"/>
+            </svg>
+          </div>
+          <div class="logo-text-group">
+            <span class="logo-title" style="font-size:20px;">Skill<span class="highlight-orange">Ora</span></span>
+          </div>
+        </div>
+        <button class="mobile-drawer-close" id="mobile-drawer-close" aria-label="Close menu">&times;</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="index.html" class="mob-link"><span>🏠</span> Home</a>
+        <a href="colleges.html" class="mob-link"><span>🎓</span> Colleges & Admissions</a>
+        <a href="jobs.html" class="mob-link"><span>💼</span> Find Jobs</a>
+        <a href="contact.html" class="mob-link active"><span>📍</span> Contact Us</a>
+        <div class="mob-divider"></div>
+        <a href="auth.html?role=student" class="mob-link mob-highlight"><span>🔐</span> Student Login / Sign Up</a>
+        <a href="college-portal.html" class="mob-link"><span>🏫</span> College Partner Portal</a>
+        <a href="employer-portal.html" class="mob-link"><span>🏨</span> Hospital & Hotel HR Portal</a>
+        <a href="admin.html" target="_blank" rel="noopener" class="mob-link mob-admin-link"><span>🛡️</span> Admin Console</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Header -->
+  <section class="contact-hero-bar">
+    <h1>Contact SkillOra Support & Corporate Office</h1>
+    <p>Reach out to our education counseling desk, institutional admissions team, or corporate hiring coordinators. We are here to assist you 6 days a week.</p>
+  </section>
+
+  <!-- Main Content Layout -->
+  <main class="contact-layout">
+
+    <!-- Column 1: Office Address, Telephony & Google Maps -->
+    <div class="contact-card">
+      <div class="card-title-row">
+        <span style="font-size:24px;">🏢</span>
+        <h2>Office & Helpdesk Details</h2>
+      </div>
+
+      <div class="info-list">
+        <!-- Corporate Office -->
+        <div class="info-item">
+          <div class="info-icon-badge">📍</div>
+          <div class="info-text-group">
+            <strong>Corporate Office</strong>
+            <span>V3S Mall, Nirman Vihar, Delhi - 110092, India</span>
+          </div>
+        </div>
+
+        <!-- Student Helpline -->
+        <div class="info-item">
+          <div class="info-icon-badge">📞</div>
+          <div class="info-text-group">
+            <strong>Toll-Free Student Helpline</strong>
+            <a href="tel:0000000000">+91 0000000000</a>
+            <div style="font-size:12px;color:#728DA9;">Mon – Sat • 9:00 AM – 8:00 PM IST</div>
+          </div>
+        </div>
+
+        <!-- General Inquiries -->
+        <div class="info-item">
+          <div class="info-icon-badge">✉️</div>
+          <div class="info-text-group">
+            <strong>General & Student Inquiries</strong>
+            <a href="mailto:support@skilloraindia.com">support@skilloraindia.com</a>
+          </div>
+        </div>
+
+        <!-- Institutional Tie-ups -->
+        <div class="info-item">
+          <div class="info-icon-badge">🏫</div>
+          <div class="info-text-group">
+            <strong>College Partnerships & Affiliations</strong>
+            <a href="mailto:admissions@skilloraindia.com">admissions@skilloraindia.com</a>
+          </div>
+        </div>
+
+        <!-- WhatsApp Desk -->
+        <div class="info-item">
+          <div class="info-icon-badge">💬</div>
+          <div class="info-text-group">
+            <strong>Direct WhatsApp Desk</strong>
+            <a href="https://wa.me/910000000000" target="_blank" rel="noopener">+91 0000000000 (Counseling Support)</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Map Section -->
+      <div style="margin-top:20px;">
+        <div style="font-size:13.5px;font-weight:700;color:#0A2540;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span>🗺️ Location Map:</span>
+          <span style="font-size:12px;color:#728DA9;font-weight:400;">V3S Mall, Nirman Vihar, Delhi</span>
+        </div>
+
+        <div class="map-container">
+          <iframe 
+            src="https://maps.google.com/maps?q=V3S+Mall+Nirman+Vihar+Delhi&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+            title="SkillOra Office Location Map - V3S Mall Nirman Vihar Delhi"
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+
+        <div class="map-action-row">
+          <span style="font-size:12px;color:#728DA9;">Opposite Nirman Vihar Metro Station (Blue Line)</span>
+          <a href="https://maps.google.com/?q=V3S+Mall+Nirman+Vihar+Delhi" target="_blank" rel="noopener" style="font-size:12.5px;color:#087BFF;font-weight:700;text-decoration:none;">Open in Google Maps ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Send Us a Message Form -->
+    <div class="contact-card">
+      <div class="card-title-row">
+        <span style="font-size:24px;">✉️</span>
+        <h2>Send Us a Message</h2>
+      </div>
+
+      <div id="form-feedback-alert"></div>
+
+      <form class="contact-form" id="contact-form" onsubmit="event.preventDefault(); handleContactSubmit();">
+        <div class="form-group-wrap">
+          <label for="contact-name">Your Full Name *</label>
+          <input type="text" id="contact-name" class="form-control-input" placeholder="e.g. Rahul Sharma" required>
+        </div>
+
+        <div class="form-row-2col">
+          <div class="form-group-wrap">
+            <label for="contact-phone">Mobile Number *</label>
+            <input type="tel" id="contact-phone" class="form-control-input" placeholder="e.g. 0000000000" pattern="[0-9]{10}" required>
+          </div>
+          <div class="form-group-wrap">
+            <label for="contact-email">Email Address *</label>
+            <input type="email" id="contact-email" class="form-control-input" placeholder="name@example.com" required>
+          </div>
+        </div>
+
+        <div class="form-group-wrap">
+          <label for="contact-topic">Reason for Inquiry *</label>
+          <select id="contact-topic" class="form-control-input" required>
+            <option value="Admission Guidance">Student Admission & Course Counseling</option>
+            <option value="College Partnership">College / Institute Partnership Listing</option>
+            <option value="Employer Hiring">Hospital / Hotel Staff Recruitment</option>
+            <option value="General Support">General Platform Inquiry / Technical Support</option>
+          </select>
+        </div>
+
+        <div class="form-group-wrap">
+          <label for="contact-message">Your Message or Question *</label>
+          <textarea id="contact-message" class="form-control-input" placeholder="Please write your questions or course preferences..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-contact-submit" id="btn-submit-contact">
+          <span>Send Message to SkillOra Team →</span>
+        </button>
+      </form>
+    </div>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="footer">
+    <div class="footer-container">
+      <a href="index.html" class="footer-brand" aria-label="SkillOra Home">
+        <img src="assets/footer_logo.png" alt="SkillOra - Learn · Skill · Build Your Future" class="footer-logo-img">
+      </a>
+
+      <nav class="footer-nav" aria-label="Footer Links">
+        <a href="colleges.html">Colleges Directory</a>
+        <span class="footer-sep">|</span>
+        <a href="jobs.html">Find Jobs</a>
+        <span class="footer-sep">|</span>
+        <a href="auth.html?role=student">Student Login / Sign Up</a>
+        <span class="footer-sep">|</span>
+        <a href="employer-portal.html">Employer Portal</a>
+        <span class="footer-sep">|</span>
+        <a href="admin.html" target="_blank" rel="noopener">Admin Console</a>
+        <span class="footer-sep">|</span>
+        <a href="auth.html?role=institute">Join as Partner</a>
+        <span class="footer-sep">|</span>
+        <a href="about.html">About Us</a>
+        <span class="footer-sep">|</span>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <div class="footer-right-group">
+        <div class="footer-country-badge">
+          India's Multi-Sector Career Platform • V3S Mall, Nirman Vihar, Delhi
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Form Submission Handler (Supabase Cloud + Local Storage Sync)
+    async function handleContactSubmit() {
+      const name = document.getElementById('contact-name').value.trim();
+      const phone = document.getElementById('contact-phone').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
+      const topic = document.getElementById('contact-topic').value;
+      const message = document.getElementById('contact-message').value.trim();
+      const btn = document.getElementById('btn-submit-contact');
+      const alertEl = document.getElementById('form-feedback-alert');
+
+      if (!name || !phone || !email || !message) {
+        alertEl.style.display = 'block';
+        alertEl.style.background = '#FDEDEC';
+        alertEl.style.color = '#C0392B';
+        alertEl.style.border = '1px solid #FADBD8';
+        alertEl.innerHTML = '<strong>⚠️ Notice:</strong> Please fill in all required fields.';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Transmitting Message to Admin & Gmail...';
+
+      const refId = 'MSG-' + Date.now().toString().slice(-4);
+      const now = new Date();
+      const dateFormatted = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+      const inquiryItem = {
+        id: refId,
+        name: name,
+        phone: phone,
+        email: email,
+        topic: topic,
+        message: message,
+        timestamp: now.toISOString(),
+        dateFormatted: dateFormatted,
+        status: 'New Inquiry'
+      };
+
+      // 1. Save directly into Local Storage for Instant Admin Panel Delivery
+      try {
+        const stored = JSON.parse(localStorage.getItem('SKILLORA_CONTACT_INQUIRIES') || '[]');
+        stored.unshift(inquiryItem);
+        localStorage.setItem('SKILLORA_CONTACT_INQUIRIES', JSON.stringify(stored));
+
+        // Activity Feed Log
+        const actLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
+        actLog.unshift({
+          id: refId,
+          title: '💬 ' + name + ' sent a message: "' + topic + '"',
+          desc: 'Phone: ' + phone + ' • Email: ' + email + ' • "' + message.slice(0, 70) + '..."',
+          time: 'Just now',
+          type: 'inquiry'
+        });
+        localStorage.setItem('SKILLORA_LIVE_ACTIVITY_LOG', JSON.stringify(actLog));
+      } catch(e) {}
+
+      // 2. Deliver directly to skillora.web@gmail.com via FormSubmit AJAX API
+      try {
+        await fetch('https://formsubmit.co/ajax/skillora.web@gmail.com', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            _subject: 'SkillOra Contact Message: ' + topic + ' from ' + name + ' (#' + refId + ')',
+            _replyto: email,
+            _captcha: 'false',
+            _template: 'table',
+            'Inquiry Reference': refId,
+            'Sender Name': name,
+            'Contact Phone': phone,
+            'Email Address': email,
+            'Topic / Category': topic,
+            'Full Message': message,
+            'Submitted At': dateFormatted
+          })
+        });
+      } catch(mailErr) {
+        console.warn('FormSubmit email transmission notice:', mailErr);
+      }
+
+      // 3. Log to Supabase Cloud Database (admission_leads table)
+      try {
+        if (window.SkillOraAuth && window.SkillOraAuth.submitAdmissionToCloud) {
+          await SkillOraAuth.submitAdmissionToCloud({
+            studentName: name,
+            phone: phone,
+            email: email,
+            courseName: '[Web Message] ' + topic,
+            refId: refId
+          });
+        }
+      } catch(cloudErr) {}
+
+      btn.disabled = false;
+      btn.textContent = 'Send Message to SkillOra Team →';
+      document.getElementById('contact-form').reset();
+
+      alertEl.style.display = 'block';
+      alertEl.style.background = '#E8F8F0';
+      alertEl.style.color = '#0E7A53';
+      alertEl.style.border = '1px solid #B7EBD4';
+      alertEl.innerHTML = '<strong>✔ Message sent successfully!</strong>';
+      alertEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Mobile Drawer Handlers
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const mobileBackdrop = document.getElementById('mobile-backdrop');
+    const mobileClose = document.getElementById('mobile-drawer-close');
+
+    if (mobileToggle) mobileToggle.addEventListener('click', () => {
+      mobileDrawer.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    if (mobileBackdrop) mobileBackdrop.addEventListener('click', () => {
+      mobileDrawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+    if (mobileClose) mobileClose.addEventListener('click', () => {
+      mobileDrawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  </script>
+</body>
+</html>

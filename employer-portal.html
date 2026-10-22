@@ -524,87 +524,8 @@
           </thead>
           <tbody id="candidates-table-body">
             <tr>
-              <td><strong style="color:#FF922A;">#JOB-801</strong></td>
-              <td><strong>Ananya Sen</strong></td>
-              <td>Staff Nurse (ICU & Ward)</td>
-              <td>B.Sc Nursing (PCB 82%) • 1 Yr Exp</td>
-              <td>+91 9820012345</td>
-              <td>
-                <a href="javascript:void(0)" onclick="alert('Viewing Verified Resume: Ananya_Sen_Nursing_Resume.pdf\n\n• Qualification: B.Sc Nursing\n• Registration: State Nursing Council (Active)\n• Skills: ICU Protocols, Medication, IV Therapy\n• Contact: +91 9820012345')" style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume.pdf</a>
-              </td>
-              <td>18 Oct 2026</td>
-              <td><span class="pill-status pill-green">Shortlisted</span></td>
-              <td>
-                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('JOB-801', this.value)">
-                  <option value="Under Review">Under Review</option>
-                  <option value="Shortlisted" selected>Shortlisted</option>
-                  <option value="Interview Scheduled">Interview Scheduled</option>
-                  <option value="Selected">Selected</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td><strong style="color:#FF922A;">#JOB-802</strong></td>
-              <td><strong>Ananya Sharma</strong></td>
-              <td>Staff Nurse (GNM)</td>
-              <td>GNM Diploma (INC Approved) • Fresher</td>
-              <td>+91 9810022334</td>
-              <td>
-                <a href="javascript:void(0)" onclick="alert('Viewing Verified Resume: Ananya_Sharma_GNM.pdf')" style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume.pdf</a>
-              </td>
-              <td>17 Oct 2026</td>
-              <td><span class="pill-status pill-blue">Interview Scheduled</span></td>
-              <td>
-                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('JOB-802', this.value)">
-                  <option value="Under Review">Under Review</option>
-                  <option value="Shortlisted">Shortlisted</option>
-                  <option value="Interview Scheduled" selected>Interview Scheduled</option>
-                  <option value="Selected">Selected</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td><strong style="color:#FF922A;">#JOB-803</strong></td>
-              <td><strong>Rahul Nair</strong></td>
-              <td>Front Desk & Patient Coordinator</td>
-              <td>Hotel Mgmt Diploma • 2 Yrs Hosp. Exp</td>
-              <td>+91 9845566778</td>
-              <td>
-                <a href="javascript:void(0)" onclick="alert('Viewing Verified Resume: Rahul_Nair_Hospitality.pdf')" style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume.pdf</a>
-              </td>
-              <td>16 Oct 2026</td>
-              <td><span class="pill-status pill-orange">Under Review</span></td>
-              <td>
-                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('JOB-803', this.value)">
-                  <option value="Under Review" selected>Under Review</option>
-                  <option value="Shortlisted">Shortlisted</option>
-                  <option value="Interview Scheduled">Interview Scheduled</option>
-                  <option value="Selected">Selected</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td><strong style="color:#FF922A;">#JOB-804</strong></td>
-              <td><strong>Kavita Sen</strong></td>
-              <td>Dialysis & ICU Technician</td>
-              <td>DMLT / Dialysis Cert • 3 Yrs Exp</td>
-              <td>+91 9711004455</td>
-              <td>
-                <a href="javascript:void(0)" onclick="alert('Viewing Verified Resume: Kavita_Sen_Technician.pdf')" style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume.pdf</a>
-              </td>
-              <td>15 Oct 2026</td>
-              <td><span class="pill-status pill-green">Shortlisted</span></td>
-              <td>
-                <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('JOB-804', this.value)">
-                  <option value="Under Review">Under Review</option>
-                  <option value="Shortlisted" selected>Shortlisted</option>
-                  <option value="Interview Scheduled">Interview Scheduled</option>
-                  <option value="Selected">Selected</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
+              <td colspan="9" style="text-align:center;padding:28px 16px;color:var(--text-muted);background:#F8FCFF;">
+                No job applications received yet. Real candidate submissions will appear here live with original timestamps.
               </td>
             </tr>
           </tbody>
@@ -757,7 +678,7 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12.5px;">
             <div>
               <span style="color:#728DA9;display:block;font-size:11px;">Primary Phone:</span>
-              <strong id="res-cand-phone">+91 9820012345</strong>
+              <strong id="res-cand-phone">+91 0000000000</strong>
             </div>
             <div>
               <span style="color:#728DA9;display:block;font-size:11px;">Email Address:</span>
@@ -981,15 +902,32 @@
 
     function handleSignOut() {
       if (confirm('Sign out of Employer Hiring Portal?')) {
-        localStorage.removeItem('SKILLORA_EMPLOYER_USER');
+        if (window.SkillOraAuth && window.SkillOraAuth.signOut) { SkillOraAuth.signOut('employer'); } else { localStorage.removeItem('SKILLORA_EMPLOYER_USER'); localStorage.removeItem('SKILLORA_ACTIVE_ROLE'); }
         window.location.href = 'auth.html?role=employer';
       }
     }
 
-    // Initialize Live Data on Page Load
+    // Initialize Live Data on Page Load (Single Active Role Enforced)
     window.onload = function() {
-      // 1. Session check or friendly default fallback
+      // 1. Single Active Role Check & Authorized Session Check
+      const activeRole = (window.SkillOraAuth && window.SkillOraAuth.getActiveRole) 
+        ? window.SkillOraAuth.getActiveRole() 
+        : localStorage.getItem('SKILLORA_ACTIVE_ROLE');
+
+      if (activeRole && activeRole !== 'employer') {
+        const titles = { student: 'Student', college: 'College Partner' };
+        alert(`Active Session Notice:\n\nYou are currently logged in as a ${titles[activeRole] || activeRole}.\n\nEmployer Hiring Portal requires an authorized Hospital or Hotel HR account. Please sign in to your Employer account.`);
+        window.location.href = "auth.html?role=employer";
+        return;
+      }
+
       const raw = localStorage.getItem('SKILLORA_EMPLOYER_USER');
+      if (!raw) {
+        alert("Please sign in with your Employer HR credentials to access this portal.");
+        window.location.href = "auth.html?role=employer";
+        return;
+      }
+
       let emp = {
         orgName: "Apollo & Medanta Multispecialty Hospitals",
         location: "Delhi NCR & Lucknow",
@@ -997,12 +935,10 @@
         orgType: "Multi-Specialty Healthcare & Hospital Network"
       };
 
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          emp = { ...emp, ...parsed };
-        } catch(e) {}
-      }
+      try {
+        const parsed = JSON.parse(raw);
+        emp = { ...emp, ...parsed };
+      } catch(e) {}
 
       CURRENT_ORG_NAME = emp.orgName;
       document.getElementById('header-emp-name').textContent = emp.orgName.split(' ')[0] + ' HR';
@@ -1029,7 +965,7 @@
             name: a.candidateName || 'Candidate',
             role: a.role || a.jobTitle || 'Staff Nurse',
             qual: a.exp ? `${a.exp} Experience` : 'GNM / B.Sc Nursing • 1-2 Yrs',
-            phone: a.phone || '+91 9820012345',
+            phone: a.phone || '+91 0000000000',
             email: a.email || 'candidate@skillora.in',
             date: a.date || 'Today',
             stage: a.status || 'Under Review',
