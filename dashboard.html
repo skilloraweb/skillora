@@ -396,7 +396,7 @@
           </svg>
         </div>
         <div class="logo-text-group">
-          <span class="logo-title">Skill<span class="highlight-orange">Ora</span></span>
+          <span class="logo-title">Skillora <span class="highlight-orange">India</span></span>
           <span class="logo-tagline">Learn • Skill • Build Your Future</span>
         </div>
       </a>
@@ -409,7 +409,7 @@
       </nav>
 
       <div class="nav-actions">
-        <a href="admin.html" target="_blank" rel="noopener" class="btn btn-secondary-btn" style="padding:6px 14px;font-size:12.5px;text-decoration:none;">🛠️ Staff / Admin Portal</a>
+        <a href="admin.html" target="_blank" rel="noopener" class="btn btn-secondary-btn desktop-only-btn" style="padding:6px 14px;font-size:12.5px;text-decoration:none;">🛠️ Staff / Admin Portal</a>
         <button class="btn btn-outline-login" onclick="handleSignOut()">Sign Out</button>
       </div>
     </div>
@@ -783,6 +783,47 @@
 
   </div>
 
+  <!-- Standardized SkillOra Global Footer -->
+  <footer class="site-footer" role="contentinfo" style="margin-top:auto;">
+    <div class="footer-container">
+      <a href="index.html" class="footer-brand" aria-label="SkillOra Home">
+        <img src="assets/footer_logo.png" alt="SkillOra - Learn · Skill · Build Your Future" class="footer-logo-img">
+      </a>
+
+      <nav class="footer-nav" aria-label="Footer Links">
+        <a href="index.html">Home</a>
+        <span class="footer-sep">|</span>
+        <a href="colleges.html">Colleges Directory</a>
+        <span class="footer-sep">|</span>
+        <a href="jobs.html">Find Jobs</a>
+        <span class="footer-sep">|</span>
+        <a href="dashboard.html" style="font-weight:700;color:#FFFFFF;">Student Dashboard</a>
+        <span class="footer-sep">|</span>
+        <a href="college-portal.html">College Partner Portal</a>
+        <span class="footer-sep">|</span>
+        <a href="employer-portal.html">Employer Portal</a>
+        <span class="footer-sep">|</span>
+        <a href="about.html">About Us</a>
+        <span class="footer-sep">|</span>
+        <a href="contact.html">Contact</a>
+        <span class="footer-sep">|</span>
+        <a href="privacy.html">Privacy Policy</a>
+        <span class="footer-sep">|</span>
+        <a href="terms.html">Terms & Conditions</a>
+        <span class="footer-sep">|</span>
+        <a href="refund.html">Refund Policy</a>
+        <span class="footer-sep">|</span>
+        <a href="admin.html" target="_blank" rel="noopener">Admin Console</a>
+      </nav>
+
+      <div class="footer-right-group">
+        <div class="footer-country-badge">
+          India's Multi-Sector Career Platform • V3S Mall, Nirman Vihar, Delhi
+        </div>
+      </div>
+    </div>
+  </footer>
+
   <!-- JavaScript for Student Dashboard State (Real Cloud & Offline Hybrid Engine) -->
   <script>
     async function loadStudentDashboard() {
@@ -846,14 +887,24 @@
             previewBtn.style.display = 'none';
           }
         }
-        if (strengthVal) strengthVal.textContent = '100%';
-        if (strengthBar) strengthBar.style.width = '100%';
       } else {
         if (emptyState) emptyState.style.display = 'block';
         if (activeState) activeState.style.display = 'none';
-        if (strengthVal) strengthVal.textContent = '70%';
-        if (strengthBar) strengthBar.style.width = '70%';
       }
+
+      // Dynamic Profile Completeness Computation
+      let score = 0;
+      if (user.name && user.name.trim()) score += 15;
+      if (user.email && user.email.trim()) score += 15;
+      if (user.phone && user.phone.trim()) score += 15;
+      if (user.city && user.state) score += 15;
+      if (user.qualification) score += 15;
+      if (user.sector) score += 10;
+      if (hasResume) score += 15;
+
+      const displayScore = Math.min(100, Math.max(20, score));
+      if (strengthVal) strengthVal.textContent = `${displayScore}%`;
+      if (strengthBar) strengthBar.style.width = `${displayScore}%`;
 
       // Populate Profile Edit Form
       if (document.getElementById('edit-name')) document.getElementById('edit-name').value = user.name || "";

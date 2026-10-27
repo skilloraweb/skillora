@@ -303,7 +303,27 @@
     };
 
     // Store in corresponding role session exclusively (Single Active Role)
-    const finalUser = (role === 'student') ? sessionUser : { ...sessionUser, ...user.extra };
+    let finalUser = { ...sessionUser };
+    if (role === 'employer') {
+      finalUser = {
+        ...sessionUser,
+        orgName: (user.extra && user.extra.orgName) || user.name,
+        company: (user.extra && user.extra.orgName) || user.name,
+        hrName: (user.extra && user.extra.hrName) || user.name,
+        location: (user.extra && user.extra.location) || (user.city ? (user.city + (user.state ? ', ' + user.state : '')) : 'Location Not Set'),
+        orgType: (user.extra && user.extra.orgType) || 'Healthcare / Hospitality Provider',
+        ...(user.extra || {})
+      };
+    } else if (role === 'college') {
+      finalUser = {
+        ...sessionUser,
+        collegeName: (user.extra && user.extra.collegeName) || user.name,
+        principalName: (user.extra && user.extra.principalName) || 'Director of Admissions',
+        location: (user.extra && user.extra.location) || (user.city ? (user.city + (user.state ? ', ' + user.state : '')) : 'Location Not Set'),
+        accreditation: (user.extra && user.extra.accreditation) || 'Statutory Council Recognized',
+        ...(user.extra || {})
+      };
+    }
     setExclusiveSession(role, finalUser);
 
     return { success: true, message: `Welcome back, ${user.name}!`, user: sessionUser };
@@ -600,6 +620,162 @@
     return true;
   }
 
+
+  // Fetch College Admission Leads from Supabase Cloud
+  async function fetchCollegeCloudLeads(collegeId, collegeName) {
+    try {
+      let query = `${SUPABASE_REST_URL}/admission_leads?select=*&order=created_at.desc`;
+      if (collegeId) {
+        query += `&college_id=eq.${collegeId}`;
+      }
+      const res = await fetch(query, {
+        headers: {
+          'apikey': getSupabaseKey(),
+          'Authorization': `Bearer ${getSupabaseKey()}`
+        }
+      });
+      if (res.ok) {
+        const cloudLeads = await res.json();
+        return cloudLeads;
+      }
+    } catch (e) {
+      console.warn("Could not fetch college cloud leads:", e);
+    }
+    return [];
+  }
+
+  // Fetch Employer Job Applications from Supabase Cloud
+  async function fetchEmployerCloudApplications(jobIds = []) {
+    try {
+      let query = `${SUPABASE_REST_URL}/job_applications?select=*&order=applied_at.desc`;
+      if (jobIds && jobIds.length > 0) {
+        query += `&job_id=in.(${jobIds.join(',')})`;
+      }
+      const res = await fetch(query, {
+        headers: {
+          'apikey': getSupabaseKey(),
+          'Authorization': `Bearer ${getSupabaseKey()}`
+        }
+      });
+      if (res.ok) {
+        const cloudApps = await res.json();
+        return cloudApps;
+      }
+    } catch (e) {
+      console.warn("Could not fetch employer cloud applications:", e);
+    }
+    return [];
+  }
+
+  // Update Admission Lead Status in Supabase Cloud
+  async function updateAdmissionLeadStatusInCloud(leadId, newStatus, notes = '') {
+    if (!leadId) return false;
+    try {
+      const res = await fetch(`${SUPABASE_REST_URL}/admission_leads?id=eq.${leadId}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': getSupabaseKey(),
+          'Authorization': `Bearer ${getSupabaseKey()}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          status: newStatus,
+          counsellor_notes: notes,
+          updated_at: new Date().toISOString()
+        })
+      });
+      return res.ok;
+    } catch (e) {
+      console.warn("Could not update lead status in cloud:", e);
+      return false;
+    }
+  }
+
+  // Update Job Application Stage in Supabase Cloud
+  async function updateJobApplicationStageInCloud(appId, newStage, notes = '') {
+    if (!appId) return false;
+    try {
+      const res = await fetch(`${SUPABASE_REST_URL}/job_applications?id=eq.${appId}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': getSupabaseKey(),
+          'Authorization': `Bearer ${getSupabaseKey()}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          stage: newStage,
+          recruiter_notes: notes
+        })
+      });
+      return res.ok;
+    } catch (e) {
+      console.warn("Could not update job application stage in cloud:", e);
+      return false;
+    }
+  }
+
+  // Save Student Profile to Local & Cloud Database
+  function saveStudentProfile(updatedData) {
+    try {
+      const users = getDbUsers();
+      const current = getCurrentUser('student') || {};
+      const merged = { ...current, ...updatedData };
+      
+      const idx = users.findIndex(u => u.email === merged.email || u.id === merged.id);
+      if (idx !== -1) {
+        users[idx] = { ...users[idx], ...updatedData };
+        saveDbUsers(users);
+      }
+      localStorage.setItem('SKILLORA_CURRENT_USER', JSON.stringify(merged));
+      return { success: true, user: merged };
+    } catch (e) {
+      console.error("Error saving student profile:", e);
+      return { success: false, message: e.message };
+    }
+  }
+
+  // Save College Profile to Local & Cloud Database
+  function saveCollegeProfile(updatedData) {
+    try {
+      const users = getDbUsers();
+      const current = getCurrentUser('college') || {};
+      const merged = { ...current, ...updatedData };
+      
+      const idx = users.findIndex(u => u.email === merged.email || u.id === merged.id);
+      if (idx !== -1) {
+        users[idx] = { ...users[idx], ...updatedData };
+        saveDbUsers(users);
+      }
+      localStorage.setItem('SKILLORA_COLLEGE_USER', JSON.stringify(merged));
+      return { success: true, user: merged };
+    } catch (e) {
+      console.error("Error saving college profile:", e);
+      return { success: false, message: e.message };
+    }
+  }
+
+  // Save Employer Profile to Local & Cloud Database
+  function saveEmployerProfile(updatedData) {
+    try {
+      const users = getDbUsers();
+      const current = getCurrentUser('employer') || {};
+      const merged = { ...current, ...updatedData };
+      
+      const idx = users.findIndex(u => u.email === merged.email || u.id === merged.id);
+      if (idx !== -1) {
+        users[idx] = { ...users[idx], ...updatedData };
+        saveDbUsers(users);
+      }
+      localStorage.setItem('SKILLORA_EMPLOYER_USER', JSON.stringify(merged));
+      return { success: true, user: merged };
+    } catch (e) {
+      console.error("Error saving employer profile:", e);
+      return { success: false, message: e.message };
+    }
+  }
+
   // Gatekeeper helper for Apply Actions
   function requireLoginToApply(applyIntent) {
     const student = getCurrentUser('student');
@@ -639,7 +815,14 @@
     getSupabaseKey,
     setExclusiveSession,
     getActiveRole,
-    enforceExclusiveRole
+    enforceExclusiveRole,
+    fetchCollegeCloudLeads,
+    fetchEmployerCloudApplications,
+    updateAdmissionLeadStatusInCloud,
+    updateJobApplicationStageInCloud,
+    saveStudentProfile,
+    saveCollegeProfile,
+    saveEmployerProfile
   };
 
 })(window);

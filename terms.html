@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms & Conditions | Skillora India</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/auth_db.js"></script>
+  <style>
+    body {
+      background-color: #F7FAFC;
+      font-family: var(--font-family, 'Arimo', sans-serif);
+      margin: 0;
+      padding: 0;
+      color: #123658;
+      overflow-x: hidden;
+    }
+    .terms-hero-bar {
+      background: linear-gradient(135deg, #102C4C 0%, #173C62 100%);
+      color: #FFFFFF;
+      padding: 44px 20px 36px 20px;
+      text-align: center;
+    }
+    .terms-hero-bar h1 {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+    }
+    .terms-hero-bar p {
+      font-size: 14.5px;
+      color: #CFE3F7;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .terms-layout {
+      max-width: 960px;
+      margin: 32px auto 60px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .terms-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid #DCE6F1;
+      box-shadow: 0 4px 16px rgba(16, 44, 76, 0.05);
+      padding: 30px 28px;
+    }
+    .terms-card h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #102C4C;
+      margin-top: 0;
+      margin-bottom: 12px;
+      border-bottom: 2px solid #EBF2F7;
+      padding-bottom: 8px;
+    }
+    .terms-card p, .terms-card li {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #4A637D;
+    }
+    .terms-card ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    .terms-card li {
+      margin-bottom: 6px;
+    }
+    .last-updated {
+      font-size: 12.5px;
+      color: #728DA9;
+      margin-top: 6px;
+    }
+    @media (max-width: 768px) {
+      .terms-hero-bar { padding: 32px 16px 26px 16px; }
+      .terms-hero-bar h1 { font-size: 24px; }
+      .terms-layout { padding: 0 14px; margin: 20px auto 40px auto; }
+      .terms-card { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="Skillora India Home">
+        <div class="logo-mark">
+          <svg class="logo-symbol" viewBox="0 0 38 38" fill="none">
+            <rect width="38" height="38" rx="8" fill="#087BFF"/>
+            <path d="M10 26L19 12L28 26H10Z" fill="#FFFFFF"/>
+            <circle cx="19" cy="18" r="3.5" fill="#FF922A"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-title">Skillora <span class="highlight-orange">India</span></span>
+          <span class="logo-tagline">Learn · Skill · Build Your Future</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="jobs.html" class="nav-link">Find Jobs</a>
+        <a href="colleges.html" class="nav-link">Colleges & Admissions</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="auth.html?role=student" class="btn btn-outline-login">Student Login</a>
+        <button class="mobile-toggle-btn" id="mobile-toggle" aria-label="Open mobile menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Slide-Out Drawer Navigation -->
+  <div class="mobile-nav-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="mobile-nav-backdrop" id="mobile-backdrop"></div>
+    <div class="mobile-nav-pane">
+      <div class="mobile-nav-header">
+        <div class="brand-logo" style="width:auto;">
+          <div class="logo-text-group">
+            <span class="logo-title" style="font-size:20px;">Skillora <span class="highlight-orange">India</span></span>
+          </div>
+        </div>
+        <button class="mobile-drawer-close" id="mobile-drawer-close" aria-label="Close menu">&times;</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="index.html" class="mob-link"><span>🏠</span> Home</a>
+        <a href="colleges.html" class="mob-link"><span>🎓</span> Colleges & Admissions</a>
+        <a href="jobs.html" class="mob-link"><span>💼</span> Find Jobs</a>
+        <a href="about.html" class="mob-link"><span>ℹ️</span> About Us</a>
+        <a href="contact.html" class="mob-link"><span>📍</span> Contact Us</a>
+        <div class="mob-divider"></div>
+        <a href="auth.html?role=student" class="mob-link mob-highlight"><span>🔐</span> Student Login / Sign Up</a>
+        <a href="college-portal.html" class="mob-link"><span>🏫</span> College Partner Portal</a>
+        <a href="employer-portal.html" class="mob-link"><span>🏨</span> Hospital & Hotel HR Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Header -->
+  <div class="terms-hero-bar">
+    <h1>Terms & Conditions</h1>
+    <p>User guidelines, admissions facilitation rules, and service agreements on Skillora India.</p>
+    <div class="last-updated">Last Updated: October 2026 • Effective Immediately</div>
+  </div>
+
+  <main class="terms-layout">
+    <div class="terms-card">
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or utilizing <strong>skilloraindia.com</strong> ("Platform"), you agree to abide by these Terms & Conditions. If you do not agree to these terms, please do not use our services.</p>
+    </div>
+
+    <div class="terms-card">
+      <h2>2. Nature of Services</h2>
+      <p>Skillora India operates as an educational discovery and career enablement platform connecting candidates with recognized nursing universities, paramedical academies, hotel management colleges, and certified hospital/hospitality employers.</p>
+      <ul>
+        <li>Skillora assists with educational guidance, counseling, and direct application forwarding.</li>
+        <li>Final admission decisions, entrance requirements, and eligibility verifications rest strictly with the concerned academic institutions and regulatory bodies (e.g. INC, State Nursing Councils, NCHMCT, UGC).</li>
+        <li>Skillora publishes verified vacancies. Final hiring decisions and salary offerings are made directly by the hiring hospital or hotel.</li>
+      </ul>
+    </div>
+
+    <div class="terms-card">
+      <h2>3. User Responsibilities & Code of Conduct</h2>
+      <ul>
+        <li>You must provide accurate, truthful, and updated personal and educational details.</li>
+        <li>Submitting falsified marksheets, fraudulent identity proofs, or forged certificates is strictly prohibited and leads to immediate account disqualification.</li>
+        <li>You agree not to misuse platform tools, attempt scraping, or perform denial-of-service attempts.</li>
+      </ul>
+    </div>
+
+    <div class="terms-card">
+      <h2>4. Institutional Partner & Employer Listings</h2>
+      <p>All colleges and employers registered on Skillora must provide valid accreditation documentation, regulatory affiliations, and accurate fee/salary breakdowns. Skillora reserves the right to unpublish or ban any partner found misrepresenting seats or fees.</p>
+    </div>
+
+    <div class="terms-card">
+      <h2>5. Limitation of Liability</h2>
+      <p>While Skillora exercises strict due diligence to verify course fees, seat availability, and employer credentials, we shall not be held liable for institutional curriculum changes, fee alterations made by colleges, or exam rescheduling by statutory boards.</p>
+    </div>
+
+    <div class="terms-card">
+      <h2>6. Governing Law & Jurisdiction</h2>
+      <p>These terms shall be governed by and construed in accordance with the laws of India. Any disputes arising from the use of this platform shall be subject to the exclusive jurisdiction of the competent courts in New Delhi, India.</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <nav class="footer-nav">
+        <a href="index.html">Home</a> <span class="footer-sep">|</span>
+        <a href="colleges.html">Colleges Directory</a> <span class="footer-sep">|</span>
+        <a href="jobs.html">Find Jobs</a> <span class="footer-sep">|</span>
+        <a href="about.html">About Us</a> <span class="footer-sep">|</span>
+        <a href="contact.html">Contact</a> <span class="footer-sep">|</span>
+        <a href="privacy.html">Privacy Policy</a> <span class="footer-sep">|</span>
+        <a href="terms.html" style="font-weight:700;color:#FFFFFF;">Terms & Conditions</a> <span class="footer-sep">|</span>
+        <a href="refund.html">Refund Policy</a>
+      </nav>
+      <div style="font-size:12px;color:#728DA9;margin-top:10px;">
+        © 2026 Skillora India. All rights reserved. Connecting Students, Colleges & Healthcare/Hospitality Employers.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const mobileBackdrop = document.getElementById('mobile-backdrop');
+    const mobileClose = document.getElementById('mobile-drawer-close');
+
+    if (mobileToggle) mobileToggle.addEventListener('click', () => mobileDrawer.classList.add('open'));
+    if (mobileBackdrop) mobileBackdrop.addEventListener('click', () => mobileDrawer.classList.remove('open'));
+    if (mobileClose) mobileClose.addEventListener('click', () => mobileDrawer.classList.remove('open'));
+  </script>
+</body>
+</html>

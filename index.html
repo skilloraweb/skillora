@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SkillOra - One Platform. Every Career Possibility.</title>
-  <meta name="description" content="Discover courses, verified institutes and jobs across healthcare, hospitality, technology and professional skills.">
+  <title>Skillora India — Healthcare & Hospitality Careers, Courses & Admissions</title>
+  <meta name="description" content="Skillora India connects students and jobseekers with accredited colleges, courses, and verified job vacancies in Healthcare and Hospitality.">
   <!-- Google Fonts: Arimo (Exact Figma Font) & Caveat for handwritten script -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +50,7 @@
             </svg>
           </div>
           <div class="logo-text-group">
-            <span class="logo-title">Skill<span class="highlight-orange">Ora</span></span>
+            <span class="logo-title">Skillora <span class="highlight-orange">India</span></span>
             <span class="logo-tagline">Learn · Skill · Build Your Future</span>
           </div>
         </a>
@@ -106,10 +106,7 @@
             <span>Contact</span>
           </a>
 
-          <!-- Admin Portal Link -->
-          <a href="admin.html" target="_blank" rel="noopener" class="nav-link">
-            <span>Admin Portal</span>
-          </a>
+
 
         </nav>
 
@@ -124,8 +121,9 @@
           </button>
 
           <!-- Login Button -->
-          <a href="auth.html?role=student" class="btn btn-outline-login" id="login-btn" style="text-decoration:none;">
-            Student Login / Sign Up
+          <a href="auth.html?role=student" class="btn btn-outline-login" id="login-btn" style="text-decoration:none;" title="Student Login">
+            <span class="desktop-auth-text">Student Login / Sign Up</span>
+            <span class="mobile-auth-text">Login</span>
           </a>
 
           <!-- Join as Partner Button -->
@@ -242,16 +240,33 @@
           </div>
           
           <h1 class="hero-title">
-            <span class="hero-title-line1">One Platform.</span>
-            <span class="hero-title-line2">Every Career <span class="highlight-possibility">Possibility.</span></span>
+            <span class="hero-title-line1">Build Your Future in</span>
+            <span class="hero-title-line2">Healthcare & <span class="highlight-possibility">Hospitality.</span></span>
           </h1>
 
           <p class="hero-subtitle">
-            Discover courses, verified institutes and jobs across healthcare, hospitality, technology and professional skills.
+            Discover verified career opportunities, explore relevant courses, connect with colleges and take the next step in your professional journey.
           </p>
+
+          <!-- Primary Call to Action Gateway Buttons -->
+          <div class="hero-primary-ctas">
+            <a href="jobs.html" class="btn-hero-cta cta-jobs">
+              <span>💼 Find a Job</span>
+              <span class="cta-arrow">→</span>
+            </a>
+            <a href="colleges.html" class="btn-hero-cta cta-courses">
+              <span>🎓 Explore Courses</span>
+              <span class="cta-arrow">→</span>
+            </a>
+          </div>
 
           <!-- Interactive Search Box -->
           <div class="hero-search-wrapper">
+            <div class="hero-search-tabs" role="tablist">
+              <button type="button" class="search-tab-btn active" id="tab-search-all" onclick="setSearchFilterMode('all', this)">All</button>
+              <button type="button" class="search-tab-btn" id="tab-search-jobs" onclick="setSearchFilterMode('jobs', this)">💼 Jobs</button>
+              <button type="button" class="search-tab-btn" id="tab-search-courses" onclick="setSearchFilterMode('courses', this)">🎓 Courses</button>
+            </div>
             <div class="hero-search-bar" id="hero-search-bar">
               <span class="search-input-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -268,7 +283,8 @@
               >
               <button class="clear-search-btn" id="clear-search-btn" style="display:none;" title="Clear search">✕</button>
               <button class="hero-search-submit" id="hero-search-submit" aria-label="Execute search">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <span class="search-submit-label">Search</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <circle cx="11" cy="11" r="7" stroke="#FFFFFF" stroke-width="2.5"/>
                   <path d="M20 20L16 16" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
                 </svg>
@@ -1108,6 +1124,71 @@
     </main>
 
     <!-- ========================================================================= -->
+    <!-- 4B. HOW IT WORKS (3-STEP JOURNEY + TRUST EVIDENCE)                        -->
+    <!-- ========================================================================= -->
+    <section class="how-it-works-section" id="how-it-works" aria-label="How Skillora India Works">
+      <div class="how-it-works-container">
+        
+        <div class="section-heading-center">
+          <span class="section-tag-pill">HOW SKILLORA WORKS</span>
+          <h2 class="section-main-title">Connecting You Directly to Healthcare & Hospitality Careers</h2>
+          <p class="section-sub-desc">Simple 3-step pathways for candidates to explore accredited courses and verified hospital/hospitality jobs.</p>
+        </div>
+
+        <div class="how-steps-grid">
+          
+          <div class="how-step-card">
+            <div class="step-num-badge">01</div>
+            <div class="step-icon-wrap icon-blue">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#087BFF" stroke-width="2.2"/><path d="M20 20L16 16" stroke="#087BFF" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="step-title">Discover Verified Options</h3>
+            <p class="step-desc">Search accredited nursing colleges, paramedical institutes, and hotel management academies with verified fees, or apply for hospital/hotel job vacancies.</p>
+          </div>
+
+          <div class="how-step-card">
+            <div class="step-num-badge">02</div>
+            <div class="step-icon-wrap icon-teal">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M9 11L12 14L22 4" stroke="#009E83" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16" stroke="#009E83" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="step-title">Compare & Select</h3>
+            <p class="step-desc">Review transparent fee breakdowns, regulatory council recognitions (INC, UGC, NCHMCT), placement records, and campus facilities.</p>
+          </div>
+
+          <div class="how-step-card">
+            <div class="step-num-badge">03</div>
+            <div class="step-icon-wrap icon-orange">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999" stroke="#FF922A" stroke-width="2.2" stroke-linecap="round"/><path d="M22 4L12 14.01L9 11.01" stroke="#FF922A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3 class="step-title">Direct Connect & Apply</h3>
+            <p class="step-desc">Book counseling slots directly with college admissions desks, or submit your resume directly to hiring employers with zero candidate charges.</p>
+          </div>
+
+        </div>
+
+        <div class="how-trust-banner">
+          <div class="trust-badge-item">
+            <span class="trust-badge-icon">🏛️</span>
+            <div><strong>488+ Institutional Network</strong> Across 18 States</div>
+          </div>
+          <div class="trust-badge-item">
+            <span class="trust-badge-icon">🛡️</span>
+            <div><strong>100% Verified</strong> Programs & Approvals</div>
+          </div>
+          <div class="trust-badge-item">
+            <span class="trust-badge-icon">💳</span>
+            <div><strong>₹0 Application Fee</strong> for Candidates</div>
+          </div>
+          <div class="trust-badge-item">
+            <span class="trust-badge-icon">📞</span>
+            <div><strong>Free Dedicated</strong> Academic Counseling</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
     <!-- 5. BOTTOM TICKER & WHATSAPP SUPPORT BAR                                   -->
     <!-- ========================================================================= -->
     <section class="bottom-support-bar" id="updates">
@@ -1158,21 +1239,27 @@
 
         <!-- Center: Quick Nav Links -->
         <nav class="footer-nav" aria-label="Footer Links">
+          <a href="index.html">Home</a>
+          <span class="footer-sep">|</span>
           <a href="colleges.html">Colleges Directory</a>
           <span class="footer-sep">|</span>
           <a href="jobs.html">Find Jobs</a>
           <span class="footer-sep">|</span>
-          <a href="auth.html?role=student">Student Login / Sign Up</a>
+          <a href="auth.html?role=student">Student Login</a>
           <span class="footer-sep">|</span>
           <a href="employer-portal.html">Employer Portal</a>
-          <span class="footer-sep">|</span>
-          <a href="admin.html" target="_blank" rel="noopener">Admin Console</a>
-          <span class="footer-sep">|</span>
-          <a href="auth.html?role=institute">Join as Partner</a>
           <span class="footer-sep">|</span>
           <a href="about.html">About Us</a>
           <span class="footer-sep">|</span>
           <a href="contact.html">Contact</a>
+          <span class="footer-sep">|</span>
+          <a href="privacy.html">Privacy Policy</a>
+          <span class="footer-sep">|</span>
+          <a href="terms.html">Terms & Conditions</a>
+          <span class="footer-sep">|</span>
+          <a href="refund.html">Refund Policy</a>
+          <span class="footer-sep">|</span>
+          <a href="admin.html" target="_blank" rel="noopener">Admin Console</a>
         </nav>
 
         <!-- Right: Social Links & Platform Badge -->
@@ -1737,6 +1824,20 @@
 
   <!-- JavaScript Application Logic -->
   <script src="data/colleges_db.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js">
+    function setSearchFilterMode(mode, btn) {
+      document.querySelectorAll('.search-tab-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      const input = document.getElementById('hero-search-input');
+      if (!input) return;
+      if (mode === 'jobs') {
+        input.placeholder = 'Search jobs by role, hospital/hotel, city...';
+      } else if (mode === 'courses') {
+        input.placeholder = 'Search courses & colleges by program, state...';
+      } else {
+        input.placeholder = 'Search courses, jobs, colleges or skills...';
+      }
+    }
+</script>
 </body>
 </html>

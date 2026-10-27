@@ -364,7 +364,7 @@
           </svg>
         </div>
         <div class="logo-text-group">
-          <span class="logo-title">Skill<span class="highlight-orange">Ora</span></span>
+          <span class="logo-title">Skillora <span class="highlight-orange">India</span></span>
           <span class="logo-tagline">Learn • Skill • Build Your Future</span>
         </div>
       </a>
@@ -649,6 +649,47 @@
 
     </div>
   </main>
+
+  <!-- Standardized SkillOra Global Footer -->
+  <footer class="site-footer" role="contentinfo" style="margin-top:auto;">
+    <div class="footer-container">
+      <a href="index.html" class="footer-brand" aria-label="SkillOra Home">
+        <img src="assets/footer_logo.png" alt="SkillOra - Learn · Skill · Build Your Future" class="footer-logo-img">
+      </a>
+
+      <nav class="footer-nav" aria-label="Footer Links">
+        <a href="index.html">Home</a>
+        <span class="footer-sep">|</span>
+        <a href="colleges.html">Colleges Directory</a>
+        <span class="footer-sep">|</span>
+        <a href="jobs.html">Find Jobs</a>
+        <span class="footer-sep">|</span>
+        <a href="auth.html?role=student" style="font-weight:700;color:#FFFFFF;">Student Login</a>
+        <span class="footer-sep">|</span>
+        <a href="college-portal.html">College Partner Portal</a>
+        <span class="footer-sep">|</span>
+        <a href="employer-portal.html">Employer Portal</a>
+        <span class="footer-sep">|</span>
+        <a href="about.html">About Us</a>
+        <span class="footer-sep">|</span>
+        <a href="contact.html">Contact</a>
+        <span class="footer-sep">|</span>
+        <a href="privacy.html">Privacy Policy</a>
+        <span class="footer-sep">|</span>
+        <a href="terms.html">Terms & Conditions</a>
+        <span class="footer-sep">|</span>
+        <a href="refund.html">Refund Policy</a>
+        <span class="footer-sep">|</span>
+        <a href="admin.html" target="_blank" rel="noopener">Admin Console</a>
+      </nav>
+
+      <div class="footer-right-group">
+        <div class="footer-country-badge">
+          India's Multi-Sector Career Platform • V3S Mall, Nirman Vihar, Delhi
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <!-- Script for Multi-Role Authentication & Navigation -->
   <script>
@@ -951,7 +992,7 @@
         password,
         city: location.split(',')[0] || location,
         state: location.split(',')[1] || '',
-        extra: { principalName, accreditation, stream, collegeName }
+        extra: { principalName, accreditation, stream, collegeName, location }
       });
 
       if (!res.success) {
@@ -987,7 +1028,7 @@
         password,
         city: location.split(',')[0] || location,
         state: location.split(',')[1] || '',
-        extra: { hrName, orgType, roles, orgName }
+        extra: { hrName, orgType, roles, orgName, location }
       });
 
       if (!res.success) {

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | Skillora India - Career & Admissions Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/auth_db.js"></script>
+  <style>
+    body {
+      background-color: #F7FAFC;
+      font-family: var(--font-family, 'Arimo', sans-serif);
+      margin: 0;
+      padding: 0;
+      color: #123658;
+      overflow-x: hidden;
+    }
+    .policy-hero-bar {
+      background: linear-gradient(135deg, #102C4C 0%, #173C62 100%);
+      color: #FFFFFF;
+      padding: 44px 20px 36px 20px;
+      text-align: center;
+    }
+    .policy-hero-bar h1 {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+    }
+    .policy-hero-bar p {
+      font-size: 14.5px;
+      color: #CFE3F7;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .policy-layout {
+      max-width: 960px;
+      margin: 32px auto 60px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .policy-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid #DCE6F1;
+      box-shadow: 0 4px 16px rgba(16, 44, 76, 0.05);
+      padding: 30px 28px;
+    }
+    .policy-card h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #102C4C;
+      margin-top: 0;
+      margin-bottom: 12px;
+      border-bottom: 2px solid #EBF2F7;
+      padding-bottom: 8px;
+    }
+    .policy-card p, .policy-card li {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #4A637D;
+    }
+    .policy-card ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    .policy-card li {
+      margin-bottom: 6px;
+    }
+    .last-updated {
+      font-size: 12.5px;
+      color: #728DA9;
+      margin-top: 6px;
+    }
+    @media (max-width: 768px) {
+      .policy-hero-bar { padding: 32px 16px 26px 16px; }
+      .policy-hero-bar h1 { font-size: 24px; }
+      .policy-layout { padding: 0 14px; margin: 20px auto 40px auto; }
+      .policy-card { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="Skillora India Home">
+        <div class="logo-mark">
+          <svg class="logo-symbol" viewBox="0 0 38 38" fill="none">
+            <rect width="38" height="38" rx="8" fill="#087BFF"/>
+            <path d="M10 26L19 12L28 26H10Z" fill="#FFFFFF"/>
+            <circle cx="19" cy="18" r="3.5" fill="#FF922A"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-title">Skillora <span class="highlight-orange">India</span></span>
+          <span class="logo-tagline">Learn · Skill · Build Your Future</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="jobs.html" class="nav-link">Find Jobs</a>
+        <a href="colleges.html" class="nav-link">Colleges & Admissions</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="auth.html?role=student" class="btn btn-outline-login">Student Login</a>
+        <button class="mobile-toggle-btn" id="mobile-toggle" aria-label="Open mobile menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Slide-Out Drawer Navigation -->
+  <div class="mobile-nav-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="mobile-nav-backdrop" id="mobile-backdrop"></div>
+    <div class="mobile-nav-pane">
+      <div class="mobile-nav-header">
+        <div class="brand-logo" style="width:auto;">
+          <div class="logo-text-group">
+            <span class="logo-title" style="font-size:20px;">Skillora <span class="highlight-orange">India</span></span>
+          </div>
+        </div>
+        <button class="mobile-drawer-close" id="mobile-drawer-close" aria-label="Close menu">&times;</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="index.html" class="mob-link"><span>🏠</span> Home</a>
+        <a href="colleges.html" class="mob-link"><span>🎓</span> Colleges & Admissions</a>
+        <a href="jobs.html" class="mob-link"><span>💼</span> Find Jobs</a>
+        <a href="about.html" class="mob-link"><span>ℹ️</span> About Us</a>
+        <a href="contact.html" class="mob-link"><span>📍</span> Contact Us</a>
+        <div class="mob-divider"></div>
+        <a href="auth.html?role=student" class="mob-link mob-highlight"><span>🔐</span> Student Login / Sign Up</a>
+        <a href="college-portal.html" class="mob-link"><span>🏫</span> College Partner Portal</a>
+        <a href="employer-portal.html" class="mob-link"><span>🏨</span> Hospital & Hotel HR Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Header -->
+  <div class="policy-hero-bar">
+    <h1>Privacy Policy</h1>
+    <p>How Skillora India collects, protects, and handles student, candidate, and institutional partner data.</p>
+    <div class="last-updated">Last Updated: October 2026 • Effective Immediately</div>
+  </div>
+
+  <!-- Policy Content Layout -->
+  <main class="policy-layout">
+    
+    <div class="policy-card">
+      <h2>1. Commitment to Privacy</h2>
+      <p>Skillora India ("Skillora", "we", "our", or "us") operates the website <strong>skilloraindia.com</strong>. We are committed to safeguarding the privacy of students, job seekers, academic counselors, training partners, and institutional employers across healthcare and hospitality sectors.</p>
+    </div>
+
+    <div class="policy-card">
+      <h2>2. Information We Collect</h2>
+      <p>We collect only information necessary to deliver transparent admissions guidance and verified career placements:</p>
+      <ul>
+        <li><strong>Student & Candidate Information:</strong> Name, mobile number, email address, educational qualification, preferred program or course, and resume documents uploaded voluntarily.</li>
+        <li><strong>Institutional Partner Data:</strong> Official college/hospital name, authorized officer contact details, official recognition details, and approved program intake.</li>
+        <li><strong>Technical & Usage Data:</strong> Anonymized device type, browser, IP address, and application timestamps for security and audit integrity.</li>
+      </ul>
+    </div>
+
+    <div class="policy-card">
+      <h2>3. How We Use Your Data</h2>
+      <ul>
+        <li>To connect students directly with verified college counseling desks for admission assistance.</li>
+        <li>To submit job applications and resumes directly to verified hospital and hospitality employers.</li>
+        <li>To provide SMS/WhatsApp counseling alerts and transaction receipts (with option to opt out).</li>
+        <li>To maintain security audit trails and prevent fraudulent or duplicate applications.</li>
+        <li><strong>We never sell, rent, or trade student or candidate phone numbers to third-party telemarketers.</strong></li>
+      </ul>
+    </div>
+
+    <div class="policy-card">
+      <h2>4. Data Storage & Security</h2>
+      <p>All sensitive information, including passwords and cryptographic access tokens, is hashed using SHA-256 protocols. Application data is stored on secure cloud database servers with role-based access restrictions. Only authorized Skillora counselors and verified admissions coordinators can view applicant details.</p>
+    </div>
+
+    <div class="policy-card">
+      <h2>5. Your Rights & Data Deletion</h2>
+      <p>You have the right to request access to your submitted data, request corrections to your application profile, or ask for complete deletion of your resume and account from our servers. To exercise your rights, email our data protection desk at <strong>support@skillora.in</strong> with subject "Data Request".</p>
+    </div>
+
+    <div class="policy-card">
+      <h2>6. Contact Privacy Team</h2>
+      <p>For any questions regarding this Privacy Policy or data security practices, reach us at:<br>
+      <strong>Skillora India — Corporate Operations</strong><br>
+      3rd Floor, V3S Mall, Nirman Vihar, Vikas Marg, New Delhi - 110092<br>
+      Email: <a href="mailto:support@skillora.in" style="color:#087BFF;font-weight:700;">support@skillora.in</a> | Phone: <a href="tel:0000000000" style="color:#087BFF;font-weight:700;">+91 0000000000</a></p>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <nav class="footer-nav">
+        <a href="index.html">Home</a> <span class="footer-sep">|</span>
+        <a href="colleges.html">Colleges Directory</a> <span class="footer-sep">|</span>
+        <a href="jobs.html">Find Jobs</a> <span class="footer-sep">|</span>
+        <a href="about.html">About Us</a> <span class="footer-sep">|</span>
+        <a href="contact.html">Contact</a> <span class="footer-sep">|</span>
+        <a href="privacy.html" style="font-weight:700;color:#FFFFFF;">Privacy Policy</a> <span class="footer-sep">|</span>
+        <a href="terms.html">Terms & Conditions</a> <span class="footer-sep">|</span>
+        <a href="refund.html">Refund Policy</a>
+      </nav>
+      <div style="font-size:12px;color:#728DA9;margin-top:10px;">
+        © 2026 Skillora India. All rights reserved. Connecting Students, Colleges & Healthcare/Hospitality Employers.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const mobileBackdrop = document.getElementById('mobile-backdrop');
+    const mobileClose = document.getElementById('mobile-drawer-close');
+
+    if (mobileToggle) mobileToggle.addEventListener('click', () => mobileDrawer.classList.add('open'));
+    if (mobileBackdrop) mobileBackdrop.addEventListener('click', () => mobileDrawer.classList.remove('open'));
+    if (mobileClose) mobileClose.addEventListener('click', () => mobileDrawer.classList.remove('open'));
+  </script>
+</body>
+</html>
