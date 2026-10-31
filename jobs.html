@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="data/config.js"></script>
   <script src="data/auth_db.js"></script>
   <style>
     body {
@@ -372,95 +373,9 @@
   </div>
 
   <script>
-    const BASE_JOBS = [
-      {
-        id: 1,
-        title: "Staff Nurse (GNM / B.Sc)",
-        company: "City Hospital & Research Centre",
-        sector: "Healthcare",
-        location: "Lucknow, Uttar Pradesh",
-        state: "Uttar Pradesh",
-        salary: "₹ 18,000 - 28,000 / month",
-        type: "Full Time",
-        exp: "Fresher",
-        img: "assets/places/job_hospital_1.jpg",
-        description: "Looking for dedicated GNM / B.Sc nursing graduates for ICU and General Ward rotational duties. Immediate joining with EPF, Medical Insurance, and accommodation support."
-      },
-      {
-        id: 2,
-        title: "ICU & Critical Care Nurse",
-        company: "Metro Multispecialty Hospital",
-        sector: "Healthcare",
-        location: "Delhi, Delhi NCR",
-        state: "Delhi",
-        salary: "₹ 25,000 - 40,000 / month",
-        type: "Full Time",
-        exp: "1-3",
-        img: "assets/places/job_hospital_2.jpg",
-        description: "Specialized ICU nurse required for 300-bed accredited hospital in Delhi NCR. Ventilator management and patient emergency care training provided."
-      },
-      {
-        id: 3,
-        title: "Front Office Executive & Receptionist",
-        company: "Grand Vista Hotel & Resort",
-        sector: "Hospitality",
-        location: "Jaipur, Rajasthan",
-        state: "Rajasthan",
-        salary: "₹ 16,000 - 22,000 / month",
-        type: "Full Time",
-        exp: "Fresher",
-        img: "assets/places/job_hotel_1.jpg",
-        description: "5-star luxury heritage resort looking for pleasant, communicative front desk guest service executives. Hotel management diploma or graduate preferred."
-      },
-      {
-        id: 4,
-        title: "Food & Beverage (F&B) Service Staff",
-        company: "The Royal Hotel & Suites",
-        sector: "Hospitality",
-        location: "Bengaluru, Karnataka",
-        state: "Karnataka",
-        salary: "₹ 14,000 - 20,000 / month",
-        type: "Full Time",
-        exp: "Fresher",
-        img: "assets/places/job_hotel_2.jpg",
-        description: "Fine dining restaurant service associates required. Food, staff accommodation, and service tip incentives provided."
-      },
-      {
-        id: 5,
-        title: "Hospital Operations & Admission Desk",
-        company: "Medanta Super Specialty Wing",
-        sector: "Healthcare",
-        location: "Lucknow, Uttar Pradesh",
-        state: "Uttar Pradesh",
-        salary: "₹ 20,000 - 30,000 / month",
-        type: "Full Time",
-        exp: "1-3",
-        img: "assets/places/campus_nursing_1.jpg",
-        description: "Manage patient registrations, bed admissions, and insurance TPA desk coordination. Hospital administration diploma or B.Sc preferred."
-      },
-      {
-        id: 6,
-        title: "Corporate Healthcare Relationship Manager",
-        company: "Apex Healthcare Network",
-        sector: "Sales",
-        location: "Mumbai, Maharashtra",
-        state: "Maharashtra",
-        salary: "₹ 22,000 - 35,000 / month",
-        type: "Full Time",
-        exp: "1-3",
-        img: "assets/places/campus_sales_1.jpg",
-        description: "B2B client engagement, corporate health checkup tie-ups, and corporate medical camp coordination across Mumbai corporate offices."
-      }
-    ];
-
-    let ALL_JOBS = [...BASE_JOBS];
-    try {
-      const customJobs = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_JOBS') || '[]');
-      if (customJobs.length > 0) {
-        ALL_JOBS = [...customJobs, ...BASE_JOBS];
-        ALL_JOBS = Array.from(new Map(ALL_JOBS.map(j => [j.id, j])).values());
-      }
-    } catch(e) {}
+    // Jobs come only from the database (published after SkillOra review). No bundled sample jobs.
+    let ALL_JOBS = [];
+    const jobImage = (sector) => /health/i.test(sector) ? 'assets/places/job_hospital_1.jpg' : /hosp/i.test(sector) ? 'assets/places/job_hotel_1.jpg' : 'assets/places/campus_sales_1.jpg';
 
     let CURRENT_SECTOR_FILTER = "All";
 
@@ -472,9 +387,9 @@
       if (list.length === 0) {
         container.innerHTML = `
           <div style="background:#FFFFFF;border:1px dashed #CCDEF5;border-radius:10px;padding:40px;text-align:center;">
-            <h4>No jobs found matching your filters</h4>
-            <p style="font-size:12px;color:var(--text-muted);margin:8px 0 16px 0;">Try resetting your filters or selecting All States.</p>
-            <button class="btn btn-apply-filters" onclick="resetJobFilters()">Reset Filters</button>
+            <h4>${ALL_JOBS.length === 0 ? 'No job openings are published yet' : 'No jobs found matching your filters'}</h4>
+            <p style="font-size:12px;color:var(--text-muted);margin:8px 0 16px 0;">${ALL_JOBS.length === 0 ? 'New hospital and hotel vacancies appear here as soon as employers post them. Please check back soon.' : 'Try resetting your filters or selecting All States.'}</p>
+            ${ALL_JOBS.length === 0 ? '' : '<button class="btn btn-apply-filters" onclick="resetJobFilters()">Reset Filters</button>'}
           </div>
         `;
         return;
@@ -483,7 +398,7 @@
       container.innerHTML = list.map(job => `
         <article class="full-job-card">
           <div class="f-job-img-box">
-            <img src="${job.img}" alt="${job.company} Building" class="f-job-img">
+            <img src="${jobImage(job.sector)}" alt="${job.company}" class="f-job-img">
           </div>
           <div class="f-job-info">
             <h3>${job.title}</h3>
@@ -492,7 +407,7 @@
               <span>📍 ${job.location}</span>
               <span class="f-salary-tag">💰 ${job.salary}</span>
               <span>💼 ${job.type}</span>
-              <span>🎓 ${job.exp === 'Fresher' ? 'Freshers Eligible' : job.exp + ' Years Experience'}</span>
+              <span>🎓 ${!job.exp ? 'Experience as per role' : job.exp === 'Fresher' ? 'Freshers Eligible' : job.exp + ' Years Experience'}</span>
             </div>
             <p style="font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.4;">${job.description}</p>
           </div>
@@ -556,7 +471,8 @@
       if (!job) return;
 
       // Check if user is logged in
-      const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+      const sessionUser = window.SkillOraAuth.getCurrentUser('student');
+      const userStr = sessionUser ? JSON.stringify(sessionUser) : null;
       if (!userStr) {
         sessionStorage.setItem('SKILLORA_PENDING_APPLY', JSON.stringify({
           type: 'job',
@@ -571,9 +487,14 @@
       }
 
       const u = JSON.parse(userStr);
-      let userName = u.name || "Verified Candidate";
-      let userPhone = u.phone || "0000000000";
-      let userEmail = u.email || "candidate@skillora.in";
+      const userName = u.name;
+      const userPhone = u.phone;
+      const userEmail = u.email;
+      if (!userName || !userPhone) {
+        alert('Please complete your name and mobile number in your dashboard profile before applying.');
+        window.location.href = 'dashboard.html';
+        return;
+      }
 
       const refId = `SKL-JOB-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -593,52 +514,27 @@
         statusClass: 'status-assigned'
       };
 
+      // Save to the cloud database; only report success if it was really saved
+      let saved = false;
       try {
-        const allJobApps = JSON.parse(localStorage.getItem('SKILLORA_ALL_JOB_APPLICATIONS') || '[]');
-        allJobApps.unshift(jobRecord);
-        localStorage.setItem('SKILLORA_ALL_JOB_APPLICATIONS', JSON.stringify(allJobApps));
-
-        const myJobs = JSON.parse(localStorage.getItem('SKILLORA_MY_JOBS') || '[]');
-        myJobs.unshift(jobRecord);
-        localStorage.setItem('SKILLORA_MY_JOBS', JSON.stringify(myJobs));
-
-        const activityLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
-        activityLog.unshift({
-          id: refId,
-          type: 'job',
-          title: `${userName} applied for ${job.title}`,
-          desc: `${job.company} (${job.location}) • Phone: ${userPhone}`,
-          time: 'Just now',
-          timestamp: new Date().toISOString()
+        saved = await window.SkillOraAuth.submitJobApplicationToCloud({
+          jobId: job.id, jobTitle: job.title, candidateName: userName, phone: userPhone, email: userEmail,
+          experience: job.exp || 'Fresher', refId: refId
         });
-        localStorage.setItem('SKILLORA_LIVE_ACTIVITY_LOG', JSON.stringify(activityLog.slice(0, 50)));
-      } catch (e) {}
-
-      // Post to Supabase Cloud
-      try {
-        if (window.SkillOraAuth && window.SkillOraAuth.submitJobApplicationToCloud) {
-          await window.SkillOraAuth.submitJobApplicationToCloud({
-            jobId: job.id,
-            jobTitle: job.title,
-            candidateName: userName,
-            phone: userPhone,
-            email: userEmail,
-            experience: job.exp || 'Fresher',
-            resumeUrl: student ? (JSON.parse(student).resumeUrl || null) : null,
-            refId: refId
-          });
-        }
-      } catch (e) {
-        console.warn('Note: cloud sync notice:', e);
+      } catch (e) { saved = false; }
+      if (!saved) {
+        alert('We could not submit your application. Please check your connection, make sure you are signed in, and try again.\n\n(If you already applied to this job, it has already been received.)');
+        return;
       }
 
       alert(`Application Submitted Successfully!\n\nReference: ${refId}\nRole: ${job.title}\nEmployer: ${job.company}\n\nYour profile & attached resume have been sent to ${job.company} HR. View this application inside your Student Dashboard!`);
       window.location.href = 'dashboard.html';
     }
 
-    window.onload = function() {
+    window.onload = async function() {
+      try { ALL_JOBS = await window.SkillOraAuth.loadPublicJobs(); } catch (e) { ALL_JOBS = []; }
       renderJobs(ALL_JOBS);
-      const student = localStorage.getItem('SKILLORA_CURRENT_USER');
+      const sUser = window.SkillOraAuth.getCurrentUser('student'); const student = sUser ? JSON.stringify(sUser) : null;
       const authBtn = document.getElementById('nav-auth-btn');
       const link = document.getElementById('nav-dashboard-link');
 

@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="data/config.js"></script>
   <script src="data/auth_db.js"></script>
   <style>
     body {
@@ -1156,11 +1157,11 @@
           </div>
           <div class="form-group-wrap">
             <label for="prof-emp-email">Corporate HR Contact Email *</label>
-            <input type="email" id="prof-emp-email" class="auth-input" placeholder="e.g. hr@apollohospitals.com" required>
+            <input type="email" id="prof-emp-email" class="auth-input" placeholder="hr@yourcompany.com" required>
           </div>
           <div class="form-group-wrap">
             <label for="prof-emp-phone">Direct HR Helpline / Recruiter Phone</label>
-            <input type="tel" id="prof-emp-phone" class="auth-input" placeholder="e.g. 0000000000">
+            <input type="tel" id="prof-emp-phone" class="auth-input" placeholder="10-digit mobile number">
           </div>
           <div>
             <button type="submit" class="btn btn-primary-btn" style="background:#FF922A;padding:8px 18px;">Save Enterprise Profile →</button>
@@ -1203,34 +1204,29 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12.5px;">
             <div>
               <span style="color:#728DA9;display:block;font-size:11px;">Primary Phone:</span>
-              <strong id="res-cand-phone">+91 0000000000</strong>
+              <strong id="res-cand-phone">—</strong>
             </div>
             <div>
               <span style="color:#728DA9;display:block;font-size:11px;">Email Address:</span>
-              <strong id="res-cand-email">candidate@skillora.in</strong>
+              <strong id="res-cand-email">—</strong>
             </div>
             <div>
               <span style="color:#728DA9;display:block;font-size:11px;">Qualification:</span>
-              <strong id="res-cand-qual">B.Sc Nursing (INC Accredited)</strong>
+              <strong id="res-cand-qual">—</strong>
             </div>
             <div>
               <span style="color:#728DA9;display:block;font-size:11px;">Experience Level:</span>
-              <strong id="res-cand-exp">1 Year Clinical ICU</strong>
+              <strong id="res-cand-exp">—</strong>
             </div>
           </div>
           <div style="background:#F8FCFF;border:1px solid #D6EAFB;border-radius:8px;padding:12px;">
-            <div style="font-size:11.5px;font-weight:800;color:#0A2540;margin-bottom:4px;">Core Clinical & Professional Skills:</div>
-            <p id="res-cand-skills" style="font-size:12px;color:#557291;line-height:1.4;">
-              • Patient Emergency Assessment & Triage<br>
-              • IV Cannulation, Medication Administration & ICU Monitoring<br>
-              • Electronic Health Records (EHR) & State Nursing Registration
-            </p>
+            <div style="font-size:11.5px;font-weight:800;color:#0A2540;margin-bottom:4px;">Resume:</div>
+            <div id="res-cand-resume" style="font-size:12.5px;color:#557291;">—</div>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-            <span style="font-size:11.5px;color:#0FA66D;font-weight:700;">✔ Verified Cloud Document</span>
+            <span style="font-size:11.5px;color:#557291;font-weight:700;">Link expires in 10 minutes</span>
             <div style="display:flex;gap:8px;">
               <button class="btn btn-secondary-btn" onclick="closeResumeModal()">Close</button>
-              <button class="btn btn-primary-submit" onclick="alert('Candidate dossier link copied to clipboard.');">Share Dossier</button>
             </div>
           </div>
         </div>
@@ -1420,14 +1416,20 @@
       if (btn) btn.classList.add('active');
     }
 
-    function viewCandidateResume(candidate) {
-      document.getElementById('res-cand-name').textContent = candidate.name;
-      document.getElementById('res-cand-role').textContent = candidate.role;
-      document.getElementById('res-cand-phone').textContent = candidate.phone;
-      document.getElementById('res-cand-email').textContent = candidate.email || 'candidate@skillora.in';
-      document.getElementById('res-cand-qual').textContent = candidate.qual || 'B.Sc Nursing (PCB 82%)';
-      document.getElementById('res-cand-exp').textContent = candidate.exp || '1 Year Clinical';
+    async function viewCandidateResume(candId) {
+      const c = ALL_EMPLOYER_CANDIDATES.find(x => String(x.id) === String(candId));
+      if (!c) return;
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v || '—'; };
+      set('res-cand-name', c.name); set('res-cand-role', c.role); set('res-cand-phone', c.phone);
+      set('res-cand-email', c.email); set('res-cand-qual', c.qual); set('res-cand-exp', c.exp);
+      set('res-cand-resume', c.resumePath ? 'Loading secure link…' : 'This candidate has not uploaded a resume.');
       document.getElementById('resume-viewer-modal').style.display = 'flex';
+      if (c.resumePath) {
+        const url = await SkillOraAuth.getApplicantResumeLink(c.resumePath);
+        const box = document.getElementById('res-cand-resume');
+        if (url) { box.innerHTML = '<a href="' + url + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#087BFF;">📄 Open resume</a>'; }
+        else { box.textContent = 'Resume could not be opened.'; }
+      }
     }
 
     function closeResumeModal() {
@@ -1458,16 +1460,17 @@
         return;
       }
 
+      const label = { Published: 'Live', Pending: 'Awaiting SkillOra review', Paused: 'Paused', Closed: 'Closed' };
       grid.innerHTML = ALL_EMPLOYER_JOBS.map(j => `
         <div class="opening-card">
           <div class="opening-info">
             <h4>${j.title}</h4>
-            <p style="font-size:12px;color:#728DA9;margin-bottom:6px;">📍 ${j.location} • ${j.vacancies || 5} Openings • ${j.salary}</p>
+            <p style="font-size:12px;color:#728DA9;margin-bottom:6px;">📍 ${j.location || '—'} • ${j.vacancies || '—'} Openings • ${j.salary || '—'}</p>
             <p style="font-size:12px;color:#173C62;"><strong>${j.applicants || 0} Candidates Applied</strong></p>
           </div>
           <div style="text-align:right;">
-            <span class="pill-status ${j.status && j.status.includes('Paused') ? 'pill-orange' : 'pill-green'}" style="margin-bottom:8px;">${j.status || 'Active (Published)'}</span><br>
-            <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="toggleJobStatus('${j.id}')">${j.status && j.status.includes('Paused') ? 'Resume' : 'Pause'}</button>
+            <span class="pill-status ${j.status === 'Published' ? 'pill-green' : 'pill-orange'}" style="margin-bottom:8px;">${label[j.status] || j.status}</span>
+            ${(j.status === 'Published' || j.status === 'Paused') ? `<button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="toggleJobStatus('${j.id}')">${j.status === 'Paused' ? 'Resume' : 'Pause'}</button>` : ''}
           </div>
         </div>
       `).join('');
@@ -1480,27 +1483,16 @@
       if (statJobs) statJobs.textContent = ALL_EMPLOYER_JOBS.length;
     }
 
-    function toggleJobStatus(jobId) {
-      const job = ALL_EMPLOYER_JOBS.find(j => j.id === jobId);
-      if (job) {
-        job.status = job.status === 'Paused' ? 'Active (Published)' : 'Paused';
-        try {
-          localStorage.setItem('SKILLORA_CUSTOM_JOBS', JSON.stringify(ALL_EMPLOYER_JOBS));
-        } catch(e) {}
-        renderActiveJobs();
-
-      // Prefill Studio Location & trigger preview update
-      if (document.getElementById('post-job-location') && !document.getElementById('post-job-location').value) {
-        document.getElementById('post-job-location').value = (emp.location === 'Location Not Set') ? '' : emp.location;
-      }
-      if (typeof updateLivePreview === 'function') {
-        updateLivePreview();
-      }
-        alert(`Status for "${job.title}" updated to "${job.status}".`);
-      }
+    async function toggleJobStatus(jobId) {
+      const job = ALL_EMPLOYER_JOBS.find(j => String(j.id) === String(jobId));
+      if (!job) return;
+      const next = job.status === 'Paused' ? 'Published' : 'Paused';
+      const ok = await SkillOraAuth.setMyJobStatus(job.id, next);
+      if (!ok) { alert('Could not update this vacancy. Please try again.'); return; }
+      await loadEmployerData();
     }
 
-    function handlePublishJob() {
+    async function handlePublishJob() {
       const title = document.getElementById('post-job-title').value.trim();
       const vac = document.getElementById('post-job-vacancies').value.trim();
       const salary = document.getElementById('post-job-salary').value.trim();
@@ -1508,39 +1500,13 @@
       const sector = document.getElementById('post-job-sector').value;
       const exp = document.getElementById('post-job-exp').value;
       const jobType = document.getElementById('post-job-type')?.value || 'Full Time';
-      const desc = document.getElementById('post-job-desc')?.value.trim() || `Urgent opening for ${title} at ${CURRENT_ORG_NAME}. Immediate joining with standard benefits.`;
-      const reqs = document.getElementById('post-job-reqs')?.value.trim() || 'Degree / Diploma from recognized statutory council.';
+      const desc = document.getElementById('post-job-desc')?.value.trim() || '';
+      const reqs = document.getElementById('post-job-reqs')?.value.trim() || '';
 
       if (!title || !salary || !loc) {
         alert('Please fill in Job Designation, Monthly Salary Range, and Location.');
         return;
       }
-
-      const empId = LOGGED_IN_EMPLOYER ? (LOGGED_IN_EMPLOYER.id || LOGGED_IN_EMPLOYER.cloudId || 'EMP-1') : 'EMP-1';
-      const empEmail = LOGGED_IN_EMPLOYER ? LOGGED_IN_EMPLOYER.email : '';
-
-      const newJob = {
-        id: `JOB-${Date.now()}`,
-        employerId: empId,
-        employerEmail: empEmail,
-        title,
-        company: CURRENT_ORG_NAME,
-        sector: sector.includes('Health') ? 'Healthcare' : sector.includes('Hosp') ? 'Hospitality' : 'Sales',
-        location: loc,
-        state: loc.split(',')[1]?.trim() || loc,
-        salary,
-        vacancies: Number(vac) || 5,
-        type: jobType,
-        exp,
-        description: desc,
-        requirements: reqs,
-        img: sector.includes('Health') ? 'assets/places/job_hospital_1.jpg' : 'assets/places/job_hotel_1.jpg',
-        applicants: 0,
-        status: 'Active (Published)',
-        postedDate: new Date().toLocaleDateString('en-IN')
-      };
-
-      // Collect perks before saving and reset
       const perks = [];
       if (document.getElementById('perk-acc')?.checked) perks.push('Accommodation Provided');
       if (document.getElementById('perk-food')?.checked) perks.push('Duty Meals Provided');
@@ -1548,22 +1514,19 @@
       if (document.getElementById('perk-ot')?.checked) perks.push('Overtime Pay');
       if (document.getElementById('perk-bonus')?.checked) perks.push('Joining Bonus');
       if (document.getElementById('perk-cab')?.checked) perks.push('Cab Transport');
-      newJob.perks = perks;
 
-      ALL_EMPLOYER_JOBS.unshift(newJob);
-
-      // Persist to global SKILLORA_CUSTOM_JOBS (append to all custom jobs, do not overwrite other employers)
-      try {
-        const stored = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_JOBS') || '[]');
-        stored.unshift(newJob);
-        localStorage.setItem('SKILLORA_CUSTOM_JOBS', JSON.stringify(stored));
-      } catch(e) {}
-
-      renderActiveJobs();
+      const parts = loc.split(',').map(x => x.trim());
+      const res = await SkillOraAuth.createJob({
+        title, company: CURRENT_ORG_NAME,
+        sector: sector.includes('Health') ? 'Healthcare' : sector.includes('Hosp') ? 'Hospitality' : 'Sales',
+        city: parts[0] || '', state: parts[1] || '', salary, exp, type: jobType,
+        description: desc, requirements: reqs, vacancies: vac, perks
+      });
+      if (!res.success) { alert(res.message); return; }
       document.getElementById('form-create-job').reset();
+      await loadEmployerData();
       showTab('active-jobs');
-
-      alert(`🎉 Job Opening Published Live!\n\n"${title}" (${vac} Openings) has been published to the SkillOra Job Board with 0% recruitment charges.\n\nCandidates will be able to apply and submit verified resumes immediately.`);
+      alert(`"${title}" has been submitted.\n\nIt will go live on the SkillOra Job Board as soon as our team reviews it. You will see its status in "Active Jobs".`);
     }
 
     function renderCandidatesTable(list) {
@@ -1598,18 +1561,19 @@
 
       tbody.innerHTML = list.map((cand, idx) => `
         <tr>
-          <td><strong style="color:#FF922A;">#${cand.id || ('JOB-' + (801 + idx))}</strong></td>
+          <td><strong style="color:#FF922A;">#${cand.id}</strong></td>
           <td><strong>${cand.name}</strong></td>
           <td><strong>${cand.role}</strong></td>
-          <td>${cand.qual || 'Healthcare Professional'}</td>
+          <td>${cand.qual || '—'}</td>
           <td><a href="tel:${cand.phone}" style="color:#087BFF;text-decoration:none;font-weight:700;">📱 ${cand.phone}</a></td>
           <td>
-            <a href="javascript:void(0)" onclick='viewCandidateResume(${JSON.stringify(cand)})' style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume</a>
+            <a href="javascript:void(0)" onclick="viewCandidateResume('${cand.id}')" style="font-weight:700;color:#087BFF;text-decoration:none;">📄 View Resume</a>
           </td>
-          <td>${cand.date || 'Recent'}</td>
+          <td>${cand.date || '—'}</td>
           <td><span class="pill-status ${cand.stage.includes('Shortlisted') || cand.stage.includes('Selected') ? 'pill-green' : cand.stage.includes('Interview') ? 'pill-blue' : 'pill-orange'}">${cand.stage}</span></td>
           <td>
             <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateApplicantStatus('${cand.id}', this.value)">
+              <option value="Applied" ${cand.stage==='Applied'?'selected':''}>Applied</option>
               <option value="Under Review" ${cand.stage==='Under Review'?'selected':''}>Under Review</option>
               <option value="Shortlisted" ${cand.stage==='Shortlisted'?'selected':''}>Shortlisted</option>
               <option value="Interview Scheduled" ${cand.stage==='Interview Scheduled'?'selected':''}>Interview Scheduled</option>
@@ -1632,7 +1596,7 @@
         statShortlisted.textContent = shortlisted;
       }
       const statImm = document.getElementById('stat-immediate-count');
-      if (statImm) statImm.textContent = list.length;
+      if (statImm) statImm.textContent = list.filter(c => c.stage === 'Applied').length;
     }
 
     function saveEmployerProfileForm() {
@@ -1682,21 +1646,11 @@
     }
 
     async function updateApplicantStatus(appId, newStatus) {
+      const ok = await SkillOraAuth.updateJobApplicationStageInCloud(appId, newStatus);
+      if (!ok) { alert('Could not update the status. Please try again.'); await loadEmployerData(); return; }
       const cand = ALL_EMPLOYER_CANDIDATES.find(c => String(c.id) === String(appId));
       if (cand) cand.stage = newStatus;
-
-      try {
-        localStorage.setItem('SKILLORA_ALL_JOB_APPLICATIONS', JSON.stringify(ALL_EMPLOYER_CANDIDATES));
-      } catch(e) {}
-
-      if (window.SkillOraAuth && window.SkillOraAuth.updateJobApplicationStageInCloud) {
-        try {
-          await SkillOraAuth.updateJobApplicationStageInCloud(appId, newStatus);
-        } catch(e) {}
-      }
-
       renderCandidatesTable(ALL_EMPLOYER_CANDIDATES);
-      alert(`Candidate #${appId} moved to "${newStatus}". Cloud and local status updated.`);
     }
 
     function filterCandidates(query) {
@@ -1714,161 +1668,47 @@
       }
     }
 
-    // Initialize Genuine Live Data on Page Load (Single Active Role Enforced)
-    window.onload = function() {
-      // 1. Single Active Role Check & Authorized Session Check
-      const activeRole = (window.SkillOraAuth && window.SkillOraAuth.getActiveRole) 
-        ? window.SkillOraAuth.getActiveRole() 
-        : localStorage.getItem('SKILLORA_ACTIVE_ROLE');
+    // Loads this employer's jobs and applicants from the cloud (database rules return only their own rows)
+    async function loadEmployerData() {
+      const [jobs, apps] = await Promise.all([SkillOraAuth.fetchMyJobs(), SkillOraAuth.fetchMyApplicants()]);
+      const counts = {};
+      apps.forEach(a => { counts[a.jobId] = (counts[a.jobId] || 0) + 1; });
+      ALL_EMPLOYER_JOBS = jobs.map(j => ({ ...j, applicants: counts[j.id] || 0 }));
+      ALL_EMPLOYER_CANDIDATES = apps.map(a => ({
+        id: a.id, name: a.name, role: a.role, qual: '', exp: a.exp, phone: a.phone, email: a.email,
+        date: a.appliedAt ? new Date(a.appliedAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '',
+        stage: a.stage, resumePath: a.resumePath
+      }));
+      renderActiveJobs();
+      renderCandidatesTable(ALL_EMPLOYER_CANDIDATES);
+    }
 
-      if (activeRole && activeRole !== 'employer') {
-        const titles = { student: 'Student', college: 'College Partner' };
-        alert(`Active Session Notice:\n\nYou are currently logged in as a ${titles[activeRole] || activeRole}.\n\nEmployer Hiring Portal requires an authorized Hospital or Hotel HR account. Please sign in to your Employer account.`);
-        window.location.href = "auth.html?role=employer";
-        return;
-      }
-
-      const raw = localStorage.getItem('SKILLORA_EMPLOYER_USER');
-      if (!raw) {
-        alert("Please sign in with your Employer HR credentials to access this portal.");
-        window.location.href = "auth.html?role=employer";
-        return;
-      }
-
-      let parsed = {};
-      try {
-        parsed = JSON.parse(raw);
-      } catch(e) {
-        parsed = {};
-      }
-
-      // Purge any stale demo fallback values that may have been saved previously
-      let orgName = parsed.orgName;
-      if (!orgName || orgName.includes("Apollo & Medanta") || orgName.includes("City Hospital")) {
-        orgName = (parsed.name && !parsed.name.includes("Apollo & Medanta") && !parsed.name.includes("City Hospital")) 
-          ? parsed.name 
-          : (parsed.email ? parsed.email.split('@')[0].toUpperCase() + " Healthcare" : "My Organization");
-      }
-
-      let hrName = parsed.hrName;
-      if (!hrName || hrName.includes("Shalini Gupta") || hrName.includes("Priya Nair")) {
-        hrName = (parsed.name && !parsed.name.includes("Apollo") && !parsed.name.includes("Hospital")) 
-          ? parsed.name 
-          : "HR Talent Lead";
-      }
-
-      let location = parsed.location;
-      if (!location || location.includes("Delhi NCR") || location.includes("Lucknow, Uttar Pradesh")) {
-        location = (parsed.city ? (parsed.city + (parsed.state ? ', ' + parsed.state : '')) : '') || "Location Not Set";
-      }
-
-      let orgType = parsed.orgType;
-      if (!orgType || orgType.includes("Multi-Specialty")) {
-        orgType = "Healthcare / Hospitality Provider";
-      }
-
+    window.onload = async function() {
+      if (!SkillOraAuth.enforceExclusiveRole('employer')) return;
+      const parsed = SkillOraAuth.getCurrentUser('employer') || {};
       const emp = {
-        id: parsed.id || parsed.cloudId || 'EMP-1',
-        orgName,
-        hrName,
-        location,
-        orgType,
+        id: parsed.id,
+        orgName: parsed.orgName || parsed.name || '',
+        hrName: parsed.hrName || '',
+        location: parsed.location || [parsed.city, parsed.state].filter(Boolean).join(', '),
+        orgType: parsed.orgType || '',
         email: parsed.email || '',
         phone: parsed.phone || ''
       };
-
       LOGGED_IN_EMPLOYER = emp;
       CURRENT_ORG_NAME = emp.orgName;
 
-      // Update Header & Banner with real logged-in credentials
-      document.getElementById('header-emp-name').textContent = emp.orgName.split(' ')[0] + ' HR';
-      document.getElementById('disp-emp-name').textContent = emp.orgName;
-      document.getElementById('disp-emp-location').textContent = emp.location;
-      document.getElementById('disp-emp-hr').textContent = emp.hrName;
-      document.getElementById('disp-emp-type').textContent = emp.orgType;
+      const T = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      T('header-emp-name', (emp.orgName.split(' ')[0] || 'My') + ' HR');
+      T('disp-emp-name', emp.orgName);
+      T('disp-emp-location', emp.location || 'Add your location in Profile');
+      T('disp-emp-hr', emp.hrName || '—');
+      T('disp-emp-type', emp.orgType || '—');
+      const V = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+      V('prof-emp-name', emp.orgName); V('prof-emp-location', emp.location); V('prof-emp-hr', emp.hrName);
+      V('prof-emp-type', emp.orgType); V('prof-emp-email', emp.email); V('prof-emp-phone', emp.phone);
 
-      // Prefill Profile Editor form
-      if (document.getElementById('prof-emp-name')) document.getElementById('prof-emp-name').value = emp.orgName;
-      if (document.getElementById('prof-emp-location')) document.getElementById('prof-emp-location').value = (emp.location === 'Location Not Set') ? '' : emp.location;
-      if (document.getElementById('prof-emp-hr')) document.getElementById('prof-emp-hr').value = emp.hrName;
-      if (document.getElementById('prof-emp-type')) document.getElementById('prof-emp-type').value = emp.orgType;
-      if (document.getElementById('prof-emp-email')) document.getElementById('prof-emp-email').value = emp.email;
-      if (document.getElementById('prof-emp-phone')) document.getElementById('prof-emp-phone').value = emp.phone;
-
-      // 2. Load Jobs strictly belonging to THIS employer (Zero fake demo jobs)
-      try {
-        const storedJobs = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_JOBS') || '[]');
-        ALL_EMPLOYER_JOBS = storedJobs.filter(j => {
-          const matchId = j.employerId && String(j.employerId) === String(emp.id);
-          const matchEmail = j.employerEmail && emp.email && j.employerEmail.toLowerCase() === emp.email.toLowerCase();
-          const matchComp = j.company && j.company.toLowerCase().trim() === emp.orgName.toLowerCase().trim();
-          return matchId || matchEmail || matchComp;
-        });
-      } catch(e) {
-        ALL_EMPLOYER_JOBS = [];
-      }
-      renderActiveJobs();
-
-      // 3. Load Candidate Applications strictly for THIS employer's jobs
-      try {
-        const storedApps = JSON.parse(localStorage.getItem('SKILLORA_ALL_JOB_APPLICATIONS') || '[]');
-        const myJobIds = ALL_EMPLOYER_JOBS.map(j => String(j.id));
-        const myComp = emp.orgName.toLowerCase().trim();
-
-        const myApps = storedApps.filter(a => {
-          const matchJobId = a.jobId && myJobIds.includes(String(a.jobId));
-          const matchComp = a.company && (a.company.toLowerCase().trim() === myComp);
-          const matchEmpId = a.employerId && String(a.employerId) === String(emp.id);
-          return matchJobId || matchComp || matchEmpId;
-        });
-
-        ALL_EMPLOYER_CANDIDATES = myApps.map(a => ({
-          id: a.refId || a.id || `JOB-${Math.floor(1000 + Math.random() * 9000)}`,
-          name: a.candidateName || a.name || 'Candidate',
-          role: a.role || a.jobTitle || 'Staff Nurse',
-          qual: a.exp ? `${a.exp} Experience` : (a.qual || 'Healthcare Professional'),
-          phone: a.phone || '0000000000',
-          email: a.email || 'candidate@skillora.in',
-          date: a.date || 'Today',
-          stage: a.status || a.stage || 'Under Review',
-          resume_url: a.resumeUrl || a.resume_url || null
-        }));
-      } catch(e) {
-        ALL_EMPLOYER_CANDIDATES = [];
-      }
-      renderCandidatesTable(ALL_EMPLOYER_CANDIDATES);
-
-      // 4. Fetch Live Job Applications from Supabase Cloud (only for this employer's jobs)
-      const myJobIds = ALL_EMPLOYER_JOBS.map(j => String(j.id)).filter(Boolean);
-      if (myJobIds.length > 0 && window.SkillOraAuth && window.SkillOraAuth.fetchEmployerCloudApplications) {
-        SkillOraAuth.fetchEmployerCloudApplications(myJobIds).then(cloudApps => {
-          if (Array.isArray(cloudApps) && cloudApps.length > 0) {
-            const map = new Map();
-            cloudApps.forEach(ca => {
-              const refMatch = (ca.recruiter_notes || '').match(/Ref:\s*([^\s-]+)/);
-              const refId = refMatch ? refMatch[1] : String(ca.id);
-              map.set(String(ca.id), {
-                id: String(ca.id),
-                name: ca.candidate_name || 'Candidate',
-                role: ca.recruiter_notes ? ca.recruiter_notes.replace(/Ref:[^-]+-\s*/, '') : 'Verified Healthcare Opening',
-                qual: ca.experience_years ? `${ca.experience_years} Experience` : 'Healthcare Professional',
-                phone: ca.phone || '0000000000',
-                email: ca.email || 'candidate@skillora.in',
-                date: ca.applied_at ? new Date(ca.applied_at).toLocaleDateString('en-IN') : 'Recent',
-                stage: ca.stage || 'Under Review',
-                resume_url: ca.resume_url || null
-              });
-            });
-            ALL_EMPLOYER_CANDIDATES.forEach(c => {
-              if (!map.has(String(c.id))) {
-                map.set(String(c.id), c);
-              }
-            });
-            ALL_EMPLOYER_CANDIDATES = Array.from(map.values());
-            renderCandidatesTable(ALL_EMPLOYER_CANDIDATES);
-          }
-        }).catch(() => {});
-      }
+      await loadEmployerData();
     };
   </script>
 </body>

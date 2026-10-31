@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="data/config.js"></script>
   <script src="data/auth_db.js"></script>
 </head>
 <body>
@@ -66,7 +67,7 @@
               <svg class="chevron-icon" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
             <div class="dropdown-menu">
-              <a href="colleges.html" class="dropdown-item highlight-link"><span>Directory of 488+ Colleges →</span></a>
+              <a href="colleges.html" class="dropdown-item highlight-link"><span>College Directory →</span></a>
               <a href="colleges.html?sector=Nursing" class="dropdown-item">
                 <span class="cat-dot dot-teal"></span>
                 <span>Nursing & Healthcare</span>
@@ -185,41 +186,16 @@
         
         <div class="ticker-live-badge">
           <span class="live-pulse-dot"></span>
-          <span class="live-badge-text">2026 LIVE UPDATES</span>
+          <span class="live-badge-text">LATEST</span>
         </div>
 
         <div class="top-ticker-track-wrap">
-          <div class="top-ticker-track" id="top-ticker-track">
-            <div class="top-ticker-item" onclick="window.location.href='colleges.html?sector=Nursing'" role="button" tabindex="0">
-              <span class="t-tag t-tag-red">ADMISSIONS 2026</span>
-              <span class="t-text">B.Sc & GNM Nursing Central Counseling & Direct Seat Booking Active across 18 States</span>
-              <span class="t-date">Oct 18, 2026</span>
-              <span class="t-arrow">Explore Colleges →</span>
-            </div>
-            <div class="top-ticker-item" onclick="window.location.href='jobs.html?sector=Healthcare'" role="button" tabindex="0">
-              <span class="t-tag t-tag-green">HOSPITAL HIRING</span>
-              <span class="t-text">Verified Walk-In Drives: Staff Nurse, ICU, Front Desk & F&B Positions Open Now</span>
-              <span class="t-date">Oct 18, 2026</span>
-              <span class="t-arrow">Explore Jobs →</span>
-            </div>
-            <div class="top-ticker-item" onclick="window.location.href='colleges.html?sector=Hospitality'" role="button" tabindex="0">
-              <span class="t-tag t-tag-orange">HOTEL MANAGEMENT</span>
-              <span class="t-text">NCHMCT 2026: Hotel Management, Culinary Arts & F&B New Session Batches Open</span>
-              <span class="t-date">Oct 17, 2026</span>
-              <span class="t-arrow">Explore Colleges →</span>
-            </div>
-            <div class="top-ticker-item" onclick="window.location.href='colleges.html?sector=Nursing'" role="button" tabindex="0">
-              <span class="t-tag t-tag-blue">FREE COUNSELING</span>
-              <span class="t-text">State Nursing Scholarship & Seat Allotment Helpline: Call +91 0000000000</span>
-              <span class="t-date">Oct 16, 2026</span>
-              <span class="t-arrow">Get Counseling →</span>
-            </div>
-          </div>
+          <div class="top-ticker-track" id="top-ticker-track"></div>
         </div>
 
         <div class="ticker-action-btn-wrap">
           <button class="btn-all-notices" onclick="window.location.href='colleges.html'">
-            <span>Explore All Colleges (488+)</span>
+            <span>Explore All Colleges</span>
             <span>⚡</span>
           </button>
         </div>
@@ -298,7 +274,7 @@
           <!-- Hero Highlights / Metrics Row -->
           <div class="hero-highlights">
             
-            <div class="highlight-item" title="488+ Verified & Inspected Institutes across India">
+            <div class="highlight-item" title="Verified partner institutes on SkillOra">
               <span class="highlight-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M3 21H21" stroke="#087BFF" stroke-width="2" stroke-linecap="round"/>
@@ -307,12 +283,12 @@
                 </svg>
               </span>
               <div class="highlight-text">
-                <strong class="highlight-num">488+</strong>
+                <strong class="highlight-num" data-live-college-count>0</strong>
                 <span class="highlight-label">Verified Colleges</span>
               </div>
             </div>
 
-            <div class="highlight-item" title="450+ Accredited Degree & Diploma Courses">
+            <div class="highlight-item" title="Courses offered by partner colleges">
               <span class="highlight-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M22 10L12 5L2 10L12 15L22 10Z" stroke="#087BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -321,7 +297,7 @@
                 </svg>
               </span>
               <div class="highlight-text">
-                <strong class="highlight-num">450+</strong>
+                <strong class="highlight-num" data-live-course-count>0</strong>
                 <span class="highlight-label">Accredited Courses</span>
               </div>
             </div>
@@ -335,7 +311,7 @@
                 </svg>
               </span>
               <div class="highlight-text">
-                <strong class="highlight-num">25+</strong>
+                <strong class="highlight-num" data-live-job-count>0</strong>
                 <span class="highlight-label">Active Vacancies</span>
               </div>
             </div>
@@ -655,7 +631,7 @@
           <div class="section-title-row">
             <h2 class="section-heading">Explore Courses</h2>
             <a href="colleges.html" class="view-all-link">
-              View All Courses & Colleges (488+) →
+              View All Courses & Colleges →
             </a>
           </div>
 
@@ -677,146 +653,6 @@
 
             <div class="courses-grid" id="courses-grid">
               
-              <!-- COURSE 1: GNM Nursing -->
-              <article class="course-card" data-category="Nursing" data-fee="45000" data-mode="Both" data-duration="3 Years">
-                <div class="course-img-wrap">
-                  <img src="assets/places/campus_nursing_1.jpg" alt="Sunrise College of Nursing Campus" class="course-thumb">
-                  <span class="verified-inst-badge">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Verified Institute</span>
-                  </span>
-                </div>
-                <div class="course-body">
-                  <h3 class="course-title">GNM – General Nursing & Midwifery</h3>
-                  <div class="course-meta-item">
-                    <span class="meta-icon icon-teal">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#5FBAAE" stroke-width="2"/><path d="M16 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M8 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M3 10H21" stroke="#5FBAAE" stroke-width="2"/></svg>
-                    </span>
-                    <span class="meta-text">Duration: 3 Years</span>
-                  </div>
-                  <div class="course-meta-item">
-                    <span class="meta-icon icon-gold">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="#EBBE61" stroke-width="2"/><path d="M16 13C16 14.1 16.9 15 18 15H22V11H18C16.9 11 16 11.9 16 13Z" stroke="#EBBE61" stroke-width="2"/></svg>
-                    </span>
-                    <span class="meta-text">Fee starts at: <strong>₹ 45,000</strong></span>
-                  </div>
-                  <div class="course-mode-row">
-                    <span class="mode-tag"><span class="mode-bullet">🏢</span> Offline</span>
-                    <span class="mode-tag"><span class="mode-bullet">🌐</span> Online</span>
-                  </div>
-                  <div class="course-provider">Sunrise College of Nursing</div>
-                  <button class="btn btn-view-course" onclick="window.location.href='colleges.html?collegeId=1'">
-                    <span>View College & Fees</span>
-                    <span class="btn-arrow">→</span>
-                  </button>
-                </div>
-              </article>
-
-              <!-- COURSE 2: Hotel Management -->
-              <article class="course-card" data-category="Hospitality" data-fee="35000" data-mode="Both" data-duration="1 Year">
-                <div class="course-img-wrap">
-                  <img src="assets/places/campus_hotel_1.jpg" alt="Global Hospitality Institute Campus" class="course-thumb">
-                  <span class="verified-inst-badge">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Verified Institute</span>
-                  </span>
-                </div>
-                <div class="course-body">
-                  <h3 class="course-title">Hotel Management (Diploma)</h3>
-                  <div class="course-meta-item">
-                    <span class="meta-icon icon-teal">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#5FBAAE" stroke-width="2"/><path d="M16 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M8 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M3 10H21" stroke="#5FBAAE" stroke-width="2"/></svg>
-                    </span>
-                    <span class="meta-text">Duration: 1 Year</span>
-                  </div>
-                  <div class="course-meta-item">
-                    <span class="meta-icon icon-gold">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="#EBBE61" stroke-width="2"/><path d="M16 13C16 14.1 16.9 15 18 15H22V11H18C16.9 11 16 11.9 16 13Z" stroke="#EBBE61" stroke-width="2"/></svg>
-                    </span>
-                    <span class="meta-text">Fee starts at: <strong>₹ 35,000</strong></span>
-                  </div>
-                  <div class="course-mode-row">
-                    <span class="mode-tag"><span class="mode-bullet">🏢</span> Offline</span>
-                    <span class="mode-tag"><span class="mode-bullet">🌐</span> Online</span>
-                  </div>
-                  <div class="course-provider">Global Hospitality Institute</div>
-                  <button class="btn btn-view-course" onclick="window.location.href='colleges.html?collegeId=2'">
-                    <span>View College & Fees</span>
-                    <span class="btn-arrow">→</span>
-                  </button>
-                </div>
-              </article>
-
-              <!-- COURSE 3: Sales & Digital Marketing -->
-              <article class="course-card" data-category="Sales & Marketing" data-fee="22000" data-mode="Both" data-duration="6 Months">
-                <div class="course-img-wrap">
-                  <img src="assets/places/campus_sales_1.jpg" alt="SkillOra Business Academy Building" class="course-thumb">
-                  <span class="verified-inst-badge">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Verified Institute</span>
-                  </span>
-                </div>
-                <div class="course-body">
-                  <h3 class="course-title">Professional Sales & Marketing</h3>
-                  <div class="course-meta-item">
-                    <span class="meta-icon icon-teal">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#5FBAAE" stroke-width="2"/><path d="M16 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M8 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M3 10H21" stroke="#5FBAAE" stroke-width="2"/></svg>
-                    </span>
-                    <span class="meta-text">Duration: 6 Months</span>
-                  </div>
-                  <div class="course-meta-item">
-                    <span class="meta-icon icon-gold">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="#EBBE61" stroke-width="2"/><path d="M16 13C16 14.1 16.9 15 18 15H22V11H18C16.9 11 16 11.9 16 13Z" stroke="#EBBE61" stroke-width="2"/></svg>
-                    </span>
-                    <span class="meta-text">Fee starts at: <strong>₹ 22,000</strong></span>
-                  </div>
-                  <div class="course-mode-row">
-                    <span class="mode-tag"><span class="mode-bullet">🏢</span> Offline</span>
-                    <span class="mode-tag"><span class="mode-bullet">🌐</span> Online</span>
-                  </div>
-                  <div class="course-provider">SkillOra Business Academy</div>
-                  <button class="btn btn-view-course" onclick="window.location.href='colleges.html?collegeId=3'">
-                    <span>View College & Fees</span>
-                    <span class="btn-arrow">→</span>
-                  </button>
-                </div>
-              </article>
-
-              <!-- COURSE 4: Language & Professional Grooming -->
-              <article class="course-card" data-category="Language" data-fee="15000" data-mode="Both" data-duration="3 Months">
-                <div class="course-img-wrap">
-                  <img src="assets/places/campus_language_1.jpg" alt="Apex Communication Center Campus" class="course-thumb">
-                  <span class="verified-inst-badge">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Verified Institute</span>
-                  </span>
-                </div>
-                <div class="course-body">
-                  <h3 class="course-title">Spoken English & Professional Grooming</h3>
-                  <div class="course-meta-item">
-                    <span class="meta-icon icon-teal">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#5FBAAE" stroke-width="2"/><path d="M16 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M8 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M3 10H21" stroke="#5FBAAE" stroke-width="2"/></svg>
-                    </span>
-                    <span class="meta-text">Duration: 3 Months</span>
-                  </div>
-                  <div class="course-meta-item">
-                    <span class="meta-icon icon-gold">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="#EBBE61" stroke-width="2"/><path d="M16 13C16 14.1 16.9 15 18 15H22V11H18C16.9 11 16 11.9 16 13Z" stroke="#EBBE61" stroke-width="2"/></svg>
-                    </span>
-                    <span class="meta-text">Fee starts at: <strong>₹ 15,000</strong></span>
-                  </div>
-                  <div class="course-mode-row">
-                    <span class="mode-tag"><span class="mode-bullet">🏢</span> Offline</span>
-                    <span class="mode-tag"><span class="mode-bullet">🌐</span> Online</span>
-                  </div>
-                  <div class="course-provider">Apex Communication Center</div>
-                  <button class="btn btn-view-course" onclick="window.location.href='colleges.html?collegeId=4'">
-                    <span>View College & Fees</span>
-                    <span class="btn-arrow">→</span>
-                  </button>
-                </div>
-              </article>
-
             </div>
 
             <button class="carousel-nav-btn next-btn" id="courses-next-btn" onclick="slideCourses(1)" aria-label="Next Courses">
@@ -827,10 +663,10 @@
 
           <!-- Catalog Pagination & Real-time Count -->
           <div class="catalog-pagination-row" id="catalog-pagination-row">
-            <span class="catalog-count-badge" id="catalog-count-badge">Showing 8 of 488 Verified Colleges</span>
+            <span class="catalog-count-badge" id="catalog-count-badge">Loading colleges…</span>
             <div class="catalog-nav-controls">
               <button class="btn btn-page-prev" id="page-prev-btn" onclick="changeCatalogPage(-1)" disabled>‹ Prev</button>
-              <span class="page-indicator" id="page-indicator">Page 1 of 107</span>
+              <span class="page-indicator" id="page-indicator">Page 1 of 1</span>
               <button class="btn btn-page-next" id="page-next-btn" onclick="changeCatalogPage(1)">Next ›</button>
             </div>
           </div>
@@ -924,42 +760,12 @@
           <div class="bulletin-header-row">
             <div class="bulletin-title-group">
               <span class="bulletin-live-dot"></span>
-              <h3 class="bulletin-heading">Latest Official Bulletins</h3>
+              <h3 class="bulletin-heading">Latest on SkillOra</h3>
             </div>
-            <span class="bulletin-badge-today">UPDATED TODAY</span>
+            <span class="bulletin-badge-today">LIVE</span>
           </div>
 
-          <div class="bulletin-list">
-            <div class="bulletin-item" onclick="openLatestNoticeModal(1)" role="button" tabindex="0">
-              <div class="bulletin-item-top">
-                <span class="b-cat-pill cat-nursing">Admissions 2026</span>
-                <span class="b-date">Today, 18 Oct</span>
-              </div>
-              <h4 class="b-title">B.Sc & GNM Nursing Central Counseling & Direct Seat Allocation Active</h4>
-              <p class="b-snippet">Verified admission registration window open across Maharashtra, Karnataka, UP & Delhi NCR.</p>
-              <span class="b-link">Read Full Notification →</span>
-            </div>
-
-            <div class="bulletin-item" onclick="openLatestNoticeModal(2)" role="button" tabindex="0">
-              <div class="bulletin-item-top">
-                <span class="b-cat-pill cat-hospital">Hospital Hiring</span>
-                <span class="b-date">17 Oct 2026</span>
-              </div>
-              <h4 class="b-title">120 Staff Nurse & ICU Posts at City Hospital & Research Centre</h4>
-              <p class="b-snippet">Immediate walk-in interviews scheduled with verified salary packages of ₹18k–40k/month.</p>
-              <span class="b-link">View Vacancy Details →</span>
-            </div>
-
-            <div class="bulletin-item" onclick="openLatestNoticeModal(3)" role="button" tabindex="0">
-              <div class="bulletin-item-top">
-                <span class="b-cat-pill cat-hotel">Hospitality Batch</span>
-                <span class="b-date">16 Oct 2026</span>
-              </div>
-              <h4 class="b-title">NCHMCT JEE 2026: Hotel Management & Culinary Arts Registration</h4>
-              <p class="b-snippet">100% placement-backed professional diploma and degree admissions open for 2026 batch.</p>
-              <span class="b-link">Check Eligibility & Fees →</span>
-            </div>
-          </div>
+          <div class="bulletin-list" id="bulletin-list"></div>
         </div>
 
         <!-- Latest Verified Jobs Card -->
@@ -967,122 +773,12 @@
           <div class="section-title-row">
             <h2 class="section-heading">Latest Verified Jobs</h2>
             <a href="jobs.html" class="view-all-link">
-              View All Verified Jobs (6 Openings) →
+              View All Verified Jobs →
             </a>
           </div>
 
           <!-- Job Listings Stack (4 Jobs with Real Place Photos) -->
-          <div class="job-items-stack" id="job-items-stack">
-            
-            <!-- Job 1 -->
-            <article class="job-item">
-              <div class="job-logo-col">
-                <div class="job-logo-box">
-                  <img src="assets/places/job_hospital_1.jpg" alt="City Hospital & Research Centre Campus" class="job-logo-img">
-                </div>
-                <div class="job-verified-tag">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Verified Place</span>
-                </div>
-              </div>
-              <div class="job-info-col">
-                <h3 class="job-title">Staff Nurse (GNM/B.Sc)</h3>
-                <div class="job-company">City Hospital & Research Centre</div>
-                <div class="job-location">📍 Lucknow, Uttar Pradesh</div>
-                <div class="job-salary-row">
-                  <span class="job-salary">💰 ₹ 18,000 - 28,000/month</span>
-                  <span class="job-type-badge">💼 Full Time</span>
-                </div>
-              </div>
-              <div class="job-action-col">
-                <button class="btn btn-apply-job" onclick="window.location.href='jobs.html?jobId=1'">
-                  Apply Now
-                </button>
-              </div>
-            </article>
-
-            <!-- Job 2 -->
-            <article class="job-item">
-              <div class="job-logo-col">
-                <div class="job-logo-box">
-                  <img src="assets/places/job_hospital_2.jpg" alt="Metro Multispecialty Hospital Facility" class="job-logo-img">
-                </div>
-                <div class="job-verified-tag">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Verified Place</span>
-                </div>
-              </div>
-              <div class="job-info-col">
-                <h3 class="job-title">ICU Nurse</h3>
-                <div class="job-company">Metro Multispecialty Hospital</div>
-                <div class="job-location">📍 Delhi, Delhi</div>
-                <div class="job-salary-row">
-                  <span class="job-salary">💰 ₹ 25,000 - 40,000/month</span>
-                  <span class="job-type-badge">💼 Full Time</span>
-                </div>
-              </div>
-              <div class="job-action-col">
-                <button class="btn btn-apply-job" onclick="window.location.href='jobs.html?jobId=2'">
-                  Apply Now
-                </button>
-              </div>
-            </article>
-
-            <!-- Job 3 -->
-            <article class="job-item">
-              <div class="job-logo-col">
-                <div class="job-logo-box">
-                  <img src="assets/places/job_hotel_1.jpg" alt="Grand Vista Hotel & Resort Building" class="job-logo-img">
-                </div>
-                <div class="job-verified-tag">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Verified Place</span>
-                </div>
-              </div>
-              <div class="job-info-col">
-                <h3 class="job-title">Front Office Executive</h3>
-                <div class="job-company">Grand Vista Hotel</div>
-                <div class="job-location">📍 Jaipur, Rajasthan</div>
-                <div class="job-salary-row">
-                  <span class="job-salary">💰 ₹ 16,000 - 22,000/month</span>
-                  <span class="job-type-badge">💼 Full Time</span>
-                </div>
-              </div>
-              <div class="job-action-col">
-                <button class="btn btn-apply-job" onclick="window.location.href='jobs.html?jobId=3'">
-                  Apply Now
-                </button>
-              </div>
-            </article>
-
-            <!-- Job 4 -->
-            <article class="job-item">
-              <div class="job-logo-col">
-                <div class="job-logo-box">
-                  <img src="assets/places/job_hotel_2.jpg" alt="The Royal Hotel Luxury Building" class="job-logo-img">
-                </div>
-                <div class="job-verified-tag">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#0FA66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Verified Place</span>
-                </div>
-              </div>
-              <div class="job-info-col">
-                <h3 class="job-title">F&B Service Staff</h3>
-                <div class="job-company">The Royal Hotel</div>
-                <div class="job-location">📍 Bengaluru, Karnataka</div>
-                <div class="job-salary-row">
-                  <span class="job-salary">💰 ₹ 12,000 - 18,000/month</span>
-                  <span class="job-type-badge">💼 Full Time</span>
-                </div>
-              </div>
-              <div class="job-action-col">
-                <button class="btn btn-apply-job" onclick="window.location.href='jobs.html?jobId=4'">
-                  Apply Now
-                </button>
-              </div>
-            </article>
-
-          </div>
+          <div class="job-items-stack" id="job-items-stack"></div>
         </div>
 
         <!-- 2 Side-by-Side Trust Highlight Cards -->
@@ -1169,7 +865,7 @@
         <div class="how-trust-banner">
           <div class="trust-badge-item">
             <span class="trust-badge-icon">🏛️</span>
-            <div><strong>488+ Institutional Network</strong> Across 18 States</div>
+            <div><strong>Verified Institutional Network</strong> Partner colleges reviewed by SkillOra</div>
           </div>
           <div class="trust-badge-item">
             <span class="trust-badge-icon">🛡️</span>
@@ -1199,12 +895,7 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 20H5C3.89543 20 3 19.1046 3 18V6C3 4.89543 3.89543 4 5 4H19C20.1046 4 21 4.89543 21 6V18C21 19.1046 20.1046 20 19 20Z" stroke="#087BFF" stroke-width="2"/><path d="M7 8H17" stroke="#087BFF" stroke-width="2"/><path d="M7 12H17" stroke="#087BFF" stroke-width="2"/><path d="M7 16H13" stroke="#087BFF" stroke-width="2"/></svg>
           <span>Latest Updates</span>
         </div>
-        <div class="ticker-content" id="ticker-content">
-          <span class="ticker-item">• New Nursing Batch Admissions Open in Maharashtra</span>
-          <span class="ticker-item">• Top 10 In-Demand Jobs in Healthcare Sector</span>
-          <span class="ticker-item">• Hotel Management Course Now Available in Online Mode</span>
-          <a href="javascript:void(0)" class="ticker-item-link" onclick="showToast('Displaying Latest Government & Healthcare Job Notifications')">• Latest Government Job Notifications →</a>
-        </div>
+        <div class="ticker-content" id="ticker-content"></div>
       </div>
 
       <!-- Right: WhatsApp Help Widget -->
@@ -1317,7 +1008,7 @@
           <span class="modal-category-badge badge-green" id="modal-approval-badge">INC Approved</span>
           <span class="photo-verified-pill">📸 Physical Campus Verified</span>
         </div>
-        <h2 class="modal-title" id="modal-course-title">Sunrise College of Nursing</h2>
+        <h2 class="modal-title" id="modal-course-title">—</h2>
         <div class="modal-institute-name" id="modal-course-institute">Mumbai, Maharashtra • Est. 2012</div>
       </div>
 
@@ -1343,7 +1034,7 @@
           <p id="modal-course-desc">Leading accredited institution offering intensive hands-on lab training, experienced hospital mentors, and high placement ratios.</p>
           <ul class="modal-bullet-list">
             <li>✔ Complete clinical & practical rotational internships in tier-1 partner hospitals/companies</li>
-            <li>✔ 100% Placement assistance with top corporate healthcare and hospitality chains</li>
+            <li>✔ Placement assistance through SkillOra partner employers</li>
             <li>✔ Zero-cost educational financing and state scholarship assistance available</li>
           </ul>
         </div>
@@ -1483,7 +1174,7 @@
             </div>
             <div class="receipt-row">
               <span class="rc-lbl">Target Institution:</span>
-              <strong id="receipt-college-name" class="rc-val">Sunrise College of Nursing</strong>
+              <strong id="receipt-college-name" class="rc-val">—</strong>
             </div>
             <div class="receipt-row">
               <span class="rc-lbl">Annual Fee:</span>
@@ -1525,7 +1216,7 @@
           <span class="photo-verified-pill">🏥 Facility Verified</span>
         </div>
         <h2 class="modal-title" id="modal-job-title">Staff Nurse (GNM/B.Sc)</h2>
-        <div class="modal-institute-name" id="modal-job-company">City Hospital & Research Centre • Lucknow</div>
+        <div class="modal-institute-name" id="modal-job-company">—</div>
       </div>
       <div class="modal-body">
         <div class="modal-info-grid">
@@ -1576,7 +1267,7 @@
             </div>
             <div class="receipt-row">
               <span class="rc-lbl">Employer:</span>
-              <strong id="job-receipt-company" class="rc-val">City Hospital & Research Centre</strong>
+              <strong id="job-receipt-company" class="rc-val">—</strong>
             </div>
             <div class="receipt-row">
               <span class="rc-lbl">Interview Status:</span>

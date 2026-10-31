@@ -1,19 +1,19 @@
 /**
  * SkillOra - High-Performance Education Intelligence & Instant Search Engine
- * Powered by 488 Verified Healthcare, Hospitality & Career Colleges (Supabase + In-Memory Engine)
+ * Colleges and jobs are loaded from the SkillOra cloud database
  */
 
 // Supabase Cloud Backend Configuration
 const SUPABASE_CONFIG = {
-  url: "https://fvotuteameyrohyphbrk.supabase.co",
-  anonKey: "sb_publishable_9bpKJeqSF863GkBogIbE2A_d2s44ntl"
+  url: (window.SKILLORA_CONFIG || {}).SUPABASE_URL,
+  anonKey: (window.SKILLORA_CONFIG || {}).SUPABASE_PUBLISHABLE_KEY   // publishable key only (see data/config.js)
 };
 
 // Application State
 let ALL_COLLEGES = [];
 let CURRENT_FILTERED = [];
 let CURRENT_PAGE = 1;
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 6;
 let CURRENT_CATEGORY = "All";
 let SELECTED_COLLEGE = null;
 let SELECTED_JOB = null;
@@ -66,120 +66,13 @@ function getCollegeImage(college) {
 }
 
 let LAST_SUBMITTED_APPLICATION = null;
+const SUPPORT_PHONE_TXT = ((window.SKILLORA_CONFIG || {}).SUPPORT_PHONE) || 'via the Contact page';
 
-const NOTICES_DATA = [
-  {
-    id: 1,
-    title: "Maharashtra State 2026 GNM & B.Sc Nursing Direct Admission Window",
-    badge: "Official Circular",
-    authority: "Directorate of Medical Education & Research (DMER) • Ref: DMER/NUR/2026/891",
-    date: "October 18, 2026",
-    content: `
-      <p style="margin-bottom:12px;"><strong>Notice Summary:</strong> The Directorate of Medical Education & Research (DMER) and State Nursing Council have officially released the counseling dates for institutional round direct admissions for the 2026 academic batch.</p>
-      <div style="background:#F3F9FE;padding:12px;border-radius:6px;margin-bottom:12px;">
-        <ul style="padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;">
-          <li><strong>Eligible Courses:</strong> GNM (3 Years) & B.Sc Nursing (4 Years)</li>
-          <li><strong>Eligibility Criteria:</strong> 10+2 with 40% aggregate marks (Science PCB for B.Sc; Any stream for GNM).</li>
-          <li><strong>Direct Institutional Round:</strong> Verified participating institutes can conduct spot seat locks.</li>
-          <li><strong>State Scholarship:</strong> Reserved category applicants eligible for up to 100% tuition waiver under Mahadbt.</li>
-        </ul>
-      </div>
-      <p style="font-size:12px;color:#728DA9;">Candidates are advised to apply directly with recognized nursing colleges listed on SkillOra to secure provisional seat allotment before counseling rounds conclude.</p>
-    `,
-    actionText: "Browse Enrolling Nursing Colleges →",
-    category: "Nursing"
-  },
-  {
-    id: 2,
-    title: "Pan-India Healthcare Mega Walk-In Drives (Direct Hospital Hiring)",
-    badge: "Hiring Notification",
-    authority: "Apollo, Fortis & Max Healthcare Recruitment Board • Ref: HR-REC-2026-OCT",
-    date: "October 18, 2026",
-    content: `
-      <p style="margin-bottom:12px;"><strong>Drive Overview:</strong> Leading healthcare consortiums across Delhi NCR, Lucknow, Mumbai, and Bengaluru have announced open walk-in hiring drives for immediate joining in October and November 2026.</p>
-      <div style="background:#EDFDF5;padding:12px;border-radius:6px;margin-bottom:12px;border:1px solid #B8EED4;">
-        <ul style="padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#0D2C4B;">
-          <li><strong>Open Roles:</strong> Staff Nurse (ICU, Emergency, Ward), Patient Care Technicians, OT Assistants.</li>
-          <li><strong>Salary Brackets:</strong> ₹ 18,000 to ₹ 40,000 / month + Provident Fund & Health Coverage.</li>
-          <li><strong>Experience Required:</strong> Freshers & experienced candidates (0 to 4 years).</li>
-          <li><strong>Interview Modes:</strong> Direct campus walk-ins and virtual video rounds.</li>
-        </ul>
-      </div>
-      <p style="font-size:12px;color:#728DA9;">Applications submitted through SkillOra receive fast-track interview scheduling with employer HR within 24 hours.</p>
-    `,
-    actionText: "Apply to Verified Hospital Openings →",
-    jobId: 1
-  },
-  {
-    id: 3,
-    title: "NCHMCT Hospitality Joint Entrance 2026 Registration Announcement",
-    badge: "Admissions Alert",
-    authority: "National Council for Hotel Management & Catering Technology • Ref: NCHM-JEE/2026",
-    date: "October 17, 2026",
-    content: `
-      <p style="margin-bottom:12px;"><strong>Admissions Alert:</strong> Admissions for Degree & Diploma programs in Hotel Management, Culinary Arts, and Front Office Operations for the 2026-27 academic session are officially underway.</p>
-      <div style="background:#FFF9E6;padding:12px;border-radius:6px;margin-bottom:12px;border:1px solid #FFE699;">
-        <ul style="padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#7A5200;">
-          <li><strong>Programs Offered:</strong> B.Sc Hospitality & Hotel Administration, Diploma in Food & Beverage, Diploma in Bakery & Confectionery.</li>
-          <li><strong>Placement Partners:</strong> Taj Hotels, Oberoi Group, Marriott International, Hyatt.</li>
-          <li><strong>Mode of Learning:</strong> Full-time campus hands-on kitchen training and 6-month luxury hotel internships.</li>
-        </ul>
-      </div>
-      <p style="font-size:12px;color:#728DA9;">Explore top institutes in Mumbai, Jaipur, Bengaluru, and Delhi with verified campus infrastructure on SkillOra.</p>
-    `,
-    actionText: "Explore Hospitality Colleges →",
-    category: "Hospitality"
-  },
-  {
-    id: 4,
-    title: "State Nursing Scholarship & 0% EMI Fee Assistance Helpline",
-    badge: "Student Welfare",
-    authority: "SkillOra Academic Welfare Council • Advisory: SKL-WEL-2026/04",
-    date: "October 16, 2026",
-    content: `
-      <p style="margin-bottom:12px;"><strong>Helpline Advisory:</strong> SkillOra has activated dedicated financial assistance desks to guide students seeking zero-interest EMI financing, state post-matric scholarships, and institutional fee waivers.</p>
-      <div style="background:#F3F9FE;padding:12px;border-radius:6px;margin-bottom:12px;">
-        <ul style="padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;">
-          <li><strong>Toll-Free Helpline:</strong> +91 0000000000 (9:00 AM - 8:00 PM IST)</li>
-          <li><strong>WhatsApp Guidance:</strong> +91 0000000000</li>
-          <li><strong>Partner Banks:</strong> HDFC Credila, SBI Scholar Loans, Propelld Education Financing.</li>
-        </ul>
-      </div>
-    `,
-    actionText: "Talk to Student Welfare Counselor →",
-    category: "Nursing"
-  }
-];
 
-// Fallback seed data if database file is loaded standalone
-const FALLBACK_SEED = [
-  {
-    id: 1,
-    name: "Sunrise College of Nursing (Mumbai)",
-    cleanName: "Sunrise College of Nursing",
-    category: "Nursing & Healthcare",
-    state: "Maharashtra",
-    city: "Mumbai",
-    established: 2012,
-    rating: 4.8,
-    approval: "INC Approved",
-    minFee: 45000,
-    minFeeDisplay: "₹ 45,000",
-    coursesCount: 3,
-    courses: [
-      { name: "GNM – General Nursing & Midwifery", duration: "3 Years", fee: 45000, feeDisplay: "₹ 45,000", mode: "Both", eligibility: "10+2 Any Stream" },
-      { name: "B.Sc Nursing", duration: "4 Years", fee: 75000, feeDisplay: "₹ 75,000", mode: "Offline", eligibility: "10+2 Science (PCB)" },
-      { name: "Post Basic B.Sc Nursing", duration: "2 Years", fee: 42000, feeDisplay: "₹ 42,000", mode: "Both", eligibility: "GNM Registered" }
-    ],
-    recruiters: ["Apollo Hospitals", "Fortis Healthcare", "Max Healthcare", "Medanta"],
-    verified: true,
-    hostel: "Available (AC & Non-AC)",
-    overview: "Premier accredited healthcare institution in Mumbai affiliated with the State Nursing Council and Indian Nursing Council."
-  }
-];
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await window.COLLEGES_READY;     // verified colleges from the database
   initDatabase();
+  initLiveHome();
   initSearchEngine();
   initCategoryListeners();
   initSidebarFilters();
@@ -193,20 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
    1. DATABASE INITIALIZATION & IN-MEMORY ENGINE
    ========================================================================== */
 function initDatabase() {
-  if (window.COLLEGES_DB && Array.isArray(window.COLLEGES_DB) && window.COLLEGES_DB.length > 0) {
-    ALL_COLLEGES = window.COLLEGES_DB;
-  } else {
-    ALL_COLLEGES = FALLBACK_SEED;
-  }
-
-  // Merge custom colleges from Admin and College Partner Portals
-  try {
-    const customColleges = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_COLLEGES') || '[]');
-    if (customColleges.length > 0) {
-      ALL_COLLEGES = [...customColleges, ...ALL_COLLEGES];
-      ALL_COLLEGES = Array.from(new Map(ALL_COLLEGES.map(c => [c.id, c])).values());
-    }
-  } catch(e) {}
+  ALL_COLLEGES = Array.isArray(window.COLLEGES_DB) ? window.COLLEGES_DB : [];
 
   CURRENT_FILTERED = [...ALL_COLLEGES];
   CURRENT_PAGE = 1;
@@ -266,7 +146,7 @@ function initSearchEngine() {
     const courseMatches = [];
     const jobMatches = [];
 
-    // 1. Search Colleges Database (488+ institutes)
+    // 1. Search the colleges loaded from the database
     for (let i = 0; i < ALL_COLLEGES.length; i++) {
       const c = ALL_COLLEGES[i];
       const nameMatch = c.name.toLowerCase().includes(val);
@@ -304,14 +184,7 @@ function initSearchEngine() {
     }
 
     // 2. Search Verified Jobs Database
-    const ALL_VERIFIED_JOBS = [
-      { id: 1, title: "Staff Nurse (GNM / B.Sc)", company: "City Hospital & Research Centre", location: "Lucknow, Uttar Pradesh", salary: "₹ 18,000 - 28,000 / mo", sector: "Healthcare" },
-      { id: 2, title: "ICU & Critical Care Nurse", company: "Metro Multispecialty Hospital", location: "Delhi, Delhi NCR", salary: "₹ 25,000 - 40,000 / mo", sector: "Healthcare" },
-      { id: 3, title: "Front Office Executive & Receptionist", company: "Grand Vista Hotel & Resort", location: "Jaipur, Rajasthan", salary: "₹ 16,000 - 22,000 / mo", sector: "Hospitality" },
-      { id: 4, title: "Food & Beverage (F&B) Service Staff", company: "The Royal Hotel & Suites", location: "Bengaluru, Karnataka", salary: "₹ 14,000 - 20,000 / mo", sector: "Hospitality" },
-      { id: 5, title: "Hospital Operations & Admission Desk", company: "Medanta Super Specialty Wing", location: "Lucknow, Uttar Pradesh", salary: "₹ 20,000 - 30,000 / mo", sector: "Healthcare" },
-      { id: 6, title: "Corporate Healthcare Relationship Manager", company: "Apex Healthcare Network", location: "Mumbai, Maharashtra", salary: "₹ 22,000 - 35,000 / mo", sector: "Sales" }
-    ];
+    let ALL_VERIFIED_JOBS = [];   // filled from the database by initLiveHome()
 
     for (let k = 0; k < ALL_VERIFIED_JOBS.length; k++) {
       const j = ALL_VERIFIED_JOBS[k];
@@ -343,7 +216,7 @@ function initSearchEngine() {
         <div class="autocomplete-item" onclick="window.location.href='colleges.html?search=${encodeURIComponent(val)}'">
           <div class="ac-main-col">
             <div class="ac-title">Search complete database for &ldquo;${escapeHtml(val)}&rdquo;</div>
-            <div class="ac-sub">Press Enter to explore all 488+ colleges, accredited courses, and hospital/hotel jobs</div>
+            <div class="ac-sub">Press Enter to explore colleges, courses, and hospital/hotel jobs</div>
           </div>
           <span class="ac-tag ac-tag-college">Search All →</span>
         </div>
@@ -669,34 +542,33 @@ function renderCatalogPage() {
       <article class="course-card" onclick="window.location.href='colleges.html?collegeId=' + ${c.id}" style="cursor:pointer;">
         <div class="course-img-wrap">
           <img src="${thumb}" alt="${c.cleanName || c.name} Campus Facility" class="course-thumb" loading="lazy">
-          <span class="verified-inst-badge">
+          <span class="verified-inst-badge" title="${c.approval || 'Verified Institute'}">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9 17L19 7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span>${c.approval || 'Verified Institute'}</span>
           </span>
           <span class="campus-photo-tag">📍 Verified Campus</span>
         </div>
         <div class="course-body">
-          <h3 class="course-title" title="${c.name}">${primaryCourse.name}</h3>
+          <h3 class="course-title" title="${primaryCourse.name}">${primaryCourse.name}</h3>
           
-          <div class="course-meta-item">
-            <span class="meta-icon icon-teal">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#5FBAAE" stroke-width="2"/><path d="M16 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M8 2V6" stroke="#5FBAAE" stroke-width="2"/><path d="M3 10H21" stroke="#5FBAAE" stroke-width="2"/></svg>
+          <div class="course-meta-tags-row">
+            <span class="course-duration-tag">
+              <span class="meta-icon">⏱️</span> ${primaryCourse.duration}
             </span>
-            <span class="meta-text">Duration: ${primaryCourse.duration}</span>
-          </div>
-
-          <div class="course-meta-item">
-            <span class="meta-icon icon-gold">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="#EBBE61" stroke-width="2"/><path d="M16 13C16 14.1 16.9 15 18 15H22V11H18C16.9 11 16 11.9 16 13Z" stroke="#EBBE61" stroke-width="2"/></svg>
+            <span class="course-fee-tag">
+              ${c.minFeeDisplay}
             </span>
-            <span class="meta-text">Fee starts at: <strong>${c.minFeeDisplay}</strong></span>
           </div>
 
-          <div class="course-mode-row">
-            <span class="mode-tag"><span class="mode-bullet">📍</span> ${c.city}, ${c.state}</span>
+          <div class="course-location-row" title="${c.city}, ${c.state}">
+            <span class="loc-pin">📍</span>
+            <span class="loc-text">${c.city}, ${c.state}</span>
           </div>
 
-          <div class="course-provider" title="${c.name}">${c.cleanName || c.name}</div>
+          <div class="course-provider" title="${c.name}">
+            <span class="inst-icon">🏛️</span>
+            <span class="inst-name">${c.cleanName || c.name}</span>
+          </div>
           
           <button class="btn btn-view-course" onclick="event.stopPropagation(); window.location.href='colleges.html?collegeId=' + ${c.id}">
             <span>View College & Fees</span>
@@ -750,7 +622,7 @@ function openCollegeModal(collegeId) {
 
   // Header info
   document.getElementById('modal-course-cat').textContent = college.category;
-  document.getElementById('modal-rating-pill').textContent = `★ ${college.rating || 4.7} / 5`;
+  document.getElementById('modal-rating-pill').textContent = (college.rating ? `★ ${college.rating} / 5` : '');
   document.getElementById('modal-approval-badge').textContent = college.approval || 'Verified Institute';
   document.getElementById('modal-course-title').textContent = college.name;
   document.getElementById('modal-course-institute').textContent = `${college.city}, ${college.state} • Est. ${college.established || 2012}`;
@@ -802,7 +674,7 @@ function openCollegeModal(collegeId) {
 
   const recList = document.getElementById('modal-recruiters-list');
   if (recList) {
-    const recruiters = college.recruiters || ["Apollo Hospitals", "Fortis Healthcare", "Taj Hotels", "Marriott", "Max Healthcare"];
+    const recruiters = Array.isArray(college.recruiters) ? college.recruiters : [];
     recList.innerHTML = recruiters.map(r => `<span class="recruiter-tag">🏢 ${r}</span>`).join('');
   }
 
@@ -816,7 +688,7 @@ function openCollegeModal(collegeId) {
   if (successBox) successBox.style.display = 'none';
 
   // Auto-fill student profile if authenticated
-  const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+  const _su = window.SkillOraAuth.getCurrentUser('student'); const userStr = _su ? JSON.stringify(_su) : null;
   if (userStr) {
     try {
       const u = JSON.parse(userStr);
@@ -904,7 +776,8 @@ async function submitEnrollment() {
   const collegeId = SELECTED_COLLEGE ? SELECTED_COLLEGE.id : null;
 
   // 1. Mandatory Student Authentication Check
-  const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+  const userObj = window.SkillOraAuth.getCurrentUser('student');
+  const userStr = userObj ? JSON.stringify(userObj) : null;
   if (!userStr) {
     sessionStorage.setItem('SKILLORA_PENDING_APPLY', JSON.stringify({
       type: 'course',
@@ -934,7 +807,7 @@ async function submitEnrollment() {
 
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span>Registering in Supabase...</span>';
+    submitBtn.innerHTML = '<span>Submitting...</span>';
   }
 
   const refId = `SKL-2026-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -954,58 +827,26 @@ async function submitEnrollment() {
     timestamp: new Date().toISOString()
   };
 
-  // Persist locally for Admin Portal and Student Dashboard
+  // Cloud database is the single source of truth (no browser-only copies of applicant data).
+  let cloudOk = false;
   try {
-    const allCourseApps = JSON.parse(localStorage.getItem('SKILLORA_ALL_COURSE_APPLICATIONS') || '[]');
-    allCourseApps.unshift(LAST_SUBMITTED_APPLICATION);
-    localStorage.setItem('SKILLORA_ALL_COURSE_APPLICATIONS', JSON.stringify(allCourseApps));
-
-    const myAdmissions = JSON.parse(localStorage.getItem('SKILLORA_MY_ADMISSIONS') || '[]');
-    myAdmissions.unshift(LAST_SUBMITTED_APPLICATION);
-    localStorage.setItem('SKILLORA_MY_ADMISSIONS', JSON.stringify(myAdmissions));
-
-    const activityLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
-    activityLog.unshift({
-      id: refId,
-      type: 'course',
-      title: `${studentName} applied for ${selectedCourseName}`,
-      desc: `${collegeName} (${SELECTED_COLLEGE ? SELECTED_COLLEGE.city : 'Campus'}) • 10-Digit: ${phone}`,
-      time: 'Just now',
-      timestamp: new Date().toISOString()
-    });
-    localStorage.setItem('SKILLORA_LIVE_ACTIVITY_LOG', JSON.stringify(activityLog.slice(0, 50)));
-  } catch (storageErr) {
-    console.warn('LocalStorage save error:', storageErr);
-  }
-
-  try {
-    const payload = {
-      college_id: collegeId,
-      student_name: studentName,
-      phone: phone,
-      email: email || null,
-      course_name: `${selectedCourseName} (${batch})`,
-      state: SELECTED_COLLEGE ? SELECTED_COLLEGE.state : null,
-      city: SELECTED_COLLEGE ? SELECTED_COLLEGE.city : null,
-      source: 'Direct Website Form'
-    };
-
-    await fetch(`${SUPABASE_CONFIG.url}/rest/v1/admission_leads`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_CONFIG.anonKey,
-        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(payload)
+    cloudOk = await window.SkillOraAuth.submitAdmissionToCloud({
+      collegeId: collegeId, studentName: studentName, phone: phone, email: email || null,
+      courseName: `${selectedCourseName} (${batch})`,
+      collegeState: SELECTED_COLLEGE ? SELECTED_COLLEGE.state : null,
+      collegeCity: SELECTED_COLLEGE ? SELECTED_COLLEGE.city : null,
+      source: 'Direct Website Form', refId: refId
     });
   } catch (err) {
-    console.warn('Note: offline fallback for admission lead submission:', err);
+    console.warn('Admission lead submission failed:', err);
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.innerHTML = '<span>Confirm & Submit Direct Application</span><span style="font-size:14px;">→</span>';
+    }
+    if (!cloudOk) {
+      alert('We could not submit your application right now. Please check your connection and try again.');
+      return;
     }
 
     // Display professional in-modal success card
@@ -1081,7 +922,7 @@ function downloadApplicationSlip() {
         <div class="stamp">✔ DIRECT SEAT APPLICATION REGISTERED</div>
       </div>
       <div class="footer">
-        SkillOra Institutional Admissions Network • V3S Mall, Nirman Vihar, Delhi • +91 0000000000 • support@skillora.in
+        SkillOra Institutional Admissions Network • V3S Mall, Nirman Vihar, Delhi • ${SUPPORT_PHONE_TXT} • support@skillora.in
       </div>
       <script>
         window.onload = function() { window.print(); }
@@ -1118,12 +959,7 @@ function initStateDirectory() {
 /* ==========================================================================
    8. JOBS & PARTNER MODALS
    ========================================================================== */
-const JOBS_DATA = [
-  { id: 1, title: "Staff Nurse (GNM/B.Sc)", company: "City Hospital & Research Centre", location: "Lucknow, Uttar Pradesh", salary: "₹ 18,000 - 28,000/month", type: "Full Time" },
-  { id: 2, title: "ICU Nurse", company: "Metro Multispecialty Hospital", location: "Delhi, Delhi", salary: "₹ 25,000 - 40,000/month", type: "Full Time" },
-  { id: 3, title: "Front Office Executive", company: "Grand Vista Hotel", location: "Jaipur, Rajasthan", salary: "₹ 16,000 - 22,000/month", type: "Full Time" },
-  { id: 4, title: "F&B Service Staff", company: "The Royal Hotel", location: "Bengaluru, Karnataka", salary: "₹ 12,000 - 18,000/month", type: "Full Time" }
-];
+const JOBS_DATA = [];   // jobs are loaded from the database on jobs.html
 
 const JOB_PLACE_PHOTOS = {
   1: { img: "assets/places/job_hospital_1.jpg", badge: "🏥 Verified Hospital Facility • Lucknow" },
@@ -1156,7 +992,7 @@ function openJobModal(jobId) {
   if (successBox) successBox.style.display = 'none';
 
   // Auto-fill student profile if authenticated
-  const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+  const _su = window.SkillOraAuth.getCurrentUser('student'); const userStr = _su ? JSON.stringify(_su) : null;
   if (userStr) {
     try {
       const u = JSON.parse(userStr);
@@ -1184,7 +1020,8 @@ async function submitJobApplication() {
   const jobId = SELECTED_JOB ? SELECTED_JOB.id : 1;
 
   // 1. Mandatory Student Authentication Check
-  const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+  const userObj = window.SkillOraAuth.getCurrentUser('student');
+  const userStr = userObj ? JSON.stringify(userObj) : null;
   if (!userStr) {
     sessionStorage.setItem('SKILLORA_PENDING_APPLY', JSON.stringify({
       type: 'job',
@@ -1227,59 +1064,26 @@ async function submitJobApplication() {
     exp: exp || 'Fresher',
     date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
     timestamp: new Date().toISOString(),
-    status: 'Shortlisted for Interview',
-    statusClass: 'status-shortlisted'
+    status: 'Applied',
+    statusClass: 'status-applied'
   };
 
+  let cloudOk = false;
   try {
-    const allJobApps = JSON.parse(localStorage.getItem('SKILLORA_ALL_JOB_APPLICATIONS') || '[]');
-    allJobApps.unshift(jobAppRecord);
-    localStorage.setItem('SKILLORA_ALL_JOB_APPLICATIONS', JSON.stringify(allJobApps));
-
-    const myJobs = JSON.parse(localStorage.getItem('SKILLORA_MY_JOBS') || '[]');
-    myJobs.unshift(jobAppRecord);
-    localStorage.setItem('SKILLORA_MY_JOBS', JSON.stringify(myJobs));
-
-    const activityLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
-    activityLog.unshift({
-      id: refId,
-      type: 'job',
-      title: `${candidateName} applied for ${jobTitle}`,
-      desc: `${companyName} • Contact: ${phone}`,
-      time: 'Just now',
-      timestamp: new Date().toISOString()
-    });
-    localStorage.setItem('SKILLORA_LIVE_ACTIVITY_LOG', JSON.stringify(activityLog.slice(0, 50)));
-  } catch (storageErr) {
-    console.warn('LocalStorage save error:', storageErr);
-  }
-
-  try {
-    const payload = {
-      job_id: jobId,
-      candidate_name: candidateName,
-      phone: phone,
-      email: email || null,
-      experience_years: exp || 'Fresher',
-      stage: 'Applied'
-    };
-
-    await fetch(`${SUPABASE_CONFIG.url}/rest/v1/job_applications`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_CONFIG.anonKey,
-        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(payload)
+    cloudOk = await window.SkillOraAuth.submitJobApplicationToCloud({
+      jobId: jobId, candidateName: candidateName, phone: phone, email: email || null,
+      experience: exp || 'Fresher', refId: refId, jobTitle: jobTitle
     });
   } catch (err) {
-    console.warn('Note: offline fallback for job application:', err);
+    console.warn('Job application failed:', err);
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Confirm & Apply Now';
+    }
+    if (!cloudOk) {
+      alert('We could not submit your application. Please make sure you are signed in, then try again.');
+      return;
     }
 
     const form = document.getElementById('job-application-form');
@@ -1300,87 +1104,6 @@ async function submitJobApplication() {
   }
 }
 
-/* ==========================================================================
-   8B. LATEST UPDATES & OFFICIAL CIRCULARS MODAL
-   ========================================================================== */
-function openLatestNoticeModal(noticeId) {
-  openNoticeModal(noticeId);
-}
-
-function openNoticeModal(noticeId) {
-  const notice = NOTICES_DATA.find(n => n.id === Number(noticeId)) || NOTICES_DATA[0];
-  const badgeEl = document.getElementById('notice-badge');
-  const dateEl = document.getElementById('notice-date');
-  const titleEl = document.getElementById('notice-title');
-  const authEl = document.getElementById('notice-authority');
-  const bodyEl = document.getElementById('notice-body-text');
-
-  if (badgeEl) badgeEl.textContent = notice.badge;
-  if (dateEl) dateEl.textContent = notice.date;
-  if (titleEl) titleEl.textContent = notice.title;
-  if (authEl) authEl.textContent = notice.authority;
-  if (bodyEl) bodyEl.innerHTML = notice.content;
-
-  const actionBtn = document.getElementById('notice-action-btn');
-  if (actionBtn) {
-    actionBtn.textContent = notice.actionText;
-    actionBtn.onclick = () => {
-      closeModal('notice-modal');
-      if (notice.category) {
-        filterByCategory(notice.category);
-        document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
-      } else if (notice.jobId) {
-        openJobModal(notice.jobId);
-      }
-    };
-  }
-
-  openModal('notice-modal');
-}
-
-function openAllNoticesModal() {
-  const badgeEl = document.getElementById('notice-badge');
-  const dateEl = document.getElementById('notice-date');
-  const titleEl = document.getElementById('notice-title');
-  const authEl = document.getElementById('notice-authority');
-  const bodyEl = document.getElementById('notice-body-text');
-
-  if (badgeEl) badgeEl.textContent = "All Official Bulletins";
-  if (dateEl) dateEl.textContent = "October 2026 Active Feed";
-  if (titleEl) titleEl.textContent = "Verified Admissions & Employment Bulletins (2026)";
-  if (authEl) authEl.textContent = "SkillOra Central Academic & Employment Registry";
-
-  if (bodyEl) {
-    bodyEl.innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        ${NOTICES_DATA.map(n => `
-          <div style="border:1px solid #E5F0F9;border-radius:8px;padding:12px;background:#F8FCFF;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-              <span style="font-size:10.5px;font-weight:700;color:#087BFF;background:#EDF8FF;padding:2px 8px;border-radius:4px;">${n.badge}</span>
-              <span style="font-size:11px;color:#728DA9;">${n.date}</span>
-            </div>
-            <h4 style="font-size:13px;color:#173C62;margin-bottom:4px;cursor:pointer;" onclick="openNoticeModal(${n.id})">${n.title}</h4>
-            <div style="font-size:11px;color:#728DA9;margin-bottom:8px;">${n.authority}</div>
-            <button class="btn btn-apply-filters" style="padding:4px 10px;font-size:11px;" onclick="openNoticeModal(${n.id})">Read Circular Details →</button>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
-
-  const actionBtn = document.getElementById('notice-action-btn');
-  if (actionBtn) {
-    actionBtn.textContent = "Explore All Courses";
-    actionBtn.onclick = () => {
-      closeModal('notice-modal');
-      filterByCategory('All');
-      document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
-    };
-  }
-
-  openModal('notice-modal');
-}
-
 function openPartnerModal(type = 'general') {
   openModal('partner-modal');
   const orgInput = document.getElementById('partner-org-name');
@@ -1399,11 +1122,20 @@ function setPartnerTab(btn, type) {
   else orgInput.placeholder = "College / Institute Name *";
 }
 
-function submitPartnerForm() {
+async function submitPartnerForm() {
+  const val = (id) => (document.getElementById(id) || {}).value || '';
+  const org = val('partner-org-name').trim(), person = val('partner-contact-name').trim(), phone = val('partner-phone').trim();
+  const email = val('partner-email').trim(), city = val('partner-city').trim(), details = val('partner-details').trim();
+  if (!org || !person || !phone) { showToast('Please fill in organisation, contact person and phone.', false); return; }
+  const ok = await window.SkillOraAuth.submitContactInquiry({
+    name: person, email: email || null, phone: phone, subject: 'Partner enquiry: ' + org,
+    message: `Organisation: ${org}\nCity: ${city || '-'}\n${details || '(no extra details)'}`
+  });
+  if (!ok) { showToast('Could not send your request. Please try again.', false); return; }
   closeModal('partner-modal');
   const form = document.getElementById('partner-registration-form');
   if (form) form.reset();
-  showToast('Partner registration received! Our institutional partnership manager will verify your credentials within 24 hours.', true);
+  showToast('Partner request received. Our team will contact you.', true);
 }
 
 /* ==========================================================================
@@ -1432,9 +1164,9 @@ const loginBtn = document.getElementById('login-btn');
 const joinPartnerBtn = document.getElementById('join-partner-btn');
 
 function checkAuthStatus() {
-  const student = localStorage.getItem('SKILLORA_CURRENT_USER');
-  const college = localStorage.getItem('SKILLORA_COLLEGE_USER');
-  const employer = localStorage.getItem('SKILLORA_EMPLOYER_USER');
+  const _s = window.SkillOraAuth.getCurrentUser('student'); const student = _s ? JSON.stringify(_s) : null;
+  const _c = window.SkillOraAuth.getCurrentUser('college'); const college = _c ? JSON.stringify(_c) : null;
+  const _e = window.SkillOraAuth.getCurrentUser('employer'); const employer = _e ? JSON.stringify(_e) : null;
 
   if (loginBtn) {
     if (student) {
@@ -1498,10 +1230,10 @@ function openInfoModal(type) {
         <p style="margin-bottom:12px;color:var(--text-dark);">We are here to assist learners, educational institutes, and corporate employers 7 days a week.</p>
         <div style="background:#F3F9FE;padding:12px 14px;border-radius:8px;font-size:12.5px;display:flex;flex-direction:column;gap:8px;border:1px solid #D5E8FA;margin-bottom:14px;">
           <div>📍 <strong>Corporate Office:</strong> V3S Mall, Nirman Vihar, Delhi - 110092</div>
-          <div>📞 <strong>Student Helpline:</strong> +91 0000000000 (Toll Free, 9 AM - 8 PM IST)</div>
+          <div>📞 <strong>Student Helpline:</strong> ${SUPPORT_PHONE_TXT} (Toll Free, 9 AM - 8 PM IST)</div>
           <div>✉️ <strong>General Inquiries:</strong> support@skilloraindia.com</div>
           <div>🏫 <strong>Institute Partnerships:</strong> admissions@skilloraindia.com</div>
-          <div>💬 <strong>WhatsApp Helpline:</strong> +91 0000000000</div>
+          <div>💬 <strong>WhatsApp Helpline:</strong> ${SUPPORT_PHONE_TXT}</div>
         </div>
         <div>
           <div style="font-size:12.5px;font-weight:700;color:var(--text-dark);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
@@ -1624,26 +1356,7 @@ function appendWAMessage(text, type) {
    11. TICKER & KEYBOARD LISTENERS
    ========================================================================== */
 function initTickerAnimation() {
-  const ticker = document.getElementById('ticker-content');
-  if (!ticker) return;
-
-  const updates = [
-    "• New Nursing Batch Admissions Open across Maharashtra & Karnataka",
-    "• Top 10 In-Demand Jobs in Healthcare Sector Announced",
-    "• Hotel Management Diploma Courses Now Available in Online Mode",
-    "• 488+ Verified Colleges Enrolling for 2026 Academic Batch",
-    "• Direct Walk-In Interviews Scheduled in Bengaluru, Delhi & Mumbai"
-  ];
-
-  let idx = 0;
-  setInterval(() => {
-    idx = (idx + 1) % updates.length;
-    ticker.style.opacity = '0.4';
-    setTimeout(() => {
-      if (ticker.children[0]) ticker.children[0].textContent = updates[idx];
-      ticker.style.opacity = '1';
-    }, 250);
-  }, 5000);
+  // Intentionally empty: ticker content comes from the database (see initLiveHome). No sample headlines.
 }
 
 function showToast(message, isSuccess = false) {
@@ -1702,5 +1415,83 @@ function initKeyboardListeners() {
       mobileDrawer.classList.remove('open');
       document.body.style.overflow = '';
     });
+  }
+}
+
+
+/* ==========================================================================
+   LIVE HOMEPAGE - everything below comes from the database (no sample content)
+   ========================================================================== */
+async function initLiveHome() {
+  const esc = window.SkillOraAuth.escapeHtml;
+  const colleges = window.COLLEGES_DB || [];
+  let jobs = [];
+  try { jobs = await window.SkillOraAuth.loadPublicJobs(); } catch (e) {}
+
+  ALL_VERIFIED_JOBS = jobs.map(j => ({ id: j.id, title: j.title, company: j.company, location: j.location, salary: j.salary, sector: j.sector }));
+
+  // headline numbers (real counts)
+  const courseTotal = colleges.reduce((n, c) => n + (c.coursesCount || 0), 0);
+  document.querySelectorAll('[data-live-college-count]').forEach(el => el.textContent = colleges.length);
+  document.querySelectorAll('[data-live-course-count]').forEach(el => el.textContent = courseTotal);
+  document.querySelectorAll('[data-live-job-count]').forEach(el => el.textContent = jobs.length);
+
+  // Latest verified jobs
+  const stack = document.getElementById('job-items-stack');
+  if (stack) {
+    const img = (sector) => /health/i.test(sector) ? 'assets/places/job_hospital_1.jpg' : /hosp/i.test(sector) ? 'assets/places/job_hotel_1.jpg' : 'assets/places/campus_sales_1.jpg';
+    stack.innerHTML = jobs.length === 0
+      ? '<div style="padding:28px 16px;text-align:center;color:#55708E;font-size:13px;">No job openings are published yet. New hospital and hotel vacancies will appear here.</div>'
+      : jobs.slice(0, 4).map(j => `
+        <article class="job-item">
+          <div class="job-logo-col"><div class="job-logo-box"><img src="${img(j.sector)}" alt="${j.company}" class="job-logo-img"></div></div>
+          <div class="job-info-col">
+            <h3 class="job-title">${j.title}</h3>
+            <div class="job-company">${j.company}</div>
+            ${j.location ? `<div class="job-location">📍 ${j.location}</div>` : ''}
+            <div class="job-salary-row">
+              ${j.salary ? `<span class="job-salary">💰 ${j.salary}</span>` : ''}
+              <span class="job-type-badge">💼 ${j.type}</span>
+            </div>
+          </div>
+          <div class="job-action-col"><button class="btn btn-apply-job" onclick="window.location.href='jobs.html?jobId=${Number(j.id)}'">Apply Now</button></div>
+        </article>`).join('');
+  }
+
+  // Latest updates (built from real data only)
+  const fmt = (iso) => iso ? new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+  const items = [
+    ...jobs.slice(0, 3).map(j => ({ tag: 'Hiring', cls: 'cat-hospital', title: `${j.title} - ${j.company}`, sub: [j.location, j.salary].filter(Boolean).join(' • '), date: j.postedAt, href: `jobs.html?jobId=${Number(j.id)}`, cta: 'View vacancy →' })),
+    ...colleges.filter(c => c.createdAt).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3)
+      .map(c => ({ tag: 'New college', cls: 'cat-nursing', title: c.name, sub: [c.city, c.state].filter(Boolean).join(', '), date: c.createdAt, href: `colleges.html?collegeId=${Number(c.id)}`, cta: 'View college →' }))
+  ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
+
+  const list = document.getElementById('bulletin-list');
+  if (list) {
+    list.innerHTML = items.length === 0
+      ? '<div style="padding:22px 14px;text-align:center;color:#55708E;font-size:13px;">Nothing new yet. Fresh jobs and colleges will show up here.</div>'
+      : items.map(i => `
+        <div class="bulletin-item" onclick="window.location.href='${i.href}'" role="button" tabindex="0">
+          <div class="bulletin-item-top"><span class="b-cat-pill ${i.cls}">${i.tag}</span><span class="b-date">${fmt(i.date)}</span></div>
+          <h4 class="b-title">${i.title}</h4>
+          ${i.sub ? `<p class="b-snippet">${i.sub}</p>` : ''}
+          <span class="b-link">${i.cta}</span>
+        </div>`).join('');
+  }
+  // Tickers: show only when there is something real to show
+  const topBar = document.getElementById('live-updates-bar');
+  const track = document.getElementById('top-ticker-track');
+  if (track) {
+    track.innerHTML = items.map(i => `
+      <div class="top-ticker-item" onclick="window.location.href='${i.href}'" role="button" tabindex="0">
+        <span class="t-tag t-tag-green">${i.tag.toUpperCase()}</span><span class="t-text">${i.title}</span>
+        <span class="t-date">${fmt(i.date)}</span><span class="t-arrow">${i.cta}</span>
+      </div>`).join('');
+  }
+  if (topBar) topBar.style.display = items.length ? '' : 'none';
+  const tc = document.getElementById('ticker-content');
+  if (tc) {
+    tc.innerHTML = items.map(i => `<span class="ticker-item">• ${i.title}</span>`).join('');
+    const card = tc.closest('.updates-ticker-card'); if (card) card.style.display = items.length ? '' : 'none';
   }
 }

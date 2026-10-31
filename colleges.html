@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="data/config.js"></script>
   <script src="data/auth_db.js"></script>
   <style>
     body { background-color: #F0F4F8; }
@@ -292,11 +293,11 @@
 
   <!-- Hero Header for Colleges Tab -->
   <div class="colleges-hero-bar">
-    <h1>488+ Institutional Network Across India</h1>
+    <h1>Verified Partner Colleges Across India</h1>
     <p>Search accredited nursing universities, hotel management academies, and vocational institutes with complete fee transparency and direct admission support.</p>
     
     <div class="colleges-search-box">
-      <input type="text" id="college-search-input" class="c-search-input" placeholder="Search by college name, course, state, or city (e.g. GNM Mumbai, Sunrise Nursing, Jaipur)..." oninput="filterCollegesLive()">
+      <input type="text" id="college-search-input" class="c-search-input" placeholder="Search by college name, course, state, or city (e.g. GNM, Hotel Management, city or state)..." oninput="filterCollegesLive()">
       <button class="c-search-btn" onclick="filterCollegesLive()">Search Colleges</button>
     </div>
   </div>
@@ -360,7 +361,7 @@
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
         <div>
           <h3 id="colleges-count-header" style="font-size:16px;font-weight:800;color:var(--color-navy-dark);margin:0;">Showing 48 Verified Partner Campuses</h3>
-          <span style="font-size:12px;color:var(--text-muted);display:block;margin-top:2px;">Selected from 488+ Verified Institutional Network • Direct Admissions Active</span>
+          <span style="font-size:12px;color:var(--text-muted);display:block;margin-top:2px;">Verified partner colleges • Direct admissions</span>
         </div>
         <span class="pill-category" style="font-size:11px;font-weight:700;padding:4px 8px;background:#EDFDF5;color:#0FA66D;border-radius:4px;">✔ 100% Verified Campuses</span>
       </div>
@@ -378,7 +379,7 @@
       <button class="modal-close-btn" onclick="closeApplyModal()">✕</button>
       <div class="modal-header">
         <span class="modal-category-badge badge-green" id="app-modal-badge">Direct Seat Booking</span>
-        <h2 class="modal-title" id="app-modal-college-name">Sunrise College of Nursing</h2>
+        <h2 class="modal-title" id="app-modal-college-name">—</h2>
         <div class="modal-institute-name" id="app-modal-loc">Mumbai, Maharashtra</div>
       </div>
       <div class="modal-body">
@@ -425,15 +426,10 @@
       return PLACE_CAMPUS_IMAGES[Math.abs(Number(id) || 0) % PLACE_CAMPUS_IMAGES.length];
     }
 
-    function initCollegesPage() {
-      if (window.COLLEGES_DB && window.COLLEGES_DB.length > 0) {
-        ALL_COLLEGES_DATA = window.COLLEGES_DB;
-      } else {
-        ALL_COLLEGES_DATA = [
-          { id: 1, name: "Sunrise College of Nursing", category: "Nursing & Healthcare", state: "Maharashtra", city: "Mumbai", minFeeDisplay: "₹ 45,000", approval: "INC Approved", courses: [{ name: "GNM – General Nursing & Midwifery", feeDisplay: "₹ 45,000" }] }
-        ];
-      }
-      renderColleges(ALL_COLLEGES_DATA.slice(0, 48)); // Initial fast chunk
+    async function initCollegesPage() {
+      await window.COLLEGES_READY;                 // verified colleges from the database
+      ALL_COLLEGES_DATA = window.COLLEGES_DB || [];
+      renderColleges(ALL_COLLEGES_DATA.slice(0, 48));
     }
 
     function renderColleges(list) {
@@ -444,9 +440,9 @@
       if (list.length === 0) {
         container.innerHTML = `
           <div style="grid-column: 1 / -1; background:#FFFFFF; border:1px dashed #CCDEF5; border-radius:10px; padding:40px; text-align:center;">
-            <h4>No colleges found matching your search</h4>
-            <p style="font-size:12px;color:var(--text-muted);margin:8px 0 16px 0;">Try expanding your budget slider or choosing All States.</p>
-            <button class="btn btn-apply-filters" onclick="resetCollegeFilters()">Reset All Filters</button>
+            <h4>${ALL_COLLEGES_DATA.length === 0 ? 'No partner colleges are listed yet' : 'No colleges found matching your search'}</h4>
+            <p style="font-size:12px;color:var(--text-muted);margin:8px 0 16px 0;">${ALL_COLLEGES_DATA.length === 0 ? 'Verified partner colleges appear here once they join SkillOra. Please check back soon.' : 'Try expanding your budget slider or choosing All States.'}</p>
+            ${ALL_COLLEGES_DATA.length === 0 ? '' : '<button class="btn btn-apply-filters" onclick="resetCollegeFilters()">Reset All Filters</button>'}
           </div>
         `;
         return;
@@ -454,7 +450,7 @@
 
       container.innerHTML = list.map(c => {
         const photo = getPlacePhoto(c.id);
-        const pCourse = c.courses[0] || { name: c.category, feeDisplay: c.minFeeDisplay };
+        const pCourse = (c.courses && c.courses[0]) || { name: c.category, feeDisplay: c.minFeeDisplay };
         const coursesList = c.courses || [];
 
         return `
@@ -493,7 +489,7 @@
                     `).join('')}
                   </div>
                   <div style="font-size:11px;color:#728DA9;background:#EDF4FA;padding:6px 8px;border-radius:4px;margin-top:6px;">
-                    <strong>Hostel:</strong> ${c.hostel || 'Available'} | <strong>Top Recruiters:</strong> ${(c.recruiters || ['Apollo', 'Taj', 'Fortis']).slice(0, 3).join(', ')}
+                    <strong>Hostel:</strong> ${c.hostel || 'Available'} | <strong>Top Recruiters:</strong> ${(c.recruiters && c.recruiters.length ? c.recruiters.slice(0, 3).join(', ') : 'Not listed')}
                   </div>
                 </div>
 
@@ -562,7 +558,7 @@
       const college = ALL_COLLEGES_DATA.find(c => c.id === collegeId);
       if (!college) return;
 
-      const userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
+      const _su = window.SkillOraAuth.getCurrentUser('student'); const userStr = _su ? JSON.stringify(_su) : null;
       if (!userStr) {
         sessionStorage.setItem('SKILLORA_PENDING_APPLY', JSON.stringify({
           type: 'course',
@@ -617,7 +613,7 @@
         refId,
         studentName: name,
         phone,
-        email: email || 'Not provided',
+        email: email || null,
         courseName: course,
         collegeName: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.name : 'Verified College',
         collegeState: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.state : '',
@@ -625,46 +621,23 @@
         fee: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.minFeeDisplay : 'Standard Fee',
         date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
         timestamp: new Date().toISOString(),
-        status: 'Counselor Assigned',
-        statusClass: 'status-assigned'
+        status: 'New',
+        statusClass: 'status-new'
       };
 
+      let saved = false;
       try {
-        const allCourseApps = JSON.parse(localStorage.getItem('SKILLORA_ALL_COURSE_APPLICATIONS') || '[]');
-        allCourseApps.unshift(admissionRecord);
-        localStorage.setItem('SKILLORA_ALL_COURSE_APPLICATIONS', JSON.stringify(allCourseApps));
-
-        const myAdmissions = JSON.parse(localStorage.getItem('SKILLORA_MY_ADMISSIONS') || '[]');
-        myAdmissions.unshift(admissionRecord);
-        localStorage.setItem('SKILLORA_MY_ADMISSIONS', JSON.stringify(myAdmissions));
-
-        const activityLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
-        activityLog.unshift({
-          id: refId,
-          type: 'course',
-          title: `${name} applied for ${course}`,
-          desc: `${CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.name : 'College'} • Phone: ${phone}`,
-          time: 'Just now',
-          timestamp: new Date().toISOString()
+        saved = await window.SkillOraAuth.submitAdmissionToCloud({
+          collegeId: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.id : null,
+          studentName: name, phone: phone, email: email, courseName: course,
+          collegeState: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.state : null,
+          collegeCity: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.city : null,
+          refId: refId
         });
-        localStorage.setItem('SKILLORA_LIVE_ACTIVITY_LOG', JSON.stringify(activityLog.slice(0, 50)));
-      } catch (e) {}
-
-      try {
-        if (window.SkillOraAuth && window.SkillOraAuth.submitAdmissionToCloud) {
-          await window.SkillOraAuth.submitAdmissionToCloud({
-            collegeId: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.id : null,
-            studentName: name,
-            phone: phone,
-            email: email,
-            courseName: course,
-            collegeState: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.state : null,
-            collegeCity: CURRENT_APPLYING_COLLEGE ? CURRENT_APPLYING_COLLEGE.city : null,
-            refId: refId
-          });
-        }
-      } catch (e) {
-        console.warn('Note: cloud sync notice:', e);
+      } catch (e) { saved = false; }
+      if (!saved) {
+        alert('We could not submit your application right now. Please check your connection and try again.');
+        return;
       }
 
       closeApplyModal();
@@ -674,7 +647,7 @@
 
     window.onload = function() {
       initCollegesPage();
-      const student = localStorage.getItem('SKILLORA_CURRENT_USER');
+      const sUser = window.SkillOraAuth.getCurrentUser('student'); const student = sUser ? JSON.stringify(sUser) : null;
       const authBtn = document.getElementById('nav-auth-btn');
       const link = document.getElementById('nav-dashboard-link');
 
@@ -724,7 +697,7 @@
           if (targetCol) {
             renderColleges([targetCol]);
             const countEl = document.getElementById('colleges-count-header');
-            if (countEl) countEl.innerHTML = `Showing Selected College: <strong>${targetCol.name}</strong> • <a href="colleges.html" style="color:var(--color-primary-blue);text-decoration:underline;">View All 488+ Colleges</a>`;
+            if (countEl) countEl.innerHTML = `Showing Selected College: <strong>${targetCol.name}</strong> • <a href="colleges.html" style="color:var(--color-primary-blue);text-decoration:underline;">View All Colleges</a>`;
             // Auto expand course list
             setTimeout(() => toggleCollegeCourses(targetId), 200);
             if (autoApply && student) {

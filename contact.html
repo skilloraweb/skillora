@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="data/config.js"></script>
   <script src="data/auth_db.js"></script>
   <style>
     body {
@@ -333,7 +334,7 @@
           <div class="info-icon-badge">📞</div>
           <div class="info-text-group">
             <strong>Toll-Free Student Helpline</strong>
-            <a href="tel:0000000000">+91 0000000000</a>
+            <a href="#" id="support-phone-link" style="display:none"></a><span id="support-phone-missing" style="font-size:13px;color:#728DA9;">Please use the form on this page - we will call you back.</span>
             <div style="font-size:12px;color:#728DA9;">Mon – Sat • 9:00 AM – 8:00 PM IST</div>
           </div>
         </div>
@@ -361,7 +362,7 @@
           <div class="info-icon-badge">💬</div>
           <div class="info-text-group">
             <strong>Direct WhatsApp Desk</strong>
-            <a href="https://wa.me/910000000000" target="_blank" rel="noopener">+91 0000000000 (Counseling Support)</a>
+            <a href="#" id="support-wa-link" target="_blank" rel="noopener" style="display:none"></a><span id="support-wa-missing" style="font-size:13px;color:#728DA9;">Coming soon.</span>
           </div>
         </div>
       </div>
@@ -408,7 +409,7 @@
         <div class="form-row-2col">
           <div class="form-group-wrap">
             <label for="contact-phone">Mobile Number *</label>
-            <input type="tel" id="contact-phone" class="form-control-input" placeholder="e.g. 0000000000" pattern="[0-9]{10}" required>
+            <input type="tel" id="contact-phone" class="form-control-input" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
           </div>
           <div class="form-group-wrap">
             <label for="contact-email">Email Address *</label>
@@ -499,7 +500,7 @@
       }
 
       btn.disabled = true;
-      btn.textContent = 'Transmitting Message to Admin & Gmail...';
+      btn.textContent = 'Sending...';
 
       const refId = 'MSG-' + Date.now().toString().slice(-4);
       const now = new Date();
@@ -517,23 +518,19 @@
         status: 'New Inquiry'
       };
 
-      // 1. Save directly into Local Storage for Instant Admin Panel Delivery
-      try {
-        const stored = JSON.parse(localStorage.getItem('SKILLORA_CONTACT_INQUIRIES') || '[]');
-        stored.unshift(inquiryItem);
-        localStorage.setItem('SKILLORA_CONTACT_INQUIRIES', JSON.stringify(stored));
-
-        // Activity Feed Log
-        const actLog = JSON.parse(localStorage.getItem('SKILLORA_LIVE_ACTIVITY_LOG') || '[]');
-        actLog.unshift({
-          id: refId,
-          title: '💬 ' + name + ' sent a message: "' + topic + '"',
-          desc: 'Phone: ' + phone + ' • Email: ' + email + ' • "' + message.slice(0, 70) + '..."',
-          time: 'Just now',
-          type: 'inquiry'
-        });
-        localStorage.setItem('SKILLORA_LIVE_ACTIVITY_LOG', JSON.stringify(actLog));
-      } catch(e) {}
+      // 1. Save to the cloud database (single source of truth; the admin console reads it from there)
+      let saved = false;
+      try { saved = await window.SkillOraAuth.submitContactInquiry({ name, phone, email, subject: topic, message }); } catch (e) {}
+      if (!saved) {
+        btn.disabled = false;
+        btn.textContent = 'Send Message to SkillOra Team →';
+        alertEl.style.display = 'block';
+        alertEl.style.background = '#FDEDEC';
+        alertEl.style.color = '#C0392B';
+        alertEl.style.border = '1px solid #FADBD8';
+        alertEl.innerHTML = '<strong>⚠️ Your message could not be sent.</strong> Please check your connection and try again.';
+        return;
+      }
 
       // 2. Deliver directly to skillora.web@gmail.com via FormSubmit AJAX API
       try {
@@ -560,19 +557,6 @@
       } catch(mailErr) {
         console.warn('FormSubmit email transmission notice:', mailErr);
       }
-
-      // 3. Log to Supabase Cloud Database (admission_leads table)
-      try {
-        if (window.SkillOraAuth && window.SkillOraAuth.submitAdmissionToCloud) {
-          await SkillOraAuth.submitAdmissionToCloud({
-            studentName: name,
-            phone: phone,
-            email: email,
-            courseName: '[Web Message] ' + topic,
-            refId: refId
-          });
-        }
-      } catch(cloudErr) {}
 
       btn.disabled = false;
       btn.textContent = 'Send Message to SkillOra Team →';
@@ -605,5 +589,18 @@
       document.body.style.overflow = '';
     });
   </script>
+<script>
+  (function () {
+    const c = window.SKILLORA_CONFIG || {};
+    const digits = v => String(v || '').replace(/[^0-9]/g, '');
+    const show = (linkId, missId, number, href, suffix) => {
+      if (!digits(number)) return;
+      const a = document.getElementById(linkId), m = document.getElementById(missId);
+      a.textContent = number + (suffix || ''); a.href = href; a.style.display = ''; if (m) m.style.display = 'none';
+    };
+    show('support-phone-link', 'support-phone-missing', c.SUPPORT_PHONE, 'tel:+' + digits(c.SUPPORT_PHONE));
+    show('support-wa-link', 'support-wa-missing', c.SUPPORT_WHATSAPP, 'https://wa.me/' + digits(c.SUPPORT_WHATSAPP), ' (Counseling Support)');
+  })();
+</script>
 </body>
 </html>

@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="data/config.js"></script>
   <script src="data/auth_db.js"></script>
   <style>
     body {
@@ -404,7 +405,7 @@
             </li>
             <li class="auth-feature-item">
               <span class="auth-feature-icon">✔</span>
-              <span>Direct admission counseling & seat allotment across 488+ recognized colleges.</span>
+              <span>Direct admission counseling and seat allotment with SkillOra partner colleges.</span>
             </li>
             <li class="auth-feature-item">
               <span class="auth-feature-icon">✔</span>
@@ -413,20 +414,7 @@
           </ul>
         </div>
 
-        <div class="auth-stat-pill" id="banner-stats">
-          <div class="auth-stat-box">
-            <strong>488+</strong>
-            <span>Accredited Institutes</span>
-          </div>
-          <div class="auth-stat-box">
-            <strong>1,450+</strong>
-            <span>Verified Vacancies</span>
-          </div>
-          <div class="auth-stat-box">
-            <strong>100%</strong>
-            <span>Seat Guarantee</span>
-          </div>
-        </div>
+        <div class="auth-stat-pill" id="banner-stats" style="display:none"></div>
       </div>
 
       <!-- Right Form Box -->
@@ -459,8 +447,8 @@
         <!-- ================================================================= -->
         <form class="auth-form" id="form-signin" onsubmit="event.preventDefault(); handleSignIn();">
           <div class="form-group-wrap">
-            <label for="signin-identifier" id="lbl-signin-identifier">Mobile Number or Email Address *</label>
-            <input type="text" id="signin-identifier" class="auth-input" placeholder="e.g. 0000000000 or student@gmail.com" required>
+            <label for="signin-identifier" id="lbl-signin-identifier">Email Address *</label>
+            <input type="email" id="signin-identifier" class="auth-input" autocomplete="username" placeholder="Your registered email" required>
           </div>
 
           <div class="form-group-wrap">
@@ -486,7 +474,7 @@
           <div class="auth-row-2">
             <div class="form-group-wrap">
               <label for="student-phone">10-Digit Mobile *</label>
-              <input type="tel" id="student-phone" class="auth-input" placeholder="e.g. 0000000000" pattern="[0-9]{10}" required>
+              <input type="tel" id="student-phone" class="auth-input" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
             </div>
             <div class="form-group-wrap">
               <label for="student-email">Email Address *</label>
@@ -520,7 +508,7 @@
 
           <div class="form-group-wrap">
             <label for="student-password">Create Password *</label>
-            <input type="password" id="student-password" class="auth-input" placeholder="Minimum 6 characters" minlength="6" required>
+            <input type="password" id="student-password" class="auth-input" placeholder="Minimum 8 characters" minlength="8" autocomplete="new-password" required>
           </div>
 
           <button type="submit" class="auth-btn-submit" id="btn-student-submit">Create Student Account & Open Dashboard →</button>
@@ -532,7 +520,7 @@
         <form class="auth-form" id="form-signup-college" style="display:none;" onsubmit="event.preventDefault(); handleCollegeSignUp();">
           <div class="form-group-wrap">
             <label for="college-name">College / University Name *</label>
-            <input type="text" id="college-name" class="auth-input" placeholder="e.g. Sunrise Institute of Nursing & Paramedical" required>
+            <input type="text" id="college-name" class="auth-input" placeholder="Your institution's full name" required>
           </div>
 
           <div class="auth-row-2">
@@ -549,7 +537,7 @@
           <div class="auth-row-2">
             <div class="form-group-wrap">
               <label for="college-phone">Official Contact Phone *</label>
-              <input type="tel" id="college-phone" class="auth-input" placeholder="e.g. 0000000000" required>
+              <input type="tel" id="college-phone" class="auth-input" placeholder="10-digit mobile number" required>
             </div>
             <div class="form-group-wrap">
               <label for="college-location">State & City *</label>
@@ -579,7 +567,7 @@
 
           <div class="form-group-wrap">
             <label for="college-password">Create Portal Password *</label>
-            <input type="password" id="college-password" class="auth-input" placeholder="Minimum 6 characters" minlength="6" required>
+            <input type="password" id="college-password" class="auth-input" placeholder="Minimum 8 characters" minlength="8" autocomplete="new-password" required>
           </div>
 
           <button type="submit" class="auth-btn-submit" style="background:#0FA66D;">Register Institute & Open College Portal →</button>
@@ -591,7 +579,7 @@
         <form class="auth-form" id="form-signup-employer" style="display:none;" onsubmit="event.preventDefault(); handleEmployerSignUp();">
           <div class="form-group-wrap">
             <label for="employer-org-name">Hospital / Hotel / Company Name *</label>
-            <input type="text" id="employer-org-name" class="auth-input" placeholder="e.g. City Hospital & Research Centre / Taj Vivanta" required>
+            <input type="text" id="employer-org-name" class="auth-input" placeholder="Your hospital / hotel / company name" required>
           </div>
 
           <div class="auth-row-2">
@@ -608,7 +596,7 @@
           <div class="auth-row-2">
             <div class="form-group-wrap">
               <label for="employer-phone">HR Contact Number *</label>
-              <input type="tel" id="employer-phone" class="auth-input" placeholder="e.g. 0000000000" required>
+              <input type="tel" id="employer-phone" class="auth-input" placeholder="10-digit mobile number" required>
             </div>
             <div class="form-group-wrap">
               <label for="employer-location">City & State *</label>
@@ -639,7 +627,7 @@
 
           <div class="form-group-wrap">
             <label for="employer-password">Create Recruiter Password *</label>
-            <input type="password" id="employer-password" class="auth-input" placeholder="Minimum 6 characters" minlength="6" required>
+            <input type="password" id="employer-password" class="auth-input" placeholder="Minimum 8 characters" minlength="8" autocomplete="new-password" required>
           </div>
 
           <button type="submit" class="auth-btn-submit" style="background:#FF922A;">Register Employer & Open Hiring Portal →</button>
@@ -702,30 +690,30 @@
         sub: "India’s verified career gateway connecting students with recognized colleges, direct admissions, and healthcare/hospitality job vacancies.",
         features: [
           "1-Click Applications with your verified digital student profile & resume.",
-          "Direct admission counseling & seat allotment across 488+ recognized colleges.",
+          "Direct admission counseling and seat allotment with SkillOra partner colleges.",
           "Verified hospital & luxury hotel job hiring with no recruitment charges."
         ],
-        statBox1: { val: "488+", lbl: "Accredited Institutes" },
-        statBox2: { val: "1,450+", lbl: "Verified Vacancies" },
-        statBox3: { val: "100%", lbl: "Seat Guarantee" },
-        idLabel: "Mobile Number or Email Address *",
-        idPlaceholder: "e.g. 0000000000 or student@gmail.com",
+        statBox1: { val: "", lbl: "" },
+        statBox2: { val: "", lbl: "" },
+        statBox3: { val: "", lbl: "" },
+        idLabel: "Email Address *",
+        idPlaceholder: "Your registered email",
         submitText: "Sign In to Student Dashboard →",
         portalUrl: "dashboard.html"
       },
       college: {
         title: "Direct Admission Counseling & Seat Management",
-        sub: "Empowering 488+ recognized colleges to list verified courses, manage seat intake quotas, and receive pre-screened student admission applications.",
+        sub: "Helping colleges list verified courses, manage seat intake quotas, and receive pre-screened student admission applications.",
         features: [
           "Real-time intake tracking: B.Sc Nursing, GNM, and Hotel Management batches.",
           "Direct student leads with 12th marks, stream, and phone number.",
           "INC, AICTE & State Council accreditation badge display on SkillOra directory."
         ],
-        statBox1: { val: "100k+", lbl: "Active Students" },
-        statBox2: { val: "18+", lbl: "States Covered" },
-        statBox3: { val: "Zero", lbl: "Listing Fees" },
-        idLabel: "Official Institute Email or College Phone *",
-        idPlaceholder: "e.g. admissions@sunrisenursing.edu.in",
+        statBox1: { val: "", lbl: "" },
+        statBox2: { val: "", lbl: "" },
+        statBox3: { val: "", lbl: "" },
+        idLabel: "Email Address *",
+        idPlaceholder: "Your registered email",
         submitText: "Sign In to College Partner Portal →",
         portalUrl: "college-portal.html"
       },
@@ -737,11 +725,11 @@
           "Review digital student profiles with 1-click verified resume download.",
           "Shortlist candidates and schedule direct walk-in interviews."
         ],
-        statBox1: { val: "12,000+", lbl: "Registered Nurses" },
-        statBox2: { val: "48 Hrs", lbl: "Avg. Hiring Time" },
-        statBox3: { val: "Verified", lbl: "Candidate Resumes" },
-        idLabel: "Official Work Email or HR Phone *",
-        idPlaceholder: "e.g. hr@cityhospital.org",
+        statBox1: { val: "", lbl: "" },
+        statBox2: { val: "", lbl: "" },
+        statBox3: { val: "", lbl: "" },
+        idLabel: "Email Address *",
+        idPlaceholder: "Your registered email",
         submitText: "Sign In to Employer Hiring Portal →",
         portalUrl: "employer-portal.html"
       }
@@ -781,11 +769,7 @@
       `).join('');
 
       const statBox = document.getElementById('banner-stats');
-      statBox.innerHTML = `
-        <div class="auth-stat-box"><strong>${meta.statBox1.val}</strong><span>${meta.statBox1.lbl}</span></div>
-        <div class="auth-stat-box"><strong>${meta.statBox2.val}</strong><span>${meta.statBox2.lbl}</span></div>
-        <div class="auth-stat-box"><strong>${meta.statBox3.val}</strong><span>${meta.statBox3.lbl}</span></div>
-      `;
+      if (statBox) statBox.innerHTML = '';
 
       // Update Sign In placeholders & label
       document.getElementById('lbl-signin-identifier').textContent = meta.idLabel;
@@ -967,7 +951,7 @@
       showAuthAlert('Account created successfully with secure credentials! Please sign in with your password to continue.', true);
       document.getElementById('form-signup-student').reset();
       setAuthMode('signin');
-      document.getElementById('signin-identifier').value = email || phone;
+      document.getElementById('signin-identifier').value = email;
       document.getElementById('signin-password').value = '';
       document.getElementById('signin-password').focus();
     }
@@ -1003,7 +987,7 @@
       showAuthAlert('College institutional account registered! Please sign in with your password.', true);
       document.getElementById('form-signup-college').reset();
       setAuthMode('signin');
-      document.getElementById('signin-identifier').value = email || phone;
+      document.getElementById('signin-identifier').value = email;
       document.getElementById('signin-password').value = '';
       document.getElementById('signin-password').focus();
     }
@@ -1039,7 +1023,7 @@
       showAuthAlert('Employer recruiter account registered! Please sign in with your password.', true);
       document.getElementById('form-signup-employer').reset();
       setAuthMode('signin');
-      document.getElementById('signin-identifier').value = email || phone;
+      document.getElementById('signin-identifier').value = email;
       document.getElementById('signin-password').value = '';
       document.getElementById('signin-password').focus();
     }

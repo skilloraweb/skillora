@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="data/config.js"></script>
   <script src="data/auth_db.js"></script>
   <style>
     body {
@@ -526,13 +527,7 @@
             <table class="dash-table">
               <thead>
                 <tr>
-                  <th>Ref ID</th>
-                  <th>Target College</th>
-                  <th>Course Applied</th>
-                  <th>Annual Fee</th>
-                  <th>Date</th>
-                  <th>Current Status</th>
-                  <th>Action</th>
+                  <th>Ref ID</th><th>Target College</th><th>Course Applied</th><th>Applied On</th><th>Current Status</th>
                 </tr>
               </thead>
               <tbody id="overview-admission-table-body">
@@ -556,12 +551,7 @@
             <table class="dash-table">
               <thead>
                 <tr>
-                  <th>Job Reference</th>
-                  <th>Role Applied</th>
-                  <th>Employer / Facility</th>
-                  <th>Salary Range</th>
-                  <th>Status</th>
-                  <th>Contact Recruiter</th>
+                  <th>Job Reference</th><th>Role Applied</th><th>Employer / Facility</th><th>Salary Range</th><th>Status</th>
                 </tr>
               </thead>
               <tbody id="overview-jobs-table-body">
@@ -590,13 +580,7 @@
             <table class="dash-table">
               <thead>
                 <tr>
-                  <th>Ref ID</th>
-                  <th>College Name</th>
-                  <th>Location</th>
-                  <th>Course Name</th>
-                  <th>Fee / Yr</th>
-                  <th>Status</th>
-                  <th>Counselor Slip</th>
+                  <th>Ref ID</th><th>College Name</th><th>Location</th><th>Course Name</th><th>Applied On</th><th>Status</th>
                 </tr>
               </thead>
               <tbody id="all-courses-table-body">
@@ -624,12 +608,7 @@
             <table class="dash-table">
               <thead>
                 <tr>
-                  <th>Application Ref</th>
-                  <th>Job Position</th>
-                  <th>Organization</th>
-                  <th>City / State</th>
-                  <th>Applied On</th>
-                  <th>Interview Status</th>
+                  <th>Application Ref</th><th>Job Position</th><th>Organization</th><th>City / State</th><th>Applied On</th><th>Status</th>
                 </tr>
               </thead>
               <tbody id="all-jobs-table-body">
@@ -662,7 +641,7 @@
 
           <!-- Upload Progress / Status Indicator -->
           <div id="resume-upload-status" style="display:none;padding:12px 16px;background:#EBF5FF;border:1px solid #B9DAFB;border-radius:8px;margin-bottom:12px;font-size:12.5px;color:#087BFF;font-weight:700;">
-            ⏳ Uploading resume file directly to Supabase Cloud Storage...
+            ⏳ Uploading resume file to your private cloud storage...
           </div>
 
           <!-- 1. Real State when NO resume has been uploaded yet -->
@@ -767,7 +746,7 @@
 
               <div class="p-field-group">
                 <label>Preferred Study / Work Location</label>
-                <input type="text" id="edit-pref-loc" class="p-input" placeholder="e.g. Mumbai, Delhi NCR, or Pan-India">
+                <input type="text" id="edit-pref-loc" class="p-input" placeholder="Preferred work location">
               </div>
 
             </div>
@@ -827,38 +806,18 @@
   <!-- JavaScript for Student Dashboard State (Real Cloud & Offline Hybrid Engine) -->
   <script>
     async function loadStudentDashboard() {
-      // 1. Authenticated Student Session Check (Single Active Role Enforced)
-      const activeRole = (window.SkillOraAuth && window.SkillOraAuth.getActiveRole) 
-        ? window.SkillOraAuth.getActiveRole() 
-        : localStorage.getItem('SKILLORA_ACTIVE_ROLE');
-      
-      if (activeRole && activeRole !== 'student') {
-        const titles = { college: 'College Partner', employer: 'Hospital / Hotel HR Recruiter' };
-        alert(`Active Session Notice:\n\nYou are currently logged in as a ${titles[activeRole] || activeRole}.\n\nSkillOra only allows one active account type at a time per browser tab. To access the Student Dashboard, please sign in with your Student account.`);
-        window.location.href = "auth.html?role=student";
-        return;
-      }
-
-      let userStr = localStorage.getItem('SKILLORA_CURRENT_USER');
-      if (!userStr) {
-        window.location.href = "auth.html?role=student";
-        return;
-      }
-
-      let user = {};
-      try {
-        user = JSON.parse(userStr);
-      } catch (e) {
-        window.location.href = "auth.html?role=student";
-        return;
-      }
+      // 1. Session check: must hold a real, signed-in student session
+      if (!SkillOraAuth.enforceExclusiveRole('student')) return;
+      await SkillOraAuth.refreshResumeLink();            // resume links are short-lived; renew
+      const user = SkillOraAuth.getCurrentUser('student');
+      if (!user) { window.location.href = "auth.html?role=student"; return; }
 
       // Populate User Header Information
-      document.getElementById('user-name-display').textContent = user.name || "Student User";
+      document.getElementById('user-name-display').textContent = user.name || "";
       document.getElementById('user-email-display').textContent = user.email || "";
-      document.getElementById('user-phone-display').textContent = user.phone ? `📱 +91 ${user.phone}` : "📱 Contact Provided";
+      document.getElementById('user-phone-display').textContent = user.phone ? `📱 ${user.phone}` : "";
       
-      const initials = (user.name || "ST").split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      const initials = (user.name || "?").split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
       document.getElementById('user-avatar-initials').textContent = initials;
 
       // 2. Real Resume State Handling (No fake placeholders)
@@ -877,7 +836,7 @@
         if (activeState) activeState.style.display = 'block';
         if (resumeNameEl) resumeNameEl.textContent = user.resumeName;
         if (resumeDateEl) {
-          resumeDateEl.textContent = `✔ Uploaded on ${user.resumeDate || 'Recently'} • ${user.resumeSize || 'Verified'} • Stored on Supabase Storage`;
+          resumeDateEl.textContent = `✔ Uploaded on ${user.resumeDate || 'Recently'} • ${user.resumeSize || ''} • Private cloud storage`;
         }
         if (previewBtn) {
           if (user.resumeUrl) {
@@ -902,7 +861,7 @@
       if (user.sector) score += 10;
       if (hasResume) score += 15;
 
-      const displayScore = Math.min(100, Math.max(20, score));
+      const displayScore = Math.min(100, score);
       if (strengthVal) strengthVal.textContent = `${displayScore}%`;
       if (strengthBar) strengthBar.style.width = `${displayScore}%`;
 
@@ -910,60 +869,33 @@
       if (document.getElementById('edit-name')) document.getElementById('edit-name').value = user.name || "";
       if (document.getElementById('edit-phone')) document.getElementById('edit-phone').value = user.phone || "";
       if (document.getElementById('edit-email')) document.getElementById('edit-email').value = user.email || "";
-      if (document.getElementById('edit-city')) document.getElementById('edit-city').value = user.city || "Mumbai";
-      if (document.getElementById('edit-state')) document.getElementById('edit-state').value = user.state || "Maharashtra";
-      if (document.getElementById('edit-qualification')) document.getElementById('edit-qualification').value = user.qualification || "12th Pass";
-      if (document.getElementById('edit-sector')) document.getElementById('edit-sector').value = user.sector || "Nursing & Healthcare";
+      if (document.getElementById('edit-city')) document.getElementById('edit-city').value = user.city || "";
+      if (document.getElementById('edit-state')) document.getElementById('edit-state').value = user.state || "";
+      if (document.getElementById('edit-qualification')) document.getElementById('edit-qualification').value = user.qualification || "";
+      if (document.getElementById('edit-sector')) document.getElementById('edit-sector').value = user.sector || "";
+      const emailEl = document.getElementById('edit-email'); if (emailEl) emailEl.readOnly = true;   // email is your login ID
 
       // 3. Load Real Applications from Supabase Cloud and Local Cache
-      await renderAdmissionsTables(user.email);
-      await renderJobsTables(user.email);
+      await renderAdmissionsTables();
+      await renderJobsTables();
     }
 
-    async function renderAdmissionsTables(userEmail) {
+    const stClass = (st) => /admit|allot|shortlist|select/i.test(st) ? 'status-shortlisted' : 'status-under-review';
+    const fmtDT = (iso) => iso ? new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '—';
+
+    async function renderAdmissionsTables() {
       const overviewTbody = document.getElementById('overview-admission-table-body');
       const allTbody = document.getElementById('all-courses-table-body');
-
-      let localAdmissions = [];
-      try {
-        localAdmissions = JSON.parse(localStorage.getItem('SKILLORA_MY_ADMISSIONS') || '[]');
-      } catch (e) { localAdmissions = []; }
-
-      // Fetch from Supabase Cloud
-      let cloudAdmissions = [];
-      if (window.SkillOraAuth && window.SkillOraAuth.fetchStudentCloudAdmissions && userEmail) {
-        try {
-          cloudAdmissions = await window.SkillOraAuth.fetchStudentCloudAdmissions(userEmail);
-        } catch (e) {}
-      }
-
-      // Merge Cloud & Local (mapping cloud fields to display fields)
-      const merged = [...localAdmissions];
-      cloudAdmissions.forEach(c => {
-        const ref = (c.counsellor_notes || '').replace('Ref: ', '').trim() || `SKL-CLOUD-${c.id}`;
-        if (!merged.some(m => (m.refId && m.refId === ref) || (m.courseName === c.course_name))) {
-          merged.push({
-            refId: ref,
-            collegeName: c.city ? `Partner College (${c.city})` : 'Verified Partner College',
-            collegeCity: c.city || 'State Campus',
-            collegeState: c.state || '',
-            courseName: c.course_name,
-            fee: 'Scholarship / Standard',
-            date: new Date(c.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-            status: c.status || 'Counselor Assigned',
-            statusClass: 'status-assigned'
-          });
-        }
-      });
+      const merged = await SkillOraAuth.fetchMyAdmissions();
 
       if (merged.length === 0) {
         const emptyHtml = `
           <tr>
-            <td colspan="7" style="text-align:center;padding:36px 16px;color:var(--text-muted);">
+            <td colspan="6" style="text-align:center;padding:36px 16px;color:var(--text-muted);">
               <div style="font-size:32px;margin-bottom:8px;">🎓</div>
               <strong style="color:var(--color-navy-dark);font-size:14px;">No Course Admission Applications Yet</strong>
               <p style="font-size:12.5px;margin:6px 0 14px 0;">You have not applied to any colleges yet. Apply directly to verified nursing, hotel management, or corporate academies.</p>
-              <a href="colleges.html" class="btn btn-primary-submit" style="display:inline-block;padding:7px 16px;font-size:12px;text-decoration:none;">Explore 488+ Recognized Colleges →</a>
+              <a href="colleges.html" class="btn btn-primary-submit" style="display:inline-block;padding:7px 16px;font-size:12px;text-decoration:none;">Explore  Recognized Colleges →</a>
             </td>
           </tr>
         `;
@@ -974,73 +906,33 @@
         return;
       }
 
-      const rowsHtml = merged.map(adm => {
-        const ref = adm.refId || 'SKL-2026-ADM';
-        const col = adm.collegeName || adm.college || 'Verified College';
-        const loc = adm.collegeCity ? `${adm.collegeCity}, ${adm.collegeState || ''}` : (adm.location || 'Campus');
-        const crs = adm.courseName || adm.course || 'Degree Program';
-        const fee = adm.fee || '₹ 45,000 / Yr';
-        const dt = adm.date || 'Recent';
-        const st = adm.status || 'Counselor Assigned';
-        const stClass = adm.statusClass || 'status-assigned';
-
-        return `
-          <tr>
-            <td><strong style="color:#087BFF;">${ref}</strong></td>
-            <td style="font-weight:700;">${col} <span style="font-size:11px;color:var(--text-muted);display:block;">${loc}</span></td>
-            <td>${crs}</td>
-            <td style="font-weight:700;color:#0FA66D;">${fee}</td>
-            <td style="color:#728DA9;">${dt}</td>
-            <td><span class="status-pill ${stClass}">${st}</span></td>
-            <td>
-              <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Counselor Helpline: An authorized SkillOra academic counselor is assigned to your application (Helpline: +91 0000000000, Ref: ${ref})')">📞 Call Counselor</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-
-      if (overviewTbody) overviewTbody.innerHTML = rowsHtml;
-      if (allTbody) allTbody.innerHTML = rowsHtml;
+      const refCell = (r) => `<td><strong style="color:#087BFF;">${r}</strong></td>`;
+      const overviewHtml = merged.map(adm => `
+          <tr>${refCell(adm.ref || ('#' + adm.id))}
+            <td style="font-weight:700;">${adm.college || '—'}</td>
+            <td>${adm.course || '—'}</td>
+            <td style="color:#728DA9;">${fmtDT(adm.createdAt)}</td>
+            <td><span class="status-pill ${stClass(adm.status)}">${adm.status}</span></td>
+          </tr>`).join('');
+      const allHtml = merged.map(adm => `
+          <tr>${refCell(adm.ref || ('#' + adm.id))}
+            <td style="font-weight:700;">${adm.college || '—'}</td>
+            <td>${[adm.city, adm.state].filter(Boolean).join(', ') || '—'}</td>
+            <td>${adm.course || '—'}</td>
+            <td style="color:#728DA9;">${fmtDT(adm.createdAt)}</td>
+            <td><span class="status-pill ${stClass(adm.status)}">${adm.status}</span></td>
+          </tr>`).join('');
+      if (overviewTbody) overviewTbody.innerHTML = overviewHtml;
+      if (allTbody) allTbody.innerHTML = allHtml;
 
       document.getElementById('stat-colleges-applied').textContent = merged.length;
       document.getElementById('badge-course-count').textContent = merged.length;
     }
 
-    async function renderJobsTables(userEmail) {
+    async function renderJobsTables() {
       const overviewTbody = document.getElementById('overview-jobs-table-body');
       const allTbody = document.getElementById('all-jobs-table-body');
-
-      let localJobs = [];
-      try {
-        localJobs = JSON.parse(localStorage.getItem('SKILLORA_MY_JOBS') || '[]');
-      } catch (e) { localJobs = []; }
-
-      // Fetch from Supabase Cloud
-      let cloudJobs = [];
-      if (window.SkillOraAuth && window.SkillOraAuth.fetchStudentCloudJobs && userEmail) {
-        try {
-          cloudJobs = await window.SkillOraAuth.fetchStudentCloudJobs(userEmail);
-        } catch (e) {}
-      }
-
-      // Merge Cloud & Local
-      const merged = [...localJobs];
-      cloudJobs.forEach(cj => {
-        const refMatch = (cj.recruiter_notes || '').match(/Ref:\s*([^\s-]+)/);
-        const ref = refMatch ? refMatch[1] : `SKL-JOB-CLOUD-${cj.id}`;
-        if (!merged.some(m => (m.refId && m.refId === ref) || (m.role && cj.recruiter_notes && cj.recruiter_notes.includes(m.role)))) {
-          merged.push({
-            refId: ref,
-            role: cj.recruiter_notes ? cj.recruiter_notes.replace(/Ref:[^-]+-\s*/, '') : 'Verified Healthcare Opening',
-            company: 'Hospital / Hotel Hiring Board',
-            location: 'Assigned Hospital / Hotel',
-            salary: '₹ 18,000 - 35,000 / mo',
-            date: new Date(cj.applied_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-            status: cj.stage || 'Applied',
-            statusClass: 'status-under-review'
-          });
-        }
-      });
+      const merged = await SkillOraAuth.fetchMyApplications();
 
       if (merged.length === 0) {
         const emptyHtml = `
@@ -1060,32 +952,24 @@
         return;
       }
 
-      const rowsHtml = merged.map(j => {
-        const ref = j.refId || 'SKL-JOB-2026';
-        const role = j.role || 'Healthcare / Hospitality Professional';
-        const comp = j.company || 'Verified Employer';
-        const loc = j.location || 'Pan-India';
-        const sal = j.salary || 'Standard Package';
-        const dt = j.date || 'Recent';
-        const st = j.status || 'Under Review';
-        const stClass = j.statusClass || 'status-under-review';
-
-        return `
-          <tr>
-            <td><strong style="color:#087BFF;">${ref}</strong></td>
-            <td style="font-weight:700;">${role}</td>
-            <td>${comp}</td>
-            <td>${sal}</td>
-            <td><span class="status-pill ${stClass}">${st}</span></td>
-            <td>
-              <button class="btn btn-secondary-btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Recruiter Desk: Your application and cloud resume are logged with ${comp} HR. Direct interview rounds scheduled within 24h.')">💬 HR Desk</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-
-      if (overviewTbody) overviewTbody.innerHTML = rowsHtml;
-      if (allTbody) allTbody.innerHTML = rowsHtml;
+      const jref = (j) => `<td><strong style="color:#087BFF;">${j.ref || ('#' + j.id)}</strong></td>`;
+      const jOverview = merged.map(j => `
+          <tr>${jref(j)}
+            <td style="font-weight:700;">${j.role || '—'}</td>
+            <td>${j.company || '—'}</td>
+            <td>${j.salary || '—'}</td>
+            <td><span class="status-pill ${stClass(j.stage)}">${j.stage}</span></td>
+          </tr>`).join('');
+      const jAll = merged.map(j => `
+          <tr>${jref(j)}
+            <td style="font-weight:700;">${j.role || '—'}</td>
+            <td>${j.company || '—'}</td>
+            <td>${j.location || '—'}</td>
+            <td style="color:#728DA9;">${fmtDT(j.appliedAt)}</td>
+            <td><span class="status-pill ${stClass(j.stage)}">${j.stage}</span></td>
+          </tr>`).join('');
+      if (overviewTbody) overviewTbody.innerHTML = jOverview;
+      if (allTbody) allTbody.innerHTML = jAll;
 
       document.getElementById('stat-jobs-applied').textContent = merged.length;
       document.getElementById('badge-job-count').textContent = merged.length;
@@ -1111,15 +995,12 @@
         return;
       }
 
-      let user = {};
-      try {
-        user = JSON.parse(localStorage.getItem('SKILLORA_CURRENT_USER') || '{}');
-      } catch (e) {}
+      const user = SkillOraAuth.getCurrentUser('student') || {};
 
       const statusEl = document.getElementById('resume-upload-status');
       if (statusEl) {
         statusEl.style.display = 'block';
-        statusEl.innerHTML = `⏳ Uploading <strong>${file.name}</strong> (${Math.round(file.size / 1024)} KB) directly to Supabase Cloud Storage...`;
+        statusEl.innerHTML = `⏳ Uploading <strong>${file.name}</strong> (${Math.round(file.size / 1024)} KB) to your private cloud storage...`;
       }
 
       try {
@@ -1127,9 +1008,9 @@
         if (statusEl) statusEl.style.display = 'none';
 
         if (uploadRes.success) {
-          alert(`Resume "${uploadRes.resumeName}" uploaded successfully to Supabase Cloud Storage!
+          alert(`Resume "${uploadRes.resumeName}" uploaded securely.
 
-Your profile and recruiters will now be able to view your verified resume.`);
+Employers can open it only when you apply to one of their jobs.`);
           await loadStudentDashboard();
         } else {
           alert(`Upload failed: ${uploadRes.message || 'Please check your connection and try again.'}`);
@@ -1143,38 +1024,15 @@ Your profile and recruiters will now be able to view your verified resume.`);
 
     function saveStudentProfile() {
       const name = document.getElementById('edit-name').value.trim();
-      const phone = document.getElementById('edit-phone').value.trim();
-      const email = document.getElementById('edit-email').value.trim();
+      const phone = document.getElementById('edit-phone').value.replace(/[\s-]/g, '');
       const city = document.getElementById('edit-city').value.trim();
       const state = document.getElementById('edit-state').value.trim();
       const qual = document.getElementById('edit-qualification').value;
       const sector = document.getElementById('edit-sector').value;
-
-      let current = {};
-      try { current = JSON.parse(localStorage.getItem('SKILLORA_CURRENT_USER') || '{}'); } catch(e){}
-
-      const updatedUser = {
-        ...current,
-        name: name || current.name,
-        phone: phone || current.phone,
-        email: email || current.email,
-        city,
-        state,
-        qualification: qual,
-        sector
-      };
-      localStorage.setItem('SKILLORA_CURRENT_USER', JSON.stringify(updatedUser));
-
-      // Synchronize with database
-      try {
-        const users = JSON.parse(localStorage.getItem('SKILLORA_DB_USERS') || '[]');
-        const idx = users.findIndex(u => (updatedUser.id && u.id === updatedUser.id) || (u.email === updatedUser.email));
-        if (idx !== -1) {
-          users[idx] = { ...users[idx], ...updatedUser };
-          localStorage.setItem('SKILLORA_DB_USERS', JSON.stringify(users));
-        }
-      } catch (e) {}
-
+      if (name.length < 2) { alert('Please enter your full name.'); return; }
+      if (!/^\+?\d{10,15}$/.test(phone)) { alert('Please enter a valid mobile number.'); return; }
+      const res = SkillOraAuth.saveStudentProfile({ name, phone, city, state, qualification: qual, sector });
+      if (!res.success) { alert('Could not save your profile. Please try again.'); return; }
       alert('Student profile updated successfully!');
       loadStudentDashboard();
     }

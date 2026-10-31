@@ -1,13 +1,15 @@
-# OS Files
+# OS
 Thumbs.db
 .DS_Store
-
-# Temporary / extraction files
+# Secrets - NEVER commit or serve these
+.env
+.env.*
+*.local.js
+config.local.js
+*secret*
+service_role*
+# Local tooling / browser profiles / scratch
+scratch/
 figma_source/
 *.tmp
 *.log
-.env
-*.py
-scratch/
-*.local.js
-config.local.js

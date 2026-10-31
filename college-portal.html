@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="data/config.js"></script>
   <script src="data/auth_db.js"></script>
   <style>
     body {
@@ -426,7 +427,8 @@
         <div>
           <h1 class="inst-name" id="disp-college-name">Institution Name</h1>
           <div class="inst-meta-row">
-            <span class="inst-tag" id="disp-accreditation">Statutory Council Recognized</span>
+            <span class="inst-tag" id="disp-accreditation">—</span>
+            <span class="inst-tag" id="listing-status-note"></span>
             <span>📍 <strong id="disp-location">Location</strong></span>
             <span>Principal: <strong id="disp-principal">Admissions Office</strong></span>
             <span>Batch: <strong>2026 Academic Session</strong></span>
@@ -733,66 +735,57 @@
       document.getElementById('form-add-course').reset();
     }
 
-    function submitNewCourseStream() {
+    const parseFee = (t) => Number(String(t).replace(/[^0-9]/g, '')) || 0;
+    const rupees = (n) => '₹' + Number(n).toLocaleString('en-IN');
+    const parseLoc = (loc) => { const p = String(loc || '').split(',').map(x => x.trim()); return { city: p[0] || '', state: p[1] || '' }; };
+
+    // Saves the whole college listing (profile + courses) to the cloud. Appears publicly only after SkillOra verifies it.
+    async function persistCollege(courses) {
+      const u = SkillOraAuth.getCurrentUser('college') || {};
+      const loc = parseLoc(LOGGED_IN_COLLEGE.location);
+      const fees = courses.map(c => c.fee).filter(f => f > 0);
+      return SkillOraAuth.saveMyCollege({
+        name: LOGGED_IN_COLLEGE.collegeName, category: LOGGED_IN_COLLEGE.category || u.sector || (courses[0] && courses[0].sector) || '',
+        city: loc.city, state: loc.state, approval: LOGGED_IN_COLLEGE.accreditation, hostel: LOGGED_IN_COLLEGE.hostelFacilities,
+        minFee: fees.length ? Math.min(...fees) : 0, courses
+      });
+    }
+
+    async function submitNewCourseStream() {
       const name = document.getElementById('course-name-input').value.trim();
       const sector = document.getElementById('course-sector-input').value;
       const duration = document.getElementById('course-duration-input').value.trim();
-      const fee = document.getElementById('course-fee-input').value.trim();
-      const seats = Number(document.getElementById('course-seats-input').value) || 50;
-      const eligibility = document.getElementById('course-eligibility-input').value.trim() || '10+2 Intermediate Pass';
+      const fee = parseFee(document.getElementById('course-fee-input').value);
+      const seats = Number(document.getElementById('course-seats-input').value);
+      const eligibility = document.getElementById('course-eligibility-input').value.trim();
 
-      if (!name || !duration || !fee) {
-        alert('Please fill in Course Title, Duration and Annual Fee.');
+      if (!name || !duration || !fee || !seats) {
+        alert('Please fill in Course Title, Duration, Annual Fee and Number of Seats.');
         return;
       }
-
-      const colId = LOGGED_IN_COLLEGE ? LOGGED_IN_COLLEGE.id : 'COL-1';
-      const colName = LOGGED_IN_COLLEGE ? LOGGED_IN_COLLEGE.collegeName : 'My Institution';
-
-      const newCourse = {
-        id: `CRS-${Date.now()}`,
-        collegeId: colId,
-        collegeName: colName,
-        name,
-        sector,
-        duration: `${duration} • Verified`,
-        fee: fee.startsWith('₹') ? fee : `₹${fee} / Year`,
-        seats,
-        remaining: seats,
-        eligibility,
-        status: 'Admissions Open'
-      };
-
-      ALL_COLLEGE_COURSES.unshift(newCourse);
-      try {
-        const stored = JSON.parse(localStorage.getItem('SKILLORA_COLLEGE_COURSES') || '[]');
-        stored.unshift(newCourse);
-        localStorage.setItem('SKILLORA_COLLEGE_COURSES', JSON.stringify(stored));
-      } catch(e) {}
-
-      // Also publish to SKILLORA_CUSTOM_COLLEGES so it is searchable on colleges.html
-      try {
-        const storedColleges = JSON.parse(localStorage.getItem('SKILLORA_CUSTOM_COLLEGES') || '[]');
-        const colUser = JSON.parse(localStorage.getItem('SKILLORA_COLLEGE_USER') || '{}');
-        storedColleges.unshift({
-          id: Date.now(),
-          name: colUser.collegeName || 'Sunrise Institute of Medical Sciences & Nursing',
-          cleanName: colUser.collegeName || 'Sunrise Institute',
-          category: sector,
-          city: colUser.city || 'Mumbai',
-          state: colUser.state || 'Maharashtra',
-          minFee: 65000,
-          minFeeDisplay: fee,
-          approval: colUser.accreditation || 'INC Approved',
-          courses: [{ name, duration, feeDisplay: fee }]
-        });
-        localStorage.setItem('SKILLORA_CUSTOM_COLLEGES', JSON.stringify(storedColleges));
-      } catch(e) {}
-
-      renderCoursesList();
+      if (!LOGGED_IN_COLLEGE.location || !parseLoc(LOGGED_IN_COLLEGE.location).state) {
+        alert('Please set your institution location as "City, State" in the Profile tab first.');
+        showTab('profile'); closeAddCourseModal(); return;
+      }
+      const course = { name, sector, duration, fee, feeDisplay: rupees(fee), seats, remaining: seats, eligibility, mode: '', status: 'Admissions Open' };
+      const res = await persistCollege([course, ...ALL_COLLEGE_COURSES.map(c => c.raw)]);
+      if (!res.success) { alert(res.message); return; }
       closeAddCourseModal();
+      await loadCollegeData();
       showTab('courses');
-      alert(`Course "${name}" published live! It is now available for direct student admissions.`);
+      alert(`Course "${name}" saved. ${res.message}`);
+    }
+
+    async function updateSeats(idx) {
+      const crs = ALL_COLLEGE_COURSES[idx]; if (!crs) return;
+      const v = prompt(`Seats remaining for "${crs.rawName}" (total intake ${crs.seats}):`, crs.remaining);
+      if (v === null) return;
+      const n = Math.max(0, Math.min(Number(v), crs.seats));
+      if (!Number.isFinite(n)) return;
+      const list = ALL_COLLEGE_COURSES.map((c, i) => i === idx ? { ...c.raw, remaining: n } : c.raw);
+      const res = await persistCollege(list);
+      if (!res.success) { alert(res.message); return; }
+      await loadCollegeData();
     }
 
     function renderCoursesList() {
@@ -819,7 +812,7 @@
         return;
       }
 
-      grid.innerHTML = ALL_COLLEGE_COURSES.map(crs => `
+      grid.innerHTML = ALL_COLLEGE_COURSES.map((crs, idx) => `
         <div class="course-mgmt-card">
           <h4>${crs.name}</h4>
           <p style="font-size:12px;color:#728DA9;margin-bottom:10px;">${crs.duration}</p>
@@ -832,8 +825,8 @@
             <strong>${crs.seats} Seats (${crs.remaining || crs.seats} Remaining)</strong>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="pill-status pill-green">${crs.status || 'Admissions Open'}</span>
-            <button class="btn btn-secondary-btn" style="padding:3px 8px;font-size:11px;" onclick="alert('Seat intake for ${crs.name} updated.')">Update Seats</button>
+            <span class="pill-status pill-green">${crs.status}</span>
+            <button class="btn btn-secondary-btn" style="padding:3px 8px;font-size:11px;" onclick="updateSeats(${idx})">Update Seats</button>
           </div>
         </div>
       `).join('');
@@ -876,17 +869,17 @@
 
       tbody.innerHTML = list.map((lead, idx) => `
         <tr>
-          <td><strong style="color:#087BFF;">#${lead.id || ('ADM-' + (8090 + idx))}</strong></td>
+          <td><strong style="color:#087BFF;">#${lead.id}</strong></td>
           <td><strong>${lead.name}</strong></td>
-          <td>${lead.qualification || '12th Intermediate'}</td>
+          <td>${lead.qualification || '—'}</td>
           <td><strong>${lead.course}</strong></td>
           <td><a href="tel:${lead.phone}" style="color:#087BFF;text-decoration:none;font-weight:700;">📱 ${lead.phone}</a></td>
-          <td>${lead.location || 'India'}</td>
-          <td>${lead.date || 'Recent'}</td>
+          <td>${lead.location || '—'}</td>
+          <td>${lead.date || '—'}</td>
           <td><span class="pill-status ${lead.stage.includes('Seat') || lead.stage.includes('Admitted') ? 'pill-green' : lead.stage.includes('Contacted') ? 'pill-blue' : 'pill-orange'}">${lead.stage}</span></td>
           <td>
             <select class="auth-input" style="height:30px;font-size:11.5px;padding:2px 6px;" onchange="updateLeadStatus('${lead.id}', this.value)">
-              <option value="Under Review" ${lead.stage==='Under Review'?'selected':''}>Under Review</option>
+              <option value="New" ${lead.stage==='New'?'selected':''}>New</option>
               <option value="Contacted" ${lead.stage==='Contacted'?'selected':''}>Contacted</option>
               <option value="Seat Allotted" ${lead.stage==='Seat Allotted'?'selected':''}>Seat Allotted</option>
               <option value="Admitted" ${lead.stage==='Admitted'?'selected':''}>Admitted</option>
@@ -904,7 +897,7 @@
       if (statCounsel) statCounsel.textContent = underReview;
     }
 
-    function saveCollegeProfileForm() {
+    async function saveCollegeProfileForm() {
       const name = document.getElementById('prof-col-name').value.trim();
       const location = document.getElementById('prof-col-location').value.trim();
       const principal = document.getElementById('prof-col-principal').value.trim();
@@ -913,54 +906,36 @@
       const hospital = document.getElementById('prof-col-hospital').value.trim();
       const hostel = document.getElementById('prof-col-hostel').value.trim();
 
-      if (!name || !location) {
-        alert('Please provide Institution Name and Location.');
-        return;
-      }
+      if (!name || !location) { alert('Please provide Institution Name and Location.'); return; }
+      if (!parseLoc(location).state) { alert('Please enter the location as "City, State".'); return; }
 
-      const updatedData = {
-        collegeName: name,
-        location,
-        principalName: principal,
-        accreditation: reg,
-        affiliatedUniversity: university,
-        hospitalTieup: hospital,
-        hostelFacilities: hostel
-      };
-
-      if (window.SkillOraAuth && window.SkillOraAuth.saveCollegeProfile) {
-        SkillOraAuth.saveCollegeProfile(updatedData);
-      } else {
-        const raw = localStorage.getItem('SKILLORA_COLLEGE_USER') || '{}';
-        const parsed = JSON.parse(raw);
-        localStorage.setItem('SKILLORA_COLLEGE_USER', JSON.stringify({ ...parsed, ...updatedData }));
-      }
+      const updatedData = { collegeName: name, location, principalName: principal, accreditation: reg, affiliatedUniversity: university, hospitalTieup: hospital, hostelFacilities: hostel };
+      SkillOraAuth.saveCollegeProfile(updatedData);
+      LOGGED_IN_COLLEGE = { ...LOGGED_IN_COLLEGE, ...updatedData };
 
       document.getElementById('header-college-name').textContent = name.split(' ')[0] + '...';
       document.getElementById('disp-college-name').textContent = name;
       document.getElementById('disp-location').textContent = location;
-      document.getElementById('disp-principal').textContent = principal;
-      document.getElementById('disp-accreditation').textContent = reg;
+      document.getElementById('disp-principal').textContent = principal || '—';
+      document.getElementById('disp-accreditation').textContent = reg || '—';
 
-      alert('Institute Accreditation & Profile details saved successfully! Your campus information is updated live.');
+      let msg = 'Profile saved.';
+      const u = SkillOraAuth.getCurrentUser('college') || {};
+      if (ALL_COLLEGE_COURSES.length || u.sector) {
+        const res = await persistCollege(ALL_COLLEGE_COURSES.map(c => c.raw));
+        msg = res.success ? 'Profile saved. ' + res.message : 'Profile saved, but the public listing could not be updated: ' + res.message;
+      } else {
+        msg += ' Add your first course to create your public college listing.';
+      }
+      alert(msg);
     }
 
     async function updateLeadStatus(refId, newStatus) {
+      const ok = await SkillOraAuth.updateAdmissionLeadStatusInCloud(refId, newStatus);
+      if (!ok) { alert('Could not update the status. Please try again.'); await loadCollegeData(); return; }
       const item = ALL_COLLEGE_LEADS.find(l => String(l.id) === String(refId));
       if (item) item.stage = newStatus;
-
-      try {
-        localStorage.setItem('SKILLORA_ALL_COURSE_APPLICATIONS', JSON.stringify(ALL_COLLEGE_LEADS));
-      } catch(e) {}
-
-      if (window.SkillOraAuth && window.SkillOraAuth.updateAdmissionLeadStatusInCloud) {
-        try {
-          await SkillOraAuth.updateAdmissionLeadStatusInCloud(refId, newStatus);
-        } catch(e) {}
-      }
-
       renderLeadsTable(ALL_COLLEGE_LEADS);
-      alert(`Student application #${refId} counseling status updated to "${newStatus}". Real-time cloud sync complete.`);
     }
 
     function filterLeads(query) {
@@ -972,15 +947,17 @@
     }
 
     function exportLeadsCsv() {
-      let csv = "Lead ID,Student Name,Qualification,Target Course,Phone,Location,Date,Status\n";
-      ALL_COLLEGE_LEADS.forEach(l => {
-        csv += `"${l.id}","${l.name}","${l.qualification || ''}","${l.course}","${l.phone}","${l.location || ''}","${l.date}","${l.stage}"\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv' });
+      const unesc = v => String(v == null ? '' : v).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&');
+      const cell = v => { let t = unesc(v); if (/^[=+\-@\t\r]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+      const rows = [["Lead ID","Student Name","Target Course","Phone","Email","Date","Status"]];
+      ALL_COLLEGE_LEADS.forEach(l => rows.push([l.id, l.name, l.course, l.phone, l.email, l.date, l.stage]));
+      const blob = new Blob([rows.map(r => r.map(cell).join(',')).join('\n')], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = window.URL.createObjectURL(blob);
+      a.href = url;
       a.download = `SkillOra_College_Admissions_${new Date().toISOString().slice(0,10)}.csv`;
       a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     function handleSignOut() {
@@ -991,150 +968,52 @@
     }
 
     // Initialize Genuine Live Data on Page Load (Single Active Role Enforced)
-    window.onload = function() {
-      // 1. Single Active Role Check & Authorized Session Check
-      const activeRole = (window.SkillOraAuth && window.SkillOraAuth.getActiveRole) 
-        ? window.SkillOraAuth.getActiveRole() 
-        : localStorage.getItem('SKILLORA_ACTIVE_ROLE');
+    async function loadCollegeData() {
+      const [mine, leads] = await Promise.all([SkillOraAuth.fetchMyCollege(), SkillOraAuth.fetchMyLeads()]);
+      const rawCourses = mine && Array.isArray(mine.raw.courses) ? mine.raw.courses : [];
+      ALL_COLLEGE_COURSES = rawCourses.map(c => ({
+        raw: c, rawName: c.name, name: SkillOraAuth.escapeHtml(c.name), duration: SkillOraAuth.escapeHtml(c.duration || ''),
+        fee: SkillOraAuth.escapeHtml(c.feeDisplay || (c.fee ? rupees(c.fee) : '—')) + ' / Year', seats: Number(c.seats) || 0,
+        remaining: c.remaining == null ? Number(c.seats) || 0 : Number(c.remaining), status: SkillOraAuth.escapeHtml(c.status || 'Admissions Open')
+      }));
+      ALL_COLLEGE_LEADS = leads.map(l => ({
+        id: l.id, name: l.name, qualification: '', course: l.course || '—', phone: l.phone, email: l.email, location: '',
+        date: l.createdAt ? new Date(l.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '',
+        stage: l.status
+      }));
+      const note = document.getElementById('listing-status-note');
+      if (note) note.textContent = !mine ? 'Not listed yet - add a course to create your listing.' : (mine.raw.verified ? 'Live on SkillOra.' : 'Submitted - awaiting SkillOra verification before it appears publicly.');
+      renderCoursesList();
+      renderLeadsTable(ALL_COLLEGE_LEADS);
+    }
 
-      if (activeRole && activeRole !== 'college') {
-        const titles = { student: 'Student', employer: 'Hospital / Hotel HR Recruiter' };
-        alert(`Active Session Notice:\n\nYou are currently logged in as a ${titles[activeRole] || activeRole}.\n\nCollege Partner Portal requires an authorized College Partner account. Please sign in to your Institute account.`);
-        window.location.href = "auth.html?role=college";
-        return;
-      }
-
-      const raw = localStorage.getItem('SKILLORA_COLLEGE_USER');
-      if (!raw) {
-        alert("Please sign in with your College Partner credentials to access this portal.");
-        window.location.href = "auth.html?role=college";
-        return;
-      }
-
-      let parsed = {};
-      try {
-        parsed = JSON.parse(raw);
-      } catch(e) {
-        parsed = {};
-      }
-
-      // Purge any stale demo fallback values
-      let collegeName = parsed.collegeName;
-      if (!collegeName || collegeName.includes("Sunrise Institute")) {
-        collegeName = (parsed.name && !parsed.name.includes("Sunrise Institute")) 
-          ? parsed.name 
-          : (parsed.email ? parsed.email.split('@')[0].toUpperCase() + " College" : "My College");
-      }
-
-      let principalName = parsed.principalName;
-      if (!principalName || principalName.includes("Arvind K. Mehta") || principalName.includes("R. Sharma")) {
-        principalName = (parsed.name && !parsed.name.includes("Institute")) ? parsed.name : "Director of Admissions";
-      }
-
-      let location = parsed.location;
-      if (!location || location.includes("Mumbai, Maharashtra") || location.includes("Lucknow, Uttar Pradesh")) {
-        location = (parsed.city ? (parsed.city + (parsed.state ? ', ' + parsed.state : '')) : '') || "Location Not Set";
-      }
-
-      let accreditation = parsed.accreditation;
-      if (!accreditation || accreditation.includes("MNC") || accreditation.includes("INC-UP-2024")) {
-        accreditation = "Statutory Council Recognized";
-      }
-
+    window.onload = async function() {
+      if (!SkillOraAuth.enforceExclusiveRole('college')) return;
+      const parsed = SkillOraAuth.getCurrentUser('college') || {};
       const col = {
-        id: parsed.id || parsed.cloudId || 'COL-1',
-        collegeName,
-        principalName,
-        location,
-        accreditation,
-        affiliatedUniversity: parsed.affiliatedUniversity || 'Affiliated University Recognized',
-        hospitalTieup: parsed.hospitalTieup || 'Clinical Training Tie-Up Active',
-        hostelFacilities: parsed.hostelFacilities || 'Separate Hostels for Boys & Girls'
+        id: parsed.id,
+        collegeName: parsed.collegeName || parsed.name || '',
+        principalName: parsed.principalName || '',
+        location: parsed.location || [parsed.city, parsed.state].filter(Boolean).join(', '),
+        accreditation: parsed.accreditation || '',
+        affiliatedUniversity: parsed.affiliatedUniversity || '',
+        hospitalTieup: parsed.hospitalTieup || '',
+        hostelFacilities: parsed.hostelFacilities || ''
       };
-
       LOGGED_IN_COLLEGE = col;
 
-      document.getElementById('header-college-name').textContent = col.collegeName.split(' ')[0] + '...';
-      document.getElementById('disp-college-name').textContent = col.collegeName;
-      document.getElementById('disp-location').textContent = col.location;
-      document.getElementById('disp-principal').textContent = col.principalName;
-      document.getElementById('disp-accreditation').textContent = col.accreditation;
+      const T = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      T('header-college-name', (col.collegeName.split(' ')[0] || 'My') + '...');
+      T('disp-college-name', col.collegeName);
+      T('disp-location', col.location || 'Add your location in Profile');
+      T('disp-principal', col.principalName || '—');
+      T('disp-accreditation', col.accreditation || '—');
+      const V = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+      V('prof-col-name', col.collegeName); V('prof-col-location', col.location); V('prof-col-principal', col.principalName);
+      V('prof-col-reg', col.accreditation); V('prof-col-university', col.affiliatedUniversity);
+      V('prof-col-hospital', col.hospitalTieup); V('prof-col-hostel', col.hostelFacilities);
 
-      // Prefill Profile Editor with real data
-      if (document.getElementById('prof-col-name')) document.getElementById('prof-col-name').value = col.collegeName;
-      if (document.getElementById('prof-col-location')) document.getElementById('prof-col-location').value = (col.location === 'Location Not Set') ? '' : col.location;
-      if (document.getElementById('prof-col-principal')) document.getElementById('prof-col-principal').value = col.principalName;
-      if (document.getElementById('prof-col-reg')) document.getElementById('prof-col-reg').value = col.accreditation;
-      if (document.getElementById('prof-col-university')) document.getElementById('prof-col-university').value = col.affiliatedUniversity;
-      if (document.getElementById('prof-col-hospital')) document.getElementById('prof-col-hospital').value = col.hospitalTieup;
-      if (document.getElementById('prof-col-hostel')) document.getElementById('prof-col-hostel').value = col.hostelFacilities;
-
-      // 2. Load Courses strictly belonging to this college
-      try {
-        const storedCourses = JSON.parse(localStorage.getItem('SKILLORA_COLLEGE_COURSES') || '[]');
-        ALL_COLLEGE_COURSES = storedCourses.filter(c => {
-          const matchId = c.collegeId && String(c.collegeId) === String(col.id);
-          const matchName = c.collegeName && c.collegeName.toLowerCase().trim() === col.collegeName.toLowerCase().trim();
-          return matchId || matchName;
-        });
-      } catch(e) {
-        ALL_COLLEGE_COURSES = [];
-      }
-      renderCoursesList();
-
-      // 3. Load Real Applications strictly for this college's courses
-      try {
-        const storedLeads = JSON.parse(localStorage.getItem('SKILLORA_ALL_COURSE_APPLICATIONS') || '[]');
-        const myComp = col.collegeName.toLowerCase().trim();
-
-        const myLeads = storedLeads.filter(l => {
-          const matchId = l.collegeId && String(l.collegeId) === String(col.id);
-          const matchName = l.collegeName && (l.collegeName.toLowerCase().trim() === myComp);
-          return matchId || matchName;
-        });
-
-        ALL_COLLEGE_LEADS = myLeads.map(l => ({
-          id: l.refId || l.id || `ADM-${Math.floor(1000 + Math.random() * 9000)}`,
-          name: l.studentName || l.name || 'Student Candidate',
-          qualification: l.qualification || '12th Intermediate PCB',
-          course: l.courseName || l.course || 'B.Sc Nursing',
-          phone: l.phone || '0000000000',
-          location: l.collegeState || l.state || l.location || 'India',
-          date: l.date || 'Today',
-          stage: l.status || l.stage || 'Under Review'
-        }));
-      } catch(e) {
-        ALL_COLLEGE_LEADS = [];
-      }
-      renderLeadsTable(ALL_COLLEGE_LEADS);
-
-      // 4. Fetch Live Leads from Supabase Cloud (only for this college)
-      if (col.id && window.SkillOraAuth && window.SkillOraAuth.fetchCollegeCloudLeads) {
-        SkillOraAuth.fetchCollegeCloudLeads(col.id, col.collegeName).then(cloudLeads => {
-          if (Array.isArray(cloudLeads) && cloudLeads.length > 0) {
-            const map = new Map();
-            cloudLeads.forEach(cl => {
-              map.set(String(cl.id), {
-                id: String(cl.id),
-                name: cl.student_name || 'Student Candidate',
-                qualification: '12th Intermediate PCB',
-                course: cl.course_name || 'B.Sc Nursing',
-                phone: cl.phone || '0000000000',
-                location: cl.state || cl.city || 'India',
-                date: cl.created_at ? new Date(cl.created_at).toLocaleDateString('en-IN') : 'Recent',
-                stage: cl.status || 'Under Review'
-              });
-            });
-            ALL_COLLEGE_LEADS.forEach(l => {
-              if (!map.has(String(l.id))) {
-                map.set(String(l.id), l);
-              }
-            });
-            ALL_COLLEGE_LEADS = Array.from(map.values());
-            renderLeadsTable(ALL_COLLEGE_LEADS);
-          }
-        }).catch(() => {});
-      }
+      await loadCollegeData();
     };
   </script>
 </body>
